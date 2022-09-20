@@ -39,8 +39,8 @@ impl FromLoc<Vec2> {
         let [b, x] = self.vec.to_array();
         let [c, y] = other.tail.to_array();
         let [d, z] = other.vec.to_array();
-        let p = (w*d-y*d-z*a+z*c)/(z*b-x*d);
-        let q = (y*b-w*b-x*c+x*a)/(x*d-z*b);
+        let p = (w * d - y * d - z * a + z * c) / (z * b - x * d);
+        let q = (y * b - w * b - x * c + x * a) / (x * d - z * b);
         (0.0..=1.0).contains(&p) && (0.0..=1.0).contains(&q)
     }
 }
