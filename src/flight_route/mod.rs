@@ -1,7 +1,6 @@
 use std::f32::consts::PI;
 
 use glam::Vec2;
-use itertools::max;
 
 use crate::flight_route::types::{
     BefAftWindowIterator, Direction, FromLoc, LMR, Path, Pos, Rotation,
