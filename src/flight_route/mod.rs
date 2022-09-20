@@ -3,7 +3,7 @@ use std::f32::consts::PI;
 use glam::Vec2;
 
 use crate::flight_route::types::{
-    BefAftWindowIterator, Direction, FromLoc, LMR, Path, Pos, Rotation,
+    BefAftWindowIterator, Direction, FromLoc, Path, Pos, Rotation,
 };
 
 mod types;
@@ -17,21 +17,21 @@ fn get_route_between_waypoints(
 ) -> Vec<Path> {
     let start_centre: Pos<Vec2> = start_vec.head()
         + start_vec.vec.perp().normalize()
-        * max_turn_radius
-        * if start_rot == Rotation::Anticlockwise {
-        -1.0
-    } else {
-        1.0
-    };
+            * max_turn_radius
+            * if start_rot == Rotation::Anticlockwise {
+                -1.0
+            } else {
+                1.0
+            };
     let main_path_vec = end_centre - start_centre;
     if start_rot == end_rot {
         let radius_vec = main_path_vec.perp().normalize()
             * max_turn_radius
             * if start_rot == Rotation::Anticlockwise {
-            -1.0
-        } else {
-            1.0
-        };
+                -1.0
+            } else {
+                1.0
+            };
         let main_path_from_vec = Path::Straight(FromLoc {
             tail: start_centre + radius_vec,
             vec: main_path_vec,
@@ -41,10 +41,10 @@ fn get_route_between_waypoints(
             from: start_vec.head(),
             angle: main_path_vec.angle_between(start_vec.vec)
                 - if start_rot == Rotation::Clockwise {
-                PI
-            } else {
-                0.0
-            },
+                    PI
+                } else {
+                    0.0
+                },
         };
         vec![curve, main_path_from_vec]
     } else {
