@@ -14,6 +14,7 @@ impl Vector for Vec2 {}
 pub type Pos<T> = T;
 pub type Angle = f32;
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct FromLoc<T: Vector> {
     pub tail: Pos<T>,
     pub vec: T,
@@ -45,6 +46,7 @@ impl FromLoc<Vec2> {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Path {
     Straight(FromLoc<Vec2>),
     Curve {
