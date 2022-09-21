@@ -2,9 +2,7 @@ use std::f32::consts::PI;
 
 use glam::Vec2;
 
-use crate::flight_route::types::{
-    BefAftWindowIterator, Direction, FromLoc, Path, Pos, Rotation,
-};
+use crate::flight_route::types::{BefAftWindowIterator, Direction, FromLoc, Path, Pos, Rotation};
 
 mod types;
 
@@ -24,7 +22,7 @@ fn get_route_between_waypoints(
                 1.0
             };
     let main_path_vec = end_centre - start_centre;
-    if start_rot == end_rot {
+    let main_path_from_loc = Path::Straight(if start_rot == end_rot {
         let radius_vec = main_path_vec.perp().normalize()
             * max_turn_radius
             * if start_rot == Rotation::Anticlockwise {
@@ -32,24 +30,40 @@ fn get_route_between_waypoints(
             } else {
                 1.0
             };
-        let main_path_from_vec = Path::Straight(FromLoc {
+        FromLoc {
             tail: start_centre + radius_vec,
             vec: main_path_vec,
-        });
-        let curve = Path::Curve {
-            centre: start_centre,
-            from: start_vec.head(),
-            angle: main_path_vec.angle_between(start_vec.vec)
-                - if start_rot == Rotation::Clockwise {
-                    PI
-                } else {
-                    0.0
-                },
-        };
-        vec![curve, main_path_from_vec]
+        }
+
     } else {
-        unimplemented!()
-    }
+        let angle = (max_turn_radius / main_path_vec.length()).acos()
+            * if start_rot == Rotation::Anticlockwise {
+            -1.0} else {1.0};
+        let radius_vec = main_path_vec.normalize().rotate(Vec2::from_angle(angle)) * max_turn_radius;
+        FromLoc {
+            tail: start_centre + radius_vec,
+            vec: radius_vec.perp().normalize()
+                * (main_path_vec.length_squared()-4.0*max_turn_radius.powi(2)).sqrt()
+            * if start_rot == Rotation::Anticlockwise {
+                1.0
+            } else {
+                -1.0
+            }
+        }
+    });
+
+    let curve = Path::Curve {
+        centre: start_centre,
+        from: start_vec.head(),
+        angle: main_path_vec.angle_between(start_vec.vec)
+            - if start_rot == Rotation::Clockwise {
+            PI
+        } else {
+            0.0
+        },
+    };
+
+    vec![curve, main_path_from_loc]
 }
 
 fn get_flight_route(
