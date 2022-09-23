@@ -20,7 +20,7 @@ fn get_route_between_waypoints(
                 -1.0
             };
     let main_path_vec = end_centre - start_centre;
-    let main_path_from_loc = Path::Straight(if start_rot == end_rot {
+    let main_path_from_loc = if start_rot == end_rot {
         let radius_vec = main_path_vec.perp().normalize()
             * max_turn_radius
             * if start_rot == Rotation::Anticlockwise {
@@ -51,15 +51,15 @@ fn get_route_between_waypoints(
                     -1.0
                 },
         }
-    });
+    };
 
     let curve = Path::Curve {
         centre: start_centre,
         from: start_vec.head(),
-        angle: start_vec.vec.angle_between(main_path_vec),
+        angle: start_vec.vec.angle_between(main_path_from_loc.vec),
     };
 
-    vec![curve, main_path_from_loc]
+    vec![curve, Path::Straight(main_path_from_loc)]
 }
 
 fn get_flight_route(
@@ -117,6 +117,32 @@ mod tests {
                 },
                 Path::Straight(FromLoc {
                     tail: vec2(1.0, -1.0),
+                    vec: vec2(2.0, 0.0)
+                })
+            ]
+        )
+    }
+    #[test]
+    fn direct_transverse_tangent_eastward() {
+        assert_eq!(
+            get_route_between_waypoints(
+                FromLoc {
+                    tail: vec2(0.0, 1.0),
+                    vec: vec2(0.0, -1.0)
+                },
+                Rotation::Anticlockwise,
+                vec2(3.0, -2.0),
+                Rotation::Clockwise,
+                1.0
+            ),
+            vec![
+                Path::Curve {
+                    centre: vec2(1.0, 0.0),
+                    from: vec2(0.0, 0.0),
+                    angle: PI / 2.0 - 0.0000001
+                },
+                Path::Straight(FromLoc {
+                    tail: vec2(1.0, -1.0 + 0.00000006),
                     vec: vec2(2.0, 0.0)
                 })
             ]
