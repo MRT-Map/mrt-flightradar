@@ -83,22 +83,23 @@ fn get_flight_route(
             (this, FromLoc::new(*bef, *this).turning_rot(*aft))
         }),
     )
-        .filter_map(|(wp, rot)| Some((wp, rot?)))
-        .collect::<Vec<_>>();
+    .filter_map(|(wp, rot)| Some((wp, rot?)))
+    .collect::<Vec<_>>();
 
     let mut start_vec = start;
-    let mut route = wp_rots.iter().tuple_windows::<(_, _)>()
+    let mut route = wp_rots
+        .iter()
+        .tuple_windows::<(_, _)>()
         .flat_map(|((_, this_rot), (next_wp, next_rot))| {
             let next_paths = get_route_between_waypoints(
                 start_vec,
                 *this_rot,
                 **next_wp,
                 *next_rot,
-                max_turn_radius
+                max_turn_radius,
             );
-            start_vec = if let
-                Some(Path::Straight(fv)) = next_paths.last() {
-                *fv
+            start_vec = if let Some(Path::Straight(fl)) = next_paths.last() {
+                *fl
             } else {
                 unreachable!()
             };
@@ -111,11 +112,13 @@ fn get_flight_route(
                 vec![Path::Straight(FromLoc::new(start_vec.head(), end.tail))]
             }
             Some(rot) => {
-                let end_centre = end.vec.perp().normalize() * max_turn_radius * if rot == Rotation::Anticlockwise {
-                    -1.0
-                } else {
-                    1.0
-                };
+                let end_centre = end.vec.perp().normalize()
+                    * max_turn_radius
+                    * if rot == Rotation::Anticlockwise {
+                        -1.0
+                    } else {
+                        1.0
+                    };
                 let mut next_paths = get_route_between_waypoints(
                     start_vec,
                     rot,
@@ -125,13 +128,13 @@ fn get_flight_route(
                     } else {
                         rot.opp()
                     },
-                    max_turn_radius
+                    max_turn_radius,
                 );
-                next_paths.push(if let Some(Path::Straight(fv)) = next_paths.last() {
+                next_paths.push(if let Some(Path::Straight(fl)) = next_paths.last() {
                     Path::Curve {
                         centre: end_centre,
-                        from: fv.head(),
-                        angle: fv.vec.angle_between(end.vec)
+                        from: fl.head(),
+                        angle: fl.vec.angle_between(end.vec),
                     }
                 } else {
                     unreachable!()

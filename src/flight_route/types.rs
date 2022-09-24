@@ -45,63 +45,6 @@ impl FromLoc<Vec2> {
         (0.0..=1.0).contains(&p) && (0.0..=1.0).contains(&q)
     }
 }
-
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum Path {
-    Straight(FromLoc<Vec2>),
-    Curve {
-        centre: Pos<Vec2>,
-        from: Pos<Vec2>,
-        angle: Angle,
-    },
-}
-
-pub struct BefAftWindowIterator<'a, T> {
-    cursor: usize,
-    list: &'a Vec<T>,
-}
-impl<'a, T> Iterator for BefAftWindowIterator<'a, T> {
-    type Item = (Option<&'a T>, &'a T, Option<&'a T>);
-    fn next(&mut self) -> Option<Self::Item> {
-        self.cursor += 1;
-        Some((
-            self.list.get(self.cursor - 1),
-            self.list.get(self.cursor)?,
-            self.list.get(self.cursor + 1),
-        ))
-    }
-}
-impl<'a, T> BefAftWindowIterator<'a, T> {
-    pub fn new(list: &'a Vec<T>) -> Self {
-        Self { cursor: 0, list }
-    }
-}
-
-#[derive(Copy, Clone, PartialEq, Eq, Debug)]
-pub enum LMR {
-    Left,
-    Middle,
-    Right,
-}
-#[derive(Copy, Clone, PartialEq, Eq, Debug)]
-pub enum FMB {
-    Front,
-    Middle,
-    Back,
-}
-#[derive(Copy, Clone, PartialEq, Eq, Debug)]
-pub enum Rotation {
-    Clockwise,
-    Anticlockwise,
-}
-impl Rotation {
-    pub fn opp(&self) -> Self {
-        match self {
-            Rotation::Clockwise => Rotation::Anticlockwise,
-            Rotation::Anticlockwise => Rotation::Clockwise
-        }
-    }
-}
 pub trait Direction<T> {
     fn lmr(&self, other: Pos<T>) -> LMR;
     fn fmb(&self, other: Pos<T>) -> FMB;
@@ -133,5 +76,78 @@ impl Direction<Vec2> for FromLoc<Vec2> {
             LMR::Right => Some(Rotation::Clockwise),
             LMR::Middle => None,
         }
+    }
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub enum LMR {
+    Left,
+    Middle,
+    Right,
+}
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub enum FMB {
+    Front,
+    Middle,
+    Back,
+}
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub enum Rotation {
+    Clockwise,
+    Anticlockwise,
+}
+impl Rotation {
+    pub fn opp(&self) -> Self {
+        match self {
+            Rotation::Clockwise => Rotation::Anticlockwise,
+            Rotation::Anticlockwise => Rotation::Clockwise,
+        }
+    }
+}
+
+pub struct BefAftWindowIterator<'a, T> {
+    cursor: usize,
+    list: &'a Vec<T>,
+}
+impl<'a, T> Iterator for BefAftWindowIterator<'a, T> {
+    type Item = (Option<&'a T>, &'a T, Option<&'a T>);
+    fn next(&mut self) -> Option<Self::Item> {
+        self.cursor += 1;
+        Some((
+            self.list.get(self.cursor - 1),
+            self.list.get(self.cursor)?,
+            self.list.get(self.cursor + 1),
+        ))
+    }
+}
+impl<'a, T> BefAftWindowIterator<'a, T> {
+    pub fn new(list: &'a Vec<T>) -> Self {
+        Self { cursor: 0, list }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Path {
+    Straight(FromLoc<Vec2>),
+    Curve {
+        centre: Pos<Vec2>,
+        from: Pos<Vec2>,
+        angle: Angle,
+    },
+}
+pub trait PathExt {
+    fn len(&self) -> f32;
+}
+impl PathExt for Path {
+    fn len(&self) -> f32 {
+        match &self {
+            Path::Straight(fl) => fl.vec.length(),
+            Path::Curve { from, centre, angle} => (*centre - *from).length() * angle.abs()
+        }
+    }
+}
+impl PathExt for Vec<Path> {
+    fn len(&self) -> f32 {
+        self.iter().map(Path::len).sum()
     }
 }
