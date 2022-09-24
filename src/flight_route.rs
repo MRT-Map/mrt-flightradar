@@ -4,8 +4,8 @@ use itertools::Itertools;
 use crate::types::{
     iter::BefAftWindowIterator,
     path::Path,
-    Rotation,
     vec::{Direction, FromLoc, Pos},
+    Rotation,
 };
 
 pub fn get_route_between_waypoints(
@@ -158,7 +158,7 @@ mod tests {
 
     use crate::{
         flight_route::get_route_between_waypoints,
-        types::{path::Path, Rotation, vec::FromLoc},
+        types::{path::Path, vec::FromLoc, Rotation},
     };
 
     #[test]

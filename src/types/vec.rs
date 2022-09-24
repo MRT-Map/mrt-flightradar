@@ -2,7 +2,7 @@ use std::ops::{Add, Neg, Sub};
 
 use glam::Vec2;
 
-use crate::types::{FMB, LMR, Rotation};
+use crate::types::{Rotation, FMB, LMR};
 
 pub trait Vector:
     Copy + Add<Self, Output = Self> + Sub<Self, Output = Self> + Neg<Output = Self>

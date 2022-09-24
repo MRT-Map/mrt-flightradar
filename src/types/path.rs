@@ -1,8 +1,8 @@
 use glam::Vec2;
 
 use crate::types::{
-    Angle,
     vec::{FromLoc, Pos},
+    Angle,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq)]

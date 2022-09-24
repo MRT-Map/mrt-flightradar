@@ -1,6 +1,8 @@
+pub mod airport;
 pub mod iter;
 pub mod path;
 pub mod vec;
+pub mod waypoint;
 
 pub type Angle = f32;
 

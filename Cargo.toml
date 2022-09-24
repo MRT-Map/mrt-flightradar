@@ -8,3 +8,5 @@ edition = "2021"
 [dependencies]
 itertools = "^0.10.5"
 glam = "^0.21.3"
+smallvec = "^1.9.0"
+smol_str = "^0.1.23"
