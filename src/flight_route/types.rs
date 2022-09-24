@@ -14,7 +14,7 @@ impl Vector for Vec2 {}
 pub type Pos<T> = T;
 pub type Angle = f32;
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct FromLoc<T: Vector> {
     pub tail: Pos<T>,
     pub vec: T,
@@ -93,6 +93,14 @@ pub enum FMB {
 pub enum Rotation {
     Clockwise,
     Anticlockwise,
+}
+impl Rotation {
+    pub fn opp(&self) -> Self {
+        match self {
+            Rotation::Clockwise => Rotation::Anticlockwise,
+            Rotation::Anticlockwise => Rotation::Clockwise
+        }
+    }
 }
 pub trait Direction<T> {
     fn lmr(&self, other: Pos<T>) -> LMR;
