@@ -1,6 +1,6 @@
-pub mod vec;
 pub mod iter;
 pub mod path;
+pub mod vec;
 
 pub type Angle = f32;
 

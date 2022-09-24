@@ -1,7 +1,9 @@
 use glam::Vec2;
 
-use crate::types::Angle;
-use crate::types::vec::{FromLoc, Pos};
+use crate::types::{
+    Angle,
+    vec::{FromLoc, Pos},
+};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Path {

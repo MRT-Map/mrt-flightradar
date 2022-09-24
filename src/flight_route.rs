@@ -1,10 +1,12 @@
 use glam::Vec2;
 use itertools::Itertools;
 
-use crate::types::iter::BefAftWindowIterator;
-use crate::types::path::Path;
-use crate::types::Rotation;
-use crate::types::vec::{Direction, FromLoc, Pos};
+use crate::types::{
+    iter::BefAftWindowIterator,
+    path::Path,
+    Rotation,
+    vec::{Direction, FromLoc, Pos},
+};
 
 pub fn get_route_between_waypoints(
     start_vec: FromLoc<Vec2>,
@@ -154,10 +156,10 @@ mod tests {
 
     use glam::vec2;
 
-    use crate::flight_route::get_route_between_waypoints;
-    use crate::types::path::Path;
-    use crate::types::Rotation;
-    use crate::types::vec::FromLoc;
+    use crate::{
+        flight_route::get_route_between_waypoints,
+        types::{path::Path, Rotation, vec::FromLoc},
+    };
 
     #[test]
     fn direct_common_tangent_anticlockwise() {
