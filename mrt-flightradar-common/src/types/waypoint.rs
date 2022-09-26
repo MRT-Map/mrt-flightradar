@@ -13,7 +13,7 @@ pub struct Waypoint {
 
 #[cached(result = true)]
 pub fn get_waypoints() -> Result<Vec<Waypoint>> {
-    from_csv(include_str!("../../data/waypoints.csv"))
+    from_csv(include_str!("../../../data/waypoints.csv"))
         .into_iter()
         .skip(1)
         .map(|row| {

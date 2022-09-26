@@ -46,7 +46,7 @@ pub enum AirFacility {
 
 #[cached(result = true)]
 pub fn get_air_facilities() -> Result<Vec<AirFacility>> {
-    from_csv(include_str!("../../data/air_facilities.csv"))
+    from_csv(include_str!("../../../data/air_facilities.csv"))
         .into_iter()
         .skip(1)
         .map(|row| {
