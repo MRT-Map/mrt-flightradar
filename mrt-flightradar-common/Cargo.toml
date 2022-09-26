@@ -13,3 +13,4 @@ smallvec = "^1.9.0"
 smol_str = "^0.1.23"
 anyhow = { version = "^1.0.65", features = ['backtrace'] }
 cached = "^0.39.0"
+regex = "^1.6.0"
