@@ -1,13 +1,11 @@
-use std::str::Split;
-use std::iter::Peekable;
-use std::path::PathBuf;
-use rustyline::Editor;
+use std::{iter::Peekable, path::PathBuf, str::Split};
+
 use anyhow::Result;
 use bunt::println;
-use itertools::Itertools;
-use rustyline::error::ReadlineError;
-use smol_str::SmolStr;
 use common::types::timetable::{AirlineTimetable, Flight};
+use itertools::Itertools;
+use rustyline::{error::ReadlineError, Editor};
+use smol_str::SmolStr;
 
 macro_rules! cprintln {
     (red $($f:tt)+) => {
@@ -28,33 +26,47 @@ fn main() -> Result<()> {
                     path
                 } else {
                     cprintln!(red "Invalid path `{line}`");
-                    continue
+                    continue;
                 };
-                break (match AirlineTimetable::from_file(path.to_owned()) {
-                    Ok(at) => at,
-                    Err(err) => {
-                        cprintln!(red "Error reading file: {err}");
-                        continue
-                    }
-                }, path.parent().map(|a| a.to_path_buf()).unwrap_or(path))
-            },
+                break (
+                    match AirlineTimetable::from_file(path.to_owned()) {
+                        Ok(at) => at,
+                        Err(err) => {
+                            cprintln!(red "Error reading file: {err}");
+                            continue;
+                        }
+                    },
+                    path.parent().map(|a| a.to_path_buf()).unwrap_or(path),
+                );
+            }
             Err(ReadlineError::Interrupted) | Err(ReadlineError::Eof) => {
                 cprintln!(yellow "Quitting");
-                return Ok(())
-            },
-            Err(err) => return Err(err.into())
+                return Ok(());
+            }
+            Err(err) => return Err(err.into()),
         }
     };
     loop {
         print!("\x1B[2J\x1B[1;1H");
         println!("Editing {[yellow]}\nEnter {$cyan}h{/$} for help", file.name);
         cprintln!(yellow "#\t(a) Aircraft\t(reg) Registry\t(d1) Dep. 1\t(a1) Airport 1\t(d2) Dep. 2\t(a2) Airport 2");
-        println!("{}",
-                 file.flights
-                     .iter()
-                     .enumerate()
-                     .map(|(i, f)| format!("{}\t{}\t\t{}\t\t{}\t\t{}\t\t{}\t\t{}", i, f.aircraft, f.registry, f.depart_time1, f.airport1, f.depart_time2, f.airport2))
-                     .join("\n"));
+        println!(
+            "{}",
+            file.flights
+                .iter()
+                .enumerate()
+                .map(|(i, f)| format!(
+                    "{}\t{}\t\t{}\t\t{}\t\t{}\t\t{}\t\t{}",
+                    i,
+                    f.aircraft,
+                    f.registry,
+                    f.depart_time1,
+                    f.airport1,
+                    f.depart_time2,
+                    f.airport2
+                ))
+                .join("\n")
+        );
         match rl.readline("> ") {
             Ok(cmd_str) => {
                 let mut cmd_str = cmd_str.split(' ').peekable();
@@ -83,18 +95,38 @@ fn main() -> Result<()> {
                     Some("q") => {
                         file.to_file(path)?;
                         cprintln!(yellow "Quitting");
-                        return Ok(())
+                        return Ok(());
                     }
                     Some("h") => {
                         let cmds = [
                             ("q", "", "Quit the editor"),
                             ("h", "", "View this page"),
-                            ("i", "<index> \"<aircraft>\" <reg> <d1> <a1> <d2> <a2>", "Add flight to buffer (Aircraft must be in quotes)"),
-                            ("is", "\"<aircraft>\" <reg> <d1> <a1> <d2> <a2>", "Add flight to start of buffer"),
-                            ("ie", "\"<aircraft>\" <reg> <d1> <a1> <d2> <a2>", "Add flight to end of buffer"),
-                            ("c", "<index> <field> <new_value>", "Change value of field of flight in buffer"),
+                            (
+                                "i",
+                                "<index> \"<aircraft>\" <reg> <d1> <a1> <d2> <a2>",
+                                "Add flight to buffer (Aircraft must be in quotes)",
+                            ),
+                            (
+                                "is",
+                                "\"<aircraft>\" <reg> <d1> <a1> <d2> <a2>",
+                                "Add flight to start of buffer",
+                            ),
+                            (
+                                "ie",
+                                "\"<aircraft>\" <reg> <d1> <a1> <d2> <a2>",
+                                "Add flight to end of buffer",
+                            ),
+                            (
+                                "c",
+                                "<index> <field> <new_value>",
+                                "Change value of field of flight in buffer",
+                            ),
                             ("d", "<index>", "Remove flight from buffer"),
-                            ("m", "<index1> <index2>", "Move a flight at index1 to index2")
+                            (
+                                "m",
+                                "<index1> <index2>",
+                                "Move a flight at index1 to index2",
+                            ),
                         ];
                         for (cmd, args, desc) in cmds {
                             println!("{[cyan+bold]} {[yellow]}\n{}", cmd, args, desc);
@@ -102,30 +134,40 @@ fn main() -> Result<()> {
                         let _ = rl.readline("Press enter to continue...");
                     }
                     Some("i") => {
-                        let index = view_error!(get_index(&mut cmd_str, |index| index <= file.flights.len(), "index"));
-                        file.flights.insert(index, view_error!(get_flight(&mut cmd_str)));
+                        let index = view_error!(get_index(
+                            &mut cmd_str,
+                            |index| index <= file.flights.len(),
+                            "index"
+                        ));
+                        file.flights
+                            .insert(index, view_error!(get_flight(&mut cmd_str)));
                     }
                     Some("is") => {
-                        file.flights.insert(0, view_error!(get_flight(&mut cmd_str)));
+                        file.flights
+                            .insert(0, view_error!(get_flight(&mut cmd_str)));
                     }
                     Some("ie") => {
                         file.flights.push(view_error!(get_flight(&mut cmd_str)));
                     }
                     Some("c") => {
-                        let index = view_error!(get_index(&mut cmd_str, |index| index < file.flights.len(), "index"));
+                        let index = view_error!(get_index(
+                            &mut cmd_str,
+                            |index| index < file.flights.len(),
+                            "index"
+                        ));
                         let field = view_error!(cmd_str.next(), "Missing argument <field>");
                         let value = cmd_str.take_while(|_| true).join(" ");
                         if value.is_empty() {
                             cprintln!(red "Missing argument <value>");
-                            continue
+                            continue;
                         }
                         if field != "a" && value.contains(' ') {
                             cprintln!(red "Value cannot contain spaces");
-                            continue
+                            continue;
                         }
                         if field == "a" && value.contains('"') {
                             cprintln!(red "Aircraft cannot contain `\"`");
-                            continue
+                            continue;
                         }
                         match field {
                             "a" => file.flights[index].aircraft = value.into(),
@@ -140,12 +182,24 @@ fn main() -> Result<()> {
                         }
                     }
                     Some("d") => {
-                        let index = view_error!(get_index(&mut cmd_str, |index| index < file.flights.len(), "index"));
+                        let index = view_error!(get_index(
+                            &mut cmd_str,
+                            |index| index < file.flights.len(),
+                            "index"
+                        ));
                         file.flights.remove(index);
                     }
                     Some("m") => {
-                        let index1 = view_error!(get_index(&mut cmd_str, |index| index < file.flights.len(), "index1"));
-                        let index2 = view_error!(get_index(&mut cmd_str, |index| index < file.flights.len(), "index2"));
+                        let index1 = view_error!(get_index(
+                            &mut cmd_str,
+                            |index| index < file.flights.len(),
+                            "index1"
+                        ));
+                        let index2 = view_error!(get_index(
+                            &mut cmd_str,
+                            |index| index < file.flights.len(),
+                            "index2"
+                        ));
                         if index1 < index2 {
                             file.flights[index1..=index2].rotate_left(1);
                         } else {
@@ -163,14 +217,18 @@ fn main() -> Result<()> {
             Err(ReadlineError::Interrupted) | Err(ReadlineError::Eof) => {
                 file.to_file(path)?;
                 cprintln!(yellow "Quitting");
-                return Ok(())
-            },
-            Err(err) => return Err(err.into())
+                return Ok(());
+            }
+            Err(err) => return Err(err.into()),
         }
     }
 }
 
-fn get_index(cmd_str: &mut Peekable<Split<char>>, predicate: impl Fn(usize) -> bool, name: &str) -> Option<usize> {
+fn get_index(
+    cmd_str: &mut Peekable<Split<char>>,
+    predicate: impl Fn(usize) -> bool,
+    name: &str,
+) -> Option<usize> {
     if let Some(index) = cmd_str.next() {
         if let Ok(index) = index.parse::<usize>() {
             if predicate(index) {
@@ -193,26 +251,28 @@ fn get_flight(cmd_str: &mut Peekable<Split<char>>) -> Option<Flight> {
     if let Some(next) = cmd_str.peek() {
         if !next.starts_with('"') {
             cprintln!(red "Aircraft name does not start with `\"`");
-            return None
+            return None;
         }
     } else {
         cprintln!(red "Missing argument \"<aircraft>\"");
-        return None
+        return None;
     }
     let aircraft = {
         let mut aircraft = cmd_str
             .take_while_ref(|a| !a.ends_with('"'))
-            .map(|a| a.to_string()).join(" ");
+            .map(|a| a.to_string())
+            .join(" ");
         aircraft += " ";
         aircraft += cmd_str.next().unwrap_or("");
         let aircraft = aircraft.trim().trim_matches('"').trim();
         if aircraft.contains('"') {
             cprintln!(red "Aircraft cannot contain `\"`");
-            return None
+            return None;
         }
         SmolStr::from(aircraft)
     };
-    let [reg, d1, a1, d2, a2] = if let Some(arr) = ["reg", "d1", "a1", "d2", "a2"].iter()
+    let [reg, d1, a1, d2, a2] = if let Some(arr) = ["reg", "d1", "a1", "d2", "a2"]
+        .iter()
         .map(|arg| {
             if let Some(val) = cmd_str.next() {
                 Some(SmolStr::from(val))
@@ -221,10 +281,17 @@ fn get_flight(cmd_str: &mut Peekable<Split<char>>) -> Option<Flight> {
                 None
             }
         })
-        .collect::<Option<Vec<_>>>() {
-        [arr[0].to_owned(), arr[1].to_owned(), arr[2].to_owned(), arr[3].to_owned(), arr[4].to_owned()]
+        .collect::<Option<Vec<_>>>()
+    {
+        [
+            arr[0].to_owned(),
+            arr[1].to_owned(),
+            arr[2].to_owned(),
+            arr[3].to_owned(),
+            arr[4].to_owned(),
+        ]
     } else {
-        return None
+        return None;
     };
     Some(Flight {
         aircraft,
@@ -232,6 +299,6 @@ fn get_flight(cmd_str: &mut Peekable<Split<char>>) -> Option<Flight> {
         depart_time1: d1,
         airport1: a1,
         depart_time2: d2,
-        airport2: a2
+        airport2: a2,
     })
 }

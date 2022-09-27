@@ -64,26 +64,18 @@ impl AirlineTimetable {
 }
 impl Display for AirlineTimetable {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let flights = self
-            .flights
-            .iter()
-            .map(|flight| {
-                format!(
-                    r#""{}",{};{},{},{},{}"#,
-                    flight.aircraft,
-                    flight.registry,
-                    flight.depart_time1,
-                    flight.airport1,
-                    flight.depart_time2,
-                    flight.airport2
-                )
-            })
-            .collect::<Vec<_>>();
-        write!(
-            f,
-            "{}",
-            flights.into_iter().join("\n")
-        )
+        let mut flights = self.flights.iter().map(|flight| {
+            format!(
+                r#""{}",{};{},{},{},{}"#,
+                flight.aircraft,
+                flight.registry,
+                flight.depart_time1,
+                flight.airport1,
+                flight.depart_time2,
+                flight.airport2
+            )
+        });
+        write!(f, "{}", flights.join("\n"))
     }
 }
 
