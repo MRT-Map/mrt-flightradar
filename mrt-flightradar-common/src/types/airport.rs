@@ -43,6 +43,22 @@ pub enum AirFacility {
         runways: SmallVec<[Runway; 1]>,
     },
 }
+impl AirFacility {
+    pub fn code(&self) -> &SmolStr {
+        match &self {
+            AirFacility::Heliport { code, .. } => code,
+            AirFacility::AirshipTerminal { code, .. } => code,
+            AirFacility::Airport { code, .. } => code,
+        }
+    }
+    pub fn main_coord(&self) -> Option<&Pos<Vec2>> {
+        match &self {
+            AirFacility::Heliport { pad_coord, .. } => Some(pad_coord),
+            AirFacility::AirshipTerminal { pad_coord, .. } => Some(pad_coord),
+            AirFacility::Airport { runways, .. } => runways.get(1).map(|r| &r.start),
+        }
+    }
+}
 
 #[cached(result = true)]
 pub fn get_air_facilities() -> Result<Vec<AirFacility>> {

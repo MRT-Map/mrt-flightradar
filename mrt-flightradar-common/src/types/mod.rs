@@ -4,6 +4,7 @@ use glam::{vec2, Vec2};
 pub mod airport;
 pub mod iter;
 pub mod path;
+pub mod time;
 pub mod timetable;
 pub mod vec;
 pub mod waypoint;

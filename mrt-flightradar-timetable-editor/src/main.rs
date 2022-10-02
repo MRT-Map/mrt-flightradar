@@ -2,7 +2,14 @@ use std::{iter::Peekable, path::PathBuf, str::Split};
 
 use anyhow::Result;
 use bunt::println;
-use common::types::timetable::{AirlineTimetable, Flight};
+use common::{
+    types::{
+        airport::get_air_facilities,
+        time::Time,
+        timetable::{AirlineTimetable, Flight},
+    },
+    PLANE_SPEED,
+};
 use itertools::Itertools;
 use rustyline::{error::ReadlineError, Editor};
 use smol_str::SmolStr;
@@ -46,6 +53,7 @@ fn main() -> Result<()> {
             Err(err) => return Err(err.into()),
         }
     };
+    let air_facilities = get_air_facilities()?;
     loop {
         print!("\x1B[2J\x1B[1;1H");
         println!("Editing {[yellow]}\nEnter {$cyan}h{/$} for help", file.name);
@@ -127,6 +135,11 @@ fn main() -> Result<()> {
                                 "<index1> <index2>",
                                 "Move a flight at index1 to index2",
                             ),
+                            (
+                                "e",
+                                "<d1> <a1> <d2>",
+                                "Estimate an arrival time for a flight",
+                            ),
                         ];
                         for (cmd, args, desc) in cmds {
                             println!("{[cyan+bold]} {[yellow]}\n{}", cmd, args, desc);
@@ -205,6 +218,48 @@ fn main() -> Result<()> {
                         } else {
                             file.flights[index2..=index1].rotate_right(1);
                         }
+                    }
+                    Some("e") => {
+                        let [d1, a1, d2] = if let Some(arr) = ["d1", "a1", "d2"]
+                            .iter()
+                            .map(|arg| {
+                                if let Some(val) = cmd_str.next() {
+                                    Some(SmolStr::from(val))
+                                } else {
+                                    cprintln!(red "Missing argument <{arg}>");
+                                    None
+                                }
+                            })
+                            .collect::<Option<Vec<_>>>()
+                        {
+                            [arr[0].to_owned(), arr[1].to_owned(), arr[2].to_owned()]
+                        } else {
+                            let _ = rl.readline("Press enter to continue...");
+                            continue;
+                        };
+                        let c1 = view_error!(
+                            view_error!(
+                                air_facilities.iter().find(|a| *a.code() == d1),
+                                "Invalid airport code `{d1}`"
+                            )
+                            .main_coord(),
+                            "Airport `{d1}` has no main coords"
+                        );
+                        let c2 = view_error!(
+                            view_error!(
+                                air_facilities.iter().find(|a| *a.code() == d2),
+                                "Invalid airport code `{d2}`"
+                            )
+                            .main_coord(),
+                            "Airport `{d2}` has no main coords"
+                        );
+                        #[allow(clippy::match_result_ok)]
+                        let a1 = view_error!(a1.parse::<Time>().ok(), "Invalid time `{a1}`");
+                        let dist = c1.distance(*c2) / 1000.0;
+                        let time = dist / PLANE_SPEED;
+                        let a2 = a1 + time;
+                        cprintln!(yellow "Flight arrives at {a2} after {time:.2} hours");
+                        let _ = rl.readline("Press enter to continue...");
                     }
                     Some(a) => {
                         cprintln!(red "Unknown command `{a}`");
