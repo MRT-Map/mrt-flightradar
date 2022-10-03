@@ -256,7 +256,7 @@ fn main() -> Result<()> {
                         #[allow(clippy::match_result_ok)]
                         let a1 = view_error!(a1.parse::<Time>().ok(), "Invalid time `{a1}`");
                         let dist = c1.distance(*c2) / 1000.0;
-                        let time = dist / PLANE_SPEED;
+                        let time = (((c2.x - c1.x) + (c2.y - c1.y)) / 5000.0).abs();
                         let a2 = a1 + time;
                         cprintln!(yellow "Flight arrives at {a2} after {time:.2} hours");
                         let _ = rl.readline("Press enter to continue...");
