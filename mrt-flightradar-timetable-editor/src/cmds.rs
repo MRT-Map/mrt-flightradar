@@ -1,8 +1,10 @@
 use std::{iter::Peekable, str::Split};
 
-use common::types::timetable::Flight;
+use common::types::{airport::AirFacility, time::Time, timetable::Flight};
 use itertools::Itertools;
 use smol_str::SmolStr;
+
+use crate::cmds::e::estimate_time;
 
 pub mod c;
 pub mod d;
@@ -55,7 +57,7 @@ fn get_time(cmd_str: &mut Peekable<Split<char>>, name: &str) -> Result<Time, Str
     }
 }
 
-fn get_aircraft(cmd_str: &mut Peekable<Split<char>>) -> Result<SmolStr, String> {
+fn get_aircraft(cmd_str: &mut Peekable<Split<char>>, _: &str) -> Result<SmolStr, String> {
     if let Some(next) = cmd_str.peek() {
         if !next.starts_with('"') {
             return Err("Aircraft name does not start with `\"`".into());
@@ -86,13 +88,16 @@ fn get_str(cmd_str: &mut Peekable<Split<char>>, name: &str) -> Result<SmolStr, S
     }
 }
 
-fn get_flight(cmd_str: &mut Peekable<Split<char>>) -> Result<Flight, String> {
-    let aircraft = arg!(fn cmd_str "aircraft" aircraft);
-    let reg = arg!(fn cmd_str "reg" str);
-    let d1 = arg!(fn cmd_str "d1" time);
-    let a1 = arg!(fn cmd_str "a1" str);
-    let d2 = arg!(fn cmd_str "d2" time);
-    let a2 = arg!(fn cmd_str "a2" str); // or else estimate time TODO
+fn get_flight(
+    cmd_str: &mut Peekable<Split<char>>,
+    air_facilities: &Vec<AirFacility>,
+) -> Result<Flight, String> {
+    let aircraft = arg!(fn cmd_str "aircraft" get_aircraft);
+    let reg = arg!(fn cmd_str "reg" get_str);
+    let a1 = arg!(fn cmd_str "a1" get_str);
+    let d1 = arg!(fn cmd_str "d1" get_time);
+    let a2 = arg!(fn cmd_str "a2" get_str);
+    let d2 = arg!(opt fn cmd_str "d2" get_time, || Ok(d1 + estimate_time(get_main_coord!(fn a1, air_facilities), get_main_coord!(fn a2, air_facilities))));
     Ok(Flight {
         aircraft,
         registry: reg,
@@ -104,55 +109,85 @@ fn get_flight(cmd_str: &mut Peekable<Split<char>>) -> Result<Flight, String> {
 }
 
 #[macro_export]
+macro_rules! get_main_coord {
+    ($a:ident, $air_facilities:expr) => {
+        if let Some(o) = $air_facilities.iter().find(|a| *a.code() == $a) {
+            if let Some(c) = o.main_coord() {
+                c
+            } else {
+                return Ok(Action::Err(format!("Airport `{}` has no main coords", $a)));
+            }
+        } else {
+            return Ok(Action::Err(format!("Invalid airport code `{}`", $a)));
+        }
+    };
+    (fn $a:ident, $air_facilities:expr) => {
+        if let Some(o) = $air_facilities.iter().find(|a| *a.code() == $a) {
+            if let Some(c) = o.main_coord() {
+                c
+            } else {
+                return Err(format!("Airport `{}` has no main coords", $a));
+            }
+        } else {
+            return Err(format!("Invalid airport code `{}`", $a));
+        }
+    };
+}
+
+#[macro_export]
 macro_rules! arg {
-    ($cmd_str:ident $name:literal index, $file:ident, $opr:ident) => {
+    ($cmd_str:ident $name:literal get_index, $file:ident, $opr:ident) => {
         match $crate::cmds::get_index($cmd_str, |index| index.$opr(&$file.flights.len()), $name) {
             Ok(index) => index,
             Err(err) => return Ok(Action::Err(err)),
         }
     };
-    ($cmd_str:ident $name:literal aircraft) => {
-        match $crate::cmds::get_aircraft($cmd_str) {
+    (fn $cmd_str:ident $name:literal get_index, $file:ident, $opr:ident) => {
+        match $crate::cmds::get_index($cmd_str, |index| index.$opr(&$file.flights.len()), $name) {
+            Ok(index) => index,
+            Err(err) => return Err(err),
+        }
+    };
+    ($cmd_str:ident $name:literal get_flight, $air_facilities:expr) => {
+        match $crate::cmds::get_flight($cmd_str, $air_facilities) {
+            Ok(index) => index,
+            Err(err) => return Ok(Action::Err(err)),
+        }
+    };
+    (fn $cmd_str:ident $name:literal get_flight, $air_facilities:expr) => {
+        match $crate::cmds::get_flight($cmd_str, $air_facilities) {
+            Ok(index) => index,
+            Err(err) => return Err(err),
+        }
+    };
+    ($cmd_str:ident $name:literal $ty:ident) => {
+        match $crate::cmds::$ty($cmd_str, $name) {
             Ok(aircraft) => aircraft,
             Err(err) => return Ok(Action::Err(err)),
         }
     };
-    (fn $cmd_str:ident $name:literal aircraft) => {
-        match $crate::cmds::get_aircraft($cmd_str) {
+    (fn $cmd_str:ident $name:literal $ty:ident) => {
+        match $crate::cmds::$ty($cmd_str, $name) {
             Ok(aircraft) => aircraft,
             Err(err) => return Err(err),
         }
     };
-    ($cmd_str:ident $name:literal str) => {
-        match $crate::cmds::get_str($cmd_str, $name) {
+    (opt fn $cmd_str:ident $name:literal $ty:ident, $opt:expr) => {
+        match $crate::cmds::$ty($cmd_str, $name) {
             Ok(aircraft) => aircraft,
-            Err(err) => return Ok(Action::Err(err)),
-        }
-    };
-    (fn $cmd_str:ident $name:literal str) => {
-        match $crate::cmds::get_str($cmd_str, $name) {
-            Ok(aircraft) => aircraft,
-            Err(err) => return Err(err),
-        }
-    };
-    ($cmd_str:ident $name:literal time) => {
-        match $crate::cmds::get_time($cmd_str, $name) {
-            Ok(aircraft) => aircraft,
-            Err(err) => return Ok(Action::Err(err)),
-        }
-    };
-    (fn $cmd_str:ident $name:literal time) => {
-        match $crate::cmds::get_time($cmd_str, $name) {
-            Ok(aircraft) => aircraft,
-            Err(err) => return Err(err),
-        }
-    };
-    ($cmd_str:ident $name:literal flight) => {
-        match $crate::cmds::get_flight($cmd_str) {
-            Ok(aircraft) => aircraft,
-            Err(err) => return Ok(Action::Err(err)),
+            Err(err) => {
+                if err.contains("Missing argument") {
+                    match $opt() {
+                        Ok(res) => res.into(),
+                        Err(err) => return Err(err),
+                    }
+                } else {
+                    return Err(err);
+                }
+            }
         }
     };
 }
+
 use arg;
-use common::types::time::Time;
+use get_main_coord;

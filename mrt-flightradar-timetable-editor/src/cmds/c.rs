@@ -7,8 +7,8 @@ use itertools::Itertools;
 use crate::{arg, Action};
 
 pub fn c(cmd_str: &mut Peekable<Split<char>>, file: &mut AirlineTimetable) -> Result<Action> {
-    let index = arg!(cmd_str "index" index, file, lt);
-    let field = &*arg!(cmd_str "field" str);
+    let index = arg!(cmd_str "index" get_index, file, lt);
+    let field = &*arg!(cmd_str "field" get_str);
     let value = cmd_str.take_while(|_| true).join(" ");
     if value.is_empty() {
         return Ok(Action::Err("Missing argument <value>".into()));

@@ -47,7 +47,7 @@ fn main() -> Result<()> {
     loop {
         print!("\x1B[2J\x1B[1;1H");
         println!("Editing {[yellow]}\nEnter {$cyan}h{/$} for help", file.name);
-        cprintln!(yellow "#\t(a) Aircraft\t(reg) Registry\t(d1) Dep. 1\t(a1) Airport 1\t(d2) Dep. 2\t(a2) Airport 2");
+        cprintln!(yellow "#\t(a) Aircraft\t(reg) Registry\t(a1) Airport 1\t(d1) Dep. 1\t(a2) Airport 2\t(d2) Dep. 2");
         println!(
             "{}",
             file.flights
@@ -58,10 +58,10 @@ fn main() -> Result<()> {
                     i,
                     f.aircraft,
                     f.registry,
-                    f.depart_time1,
                     f.airport1,
-                    f.depart_time2,
-                    f.airport2
+                    f.depart_time1,
+                    f.airport2,
+                    f.depart_time2
                 ))
                 .join("\n")
         );
@@ -72,9 +72,9 @@ fn main() -> Result<()> {
                 let action = match cmd_str.next() {
                     Some("q") => q(&mut file, &path),
                     Some("h") => h(),
-                    Some("i") => i(&mut cmd_str, &mut file),
-                    Some("is") => is(&mut cmd_str, &mut file),
-                    Some("ie") => ie(&mut cmd_str, &mut file),
+                    Some("i") => i(&mut cmd_str, &mut file, &air_facilities),
+                    Some("is") => is(&mut cmd_str, &mut file, &air_facilities),
+                    Some("ie") => ie(&mut cmd_str, &mut file, &air_facilities),
                     Some("c") => c(&mut cmd_str, &mut file),
                     Some("d") => d(&mut cmd_str, &mut file),
                     Some("m") => m(&mut cmd_str, &mut file),

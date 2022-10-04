@@ -73,10 +73,10 @@ impl Display for AirlineTimetable {
                 r#""{}",{};{},{},{},{}"#,
                 flight.aircraft,
                 flight.registry,
-                flight.depart_time1,
                 flight.airport1,
-                flight.depart_time2,
-                flight.airport2
+                flight.depart_time1,
+                flight.airport2,
+                flight.depart_time2
             )
         });
         write!(f, "{}", flights.join("\n"))
