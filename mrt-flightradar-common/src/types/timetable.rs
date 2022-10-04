@@ -9,6 +9,10 @@ use itertools::Itertools;
 use regex::Regex;
 use smol_str::SmolStr;
 
+use crate::types::time::Time;
+
+pub type AirportCode = SmolStr;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AirlineTimetable {
     pub name: SmolStr,
@@ -19,10 +23,10 @@ pub struct AirlineTimetable {
 pub struct Flight {
     pub aircraft: SmolStr,
     pub registry: SmolStr,
-    pub depart_time1: SmolStr,
-    pub airport1: SmolStr,
-    pub depart_time2: SmolStr,
-    pub airport2: SmolStr,
+    pub depart_time1: Time,
+    pub airport1: AirportCode,
+    pub depart_time2: Time,
+    pub airport2: AirportCode,
 }
 
 impl AirlineTimetable {
@@ -37,9 +41,9 @@ impl AirlineTimetable {
                 Ok(Flight {
                     aircraft: row_re.get(1).unwrap().as_str().into(),
                     registry: row_re.get(2).unwrap().as_str().into(),
-                    depart_time1: row_re.get(3).unwrap().as_str().into(),
+                    depart_time1: row_re.get(3).unwrap().as_str().parse().unwrap(),
                     airport1: row_re.get(4).unwrap().as_str().into(),
-                    depart_time2: row_re.get(5).unwrap().as_str().into(),
+                    depart_time2: row_re.get(5).unwrap().as_str().parse().unwrap(),
                     airport2: row_re.get(6).unwrap().as_str().into(),
                 })
             })
