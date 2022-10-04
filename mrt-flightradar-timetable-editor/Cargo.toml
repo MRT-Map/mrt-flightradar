@@ -7,8 +7,9 @@ edition = "2021"
 
 [dependencies]
 common = { path = "../mrt-flightradar-common", package = "mrt-flightradar-common" }
-rustyline = "~10.0.0"
-anyhow = "~1.0.65"
-itertools = "~0.10.5"
-bunt = "~0.2.6"
-smol_str = "~0.1.23"
+rustyline = "^10.0.0"
+anyhow = "^1.0.65"
+itertools = "^0.10.5"
+bunt = "^0.2.6"
+smol_str = "^0.1.23"
+native-dialog = "^0.6.3"
