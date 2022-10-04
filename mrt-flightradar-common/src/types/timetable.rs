@@ -60,7 +60,7 @@ impl AirlineTimetable {
         AirlineTimetable::from_string(file_cont, name)
     }
     pub fn to_file(&self, mut directory: PathBuf) -> Result<()> {
-        directory.push(format!("{}.txt", self.name));
+        directory.push(format!("{}.fpln", self.name));
 
         fs::write(directory, self.to_string())?;
         Ok(())

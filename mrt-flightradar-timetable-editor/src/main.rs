@@ -1,11 +1,10 @@
 mod cmds;
 
-use std::path::PathBuf;
-
 use anyhow::Result;
 use bunt::println;
 use common::types::{airport::get_air_facilities, timetable::AirlineTimetable};
 use itertools::Itertools;
+use native_dialog::FileDialog;
 use rustyline::{error::ReadlineError, Editor};
 
 use crate::cmds::{c::c, d::d, e::e, h::h, i::i, ie::ie, is::is, m::m, q::q, Action};
@@ -23,31 +22,26 @@ fn main() -> Result<()> {
     let mut rl = Editor::<()>::new()?;
     cprintln!(yellow "MRT FlightRadar Timetable Editor");
     let (mut file, path) = loop {
-        match rl.readline("Enter path of file to edit: ") {
-            Ok(line) => {
-                let path = if let Ok(path) = line.parse::<PathBuf>() {
-                    path
-                } else {
-                    cprintln!(red "Invalid path `{line}`");
+        println!("Select file...");
+        let dialog = FileDialog::new()
+            .add_filter("MRT FlightRadar timetable file", &["fpln"])
+            .show_open_single_file()?;
+        let file = if let Some(file) = dialog {
+            file
+        } else {
+            cprintln!(yellow "Quitting");
+            return Ok(());
+        };
+        break (
+            match AirlineTimetable::from_file(file.to_owned()) {
+                Ok(at) => at,
+                Err(err) => {
+                    cprintln!(red "Error reading file: {err}");
                     continue;
-                };
-                break (
-                    match AirlineTimetable::from_file(path.to_owned()) {
-                        Ok(at) => at,
-                        Err(err) => {
-                            cprintln!(red "Error reading file: {err}");
-                            continue;
-                        }
-                    },
-                    path.parent().map(|a| a.to_path_buf()).unwrap_or(path),
-                );
-            }
-            Err(ReadlineError::Interrupted) | Err(ReadlineError::Eof) => {
-                cprintln!(yellow "Quitting");
-                return Ok(());
-            }
-            Err(err) => return Err(err.into()),
-        }
+                }
+            },
+            file.parent().map(|a| a.to_path_buf()).unwrap_or(file),
+        );
     };
     let air_facilities = get_air_facilities()?;
     loop {
