@@ -8,9 +8,9 @@ use crate::{arg, Action};
 pub fn ie(
     cmd_str: &mut Peekable<Split<char>>,
     file: &mut AirlineTimetable,
-    air_facilities: &Vec<AirFacility>,
+    air_facilities: &[AirFacility],
 ) -> Result<Action> {
-    let flight = arg!(cmd_str "flight" get_flight, air_facilities);
+    let flight = arg!(cmd_str "flight" get_flight, air_facilities)?;
     file.flights.push(flight);
     Ok(Action::Refresh)
 }

@@ -1,0 +1,252 @@
+Achowalogen Takachsin-Covina International Airport	ATC
+Aeolia Mixolydia Airstrip	AMA
+Airchester Airfield	ACA
+Akane - Ishuzu International Airport (Hamanei)	HMN
+Alturas InterRegional Airport	AIR
+Amphibio Airport Amphitheatre	BIO
+Andromeda International Airport	AIA
+Anthony Fokker Regional Airport (Utopia)	AFK
+Anthro Island Airport	AIS
+Antioch Regional Airfield	ANA
+Antioch-Bay Point Garvey International Airport	ABG
+Aprix Airfield (unnamed)
+Ardaman Chief Keef Intermational Airport	ARD
+Aurora International Airport	AIX
+Atlanta-Hillville Metropolitan Airport	AHX
+Autocity Antonio Airport	AAA
+Autotown Airfield	AAF
+Bakersville Fairfield Airfield	BFA
+Bloomington-Robin's Hill International Airport	BRH
+Brooklyn Regional Airport	BRK
+Caravaca Juan Carlos I Airport	CAR
+Cape Cambridge Orilla Airfield	COA
+Caprica International	CAP
+Carnoustie International Airport	CIA
+Chack City Airfield	CCF
+Chalxior Femtoprism Airfield	CFA
+Chan Bay International Airport	CBI
+Chan Bay Municipal Airport	CHB
+Chan Bay Zeta Airport	CBZ
+Charles de Gaulle International Airport (Saint Roux)	SRX
+Chokster City Borderline Airport	CBA
+Creeperville International Airport	HND
+Crystal City Municipal Airport	CCX
+Cyra Underwood Municipal Airport	CYR
+Dabecco Regional Airport	DBC
+Deadbush Foxfoe Memorial Airport	DFM
+Deadbush International Airport	DBI
+Deadbush Johnston-Euphorial Airport	DJE
+Deadbush Pioneer-Howard Airport	DPH
+Deadbush Valletta Desert Airport	VDA
+Dekuville Harbor Airfield	DHA
+Edson Arantes do Nascimento International Airport (Titsensaki, Heaven City)	THC
+Elecna Bay International Airport	EBI
+Encinitas Joya Airfield	ECJ
+Epsilon International Airport (Airchester)	EIA
+Eristheeagle Memorial Municipal Airport (Llamapolis)	LLM
+Espil Ecilidae Airport	EEA
+Evella Airport	EVL
+Fairfax-Atlanta Metropolitan Airport	AFX
+Fort Yaxier Airfield	FYA
+Fort Yaxier International Airport	FYI
+Franklin D. Roosevelt Airfield (Spruce Neck)	FDR
+Frederick E. Margaret Airfield (Hillside-Pagoda)	FMA
+Freedon Quartzwood Regional Airfield	FQA
+Freedon Silverwood International Airport	FSI
+Gemstride Melodia Airfield	GSM
+Geneva Bay New Indigo International Airport	GBE
+George Jetson Cornwall City Airport	YYO
+Grassbush Southland Airfield	GSA
+Grayzen National Airport	GZA
+Hamblin Municipal Airport	HAM
+Harry S Truman International Airport (Laclede)	LHT
+Hendon Gatwick Airport	HGW
+Horizon National Airport (Konawa, Lanark)	HZN
+Hummingbird Islands Regional Airport	HIR
+Ice Springs Regional Airport	ICE
+Ilirea Midcity Airport	IXM
+Itavanga Kapakau Airfield	KAP
+Itomori Air and Space Port	IAS
+Itomori Municipal Airfield	ITO
+Jimmy Doolittle Regional Airport (Utopia)	JDL
+John Denver International Airport	JDX
+Kantō Airfield	KTA
+Kantō International Airport	KTI
+Kazeshima Eumi Konaejima Airport	KEK
+Kenthurst Aerodrome	KNT
+Kitania East Murkland Airstrip	KTB
+Kitania Municipal Airport	KMA
+Kleinsburg Noord Airfield	KBN
+Kolpino City Airport	KPC
+Laclede Municipal Airport	LCM
+Lailai Airfield (Itokani)	LAI
+Lanatam Airfield	LNT
+Lanecra Landing Strip (Farwater)	FLC
+Lapis Bay Expo East Airport	LBX
+Larkspur Frankford Airfield	LFA
+Larkspur Lilyflower International Airport	LAR
+Las Playas International Airport	LPI
+Leydon International Airport (BirchView)	BVL
+Marblelake Heathrow International Airport (Marblegate)	MLH
+Marisol Regional Airport	MRS
+Mason City International	MCI
+MineCity Regional Airport	MCA
+Mineomania Orville Wright Airport	MOW
+Miningstone Regional Airport	MRA
+Miu Wan Kau Heung Airport	MWK
+Miu Wan Tseng Tsz Leng International Airport	MWT
+Mojang Town Airfield	MTA
+Mojangsburg Suidplein Airfield	MSA
+Mojangsburg-Pretoria Capital Airport	MPI
+Moramoa Mixed Martial Arts Airfield	MMA
+Mountbatten Airfield	MBA
+Mountbatten International Airport	MBI
+MRT International Airport	MRI
+MRT Regional Airport	MRR
+Murrville-Arcadia International Airport	MAX
+New Bakersville City Airfield	NBC
+New Genisys Airfield	GNZ
+New Gensokyo Regional Airfield	NGY
+New Mayton City International Airport	YYN
+Charles Pearson New Mayton City Eastlake Airport	YEL
+New Woodbury Airfield	NWA
+Nippia-Liten Metropolitan Airport	NIL
+Niwen Airport	NIW
+North Haven Riverside Airfield	NHR
+Northern Trail Airfield	NTA
+Norwest Airfield	NWT
+Nuuk-Watford Regional Airport	YNW
+Omerah International Airport	OIA
+Ocean Suburb International Airport	OSI
+Omerah Isles Civil Airport	OIC
+Oparia LeTourneau International Airport	OPA
+Ottia Islands Cape Dios Airfield	OCD
+Paixton Regional Airport	PAX
+Parkland Frampton Airfield	PFR
+Pasadena Airfield	PDA
+Peacopolis International Airport	PCE
+Pine Mountain Airfield (PMW City)	PMA
+Pixl Vinyaka International Airport	PXL
+Polytan International Airport (Palestropol + Southport)	PIA
+Port Sonder Airport	SND
+Porton Regional Airfield	PRA
+Prismarine City Airfield	PCA
+Radiance Square International Airport	RSQ
+Rattlerville Central	RVC
+Ravenna Mountainside International Airport	RAV
+Redwood Executive Airport	RED
+Richville International Airport	RVA
+Riverside International Airport	RIV
+Rizalburg Strand Airfield	RSA
+Rockaway City Municipal Airport	RAA
+San Dzobiak International Airport	SDZ
+San Reinoldi-Fernando Savater International Airport	SAN
+Sansvikk Kamprad Airfield	SKA
+Schillerton Sayles Hill Airfield	SSH
+Schiphol International Airport (New Acreadium)	SIA
+Scotstounhill Airfield	TOU
+Segville International	SEG
+Seoland Trimunicipalities Airport	STS
+Siletz-Umatilla Regional Airfield	SUA
+Southoak South Plains Airport	SVS
+Splurgeville Municipal Airport	SVM
+Spring Valley Regional Airfield	SVA
+St. Francis Xavier Regional Airport (Laclede)	SFX
+Stanley Island Regional Airport	SIR
+Sunshine Coast Cacto Regional Airport	SSR
+Sunshine Coast Máspalmas International Airport	SSI
+Titsensaki City Airfield	TCB
+Titsensaki Regional Airport	TSN
+Titsensaki Sealerwhale International Airport	TSA
+Thunderbird International Airport	TBI
+Tom Paris-Richville City Airfield	TPA
+Torres River Airfield	TOR
+Totem Beach Simon Airfield	RSN
+Tranquil Forest Airfield	TFA
+Treplöw International Airport	TIA
+True City Metropolitan	TCI
+Union of Central Western Territories International Airport	CWI
+Vakasuka International Airport (Itokani)	VIA
+Vegeta City Airfield	VCA
+Venceslo-Fifth Ward International Airport	VFW
+Vermilion Gateway Airport	VER
+Victoria International Airport	VIC
+Villanueva–Rick Sanchez Airfield	RSZ
+Washingcube Airfield	WCA
+Waterville Municipal Airport	WMA
+Wazamawazi Zoeteman Regional Airport	WZA
+Welsbury Regional Airport (PMW City)	WRA
+Werk-En-Rust Airfield (Astoria)	WER
+West Calbar Regional Airport	CAL
+West Mesa International Airport (Deadbush)	WMI
+Western Ocean International Airport	WOI
+Whitechapel Sky Harbor	WHT
+Whiteley Aerodrome	SWH
+Windus Aura Airfield (Nymphalia)	NMW
+Woodsdale Municipal Airport	CWB
+Wythern Airfield	WYA
+Xilia-Saint-Exupéry Airfield	XSE
+Zaquar Ménage et Trois Regional Airport	ZAQ
+Zerez Capital Int. Airfield	ZRZ
+Zicronia Anaconda Regional Airport	ZIC
+Airchester Airfield	ACA
+Akureyri Alþjóðlegur Bátur og Sjóstöð	ABST
+Alki	AKL
+Antioch Seaplane Port	ATSP
+Beachview	BVWT
+Bing Tan
+Biwabik Zippel Bay	BIZT
+Bruh Island	BIS
+Cape Cambridge International Seaport	CMBT
+Caprica	CAP
+Celina	CEL
+Dand Seaport	DAN
+East New Brazil	ENBT
+Fay sur Mer	FSM
+Foresne Solstinox Seaplane Port	SNX
+Gilmont Terminal	GILT
+Itavanga Kahau Local Aerodrome	KLA
+Itavanga Angalofa Port Royale	APR
+Itokani Waitui	WAI
+Jimmy Doolittle Regional Airport (Utopia)	JDL
+Kazeshima Eumi Konaejima Airport	KEK
+Kleinsburg	KLB
+Lapis Bay	LAPT
+Las Playas Seaplane Port	LPHA
+Lexburg Seaplane Docks	LEX
+Miu Tung	MTGT
+Metamesa	MTMS
+Macapá	MIP
+Mason City Harbor	MCHT
+Miu Wan Seaplane Terminal	MIUT
+Monolith Wharf Terminal	MONT
+Monte Isola Seaplane Airport	MISP
+MRT Marina	MMNT
+New Mackinaw Marina Air Harbor	NMAT
+Charles Pearson New Mayton City Eastlake Airport	YEL
+Oparia Seaport	OPAR
+Peach Bay Regional Seaport
+Pig Racing Seaplane Base	PIG
+Port Sybil	PSYB
+Porton	PTN
+Quinston	QUI
+Quiris Bay Docks	QBDT
+Radiance Square	RADT
+San Francisco Ferry Seaplane Terminal
+San Vantino Marina	SAVT
+San Vincenzo Ferry Terminal	SVNT
+Sandy Bay Seaplane Port	SBSP
+Sansmore	SNST
+Sansvikk	SVPT
+Seoland Cruise Terminal	SEOT
+Shadowpoint John Dingell Seaplane Harbor	SHD
+Shenghua Seaplane Terminal	SHAT
+Stevis Island Transit Hub	STV
+Sunshine Coast Cacto Regional Airport	SSR
+Titsensaki Seaplane Terminal	RTST
+Valence	VALT
+Villĕ	VIP
+Weezerville	WEET
+Wenyanga	WYGT
+Zircronia Anaconda Regional Airport	ZIC
+Zaquar Ménage et Trois Regional Airport	ZAQ

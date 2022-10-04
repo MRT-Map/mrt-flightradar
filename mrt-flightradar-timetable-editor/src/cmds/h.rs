@@ -38,9 +38,10 @@ pub fn h() -> Result<Action> {
             "<a1> <d1> <a2>",
             "Estimate an arrival time for a flight",
         ),
+        ("n", "<airport>", "Get the airport name, given the code"),
     ];
     for (cmd, args, desc) in cmds {
         println!("{[cyan+bold]} {[yellow]}\n{}", cmd, args, desc);
     }
-    return Ok(Action::Hold);
+    Ok(Action::Hold)
 }

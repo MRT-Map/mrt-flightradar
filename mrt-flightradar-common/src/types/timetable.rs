@@ -35,16 +35,16 @@ impl AirlineTimetable {
             .split('\n')
             .filter(|a| !a.is_empty())
             .map(|row| {
-                let row_re = Regex::new(r#""([^"]+)",(\w*);(\d+),(\w+),(\d+),(\w+)"#)?
+                let row_re = Regex::new(r#""([^"]+)",(\w*);(\w+),(\d+),(\w+),(\d+)"#)?
                     .captures(row)
                     .ok_or_else(|| anyhow!("Invalid syntax"))?;
                 Ok(Flight {
                     aircraft: row_re.get(1).unwrap().as_str().into(),
                     registry: row_re.get(2).unwrap().as_str().into(),
-                    depart_time1: row_re.get(3).unwrap().as_str().parse().unwrap(),
-                    airport1: row_re.get(4).unwrap().as_str().into(),
-                    depart_time2: row_re.get(5).unwrap().as_str().parse().unwrap(),
-                    airport2: row_re.get(6).unwrap().as_str().into(),
+                    airport1: row_re.get(3).unwrap().as_str().into(),
+                    depart_time1: row_re.get(4).unwrap().as_str().parse()?,
+                    airport2: row_re.get(5).unwrap().as_str().into(),
+                    depart_time2: row_re.get(6).unwrap().as_str().parse()?,
                 })
             })
             .collect::<Result<Vec<_>>>()?;

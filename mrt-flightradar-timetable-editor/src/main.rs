@@ -1,13 +1,14 @@
+mod airport_names;
 mod cmds;
 
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use bunt::println;
 use common::types::{airport::get_air_facilities, timetable::AirlineTimetable};
 use itertools::Itertools;
 use native_dialog::FileDialog;
 use rustyline::{error::ReadlineError, Editor};
 
-use crate::cmds::{c::c, d::d, e::e, h::h, i::i, ie::ie, is::is, m::m, q::q, Action};
+use crate::cmds::{c::c, d::d, e::e, h::h, i::i, ie::ie, is::is, m::m, n::n, q::q, Action};
 
 macro_rules! cprintln {
     (red $($f:tt)+) => {
@@ -79,25 +80,26 @@ fn main() -> Result<()> {
                     Some("d") => d(&mut cmd_str, &mut file),
                     Some("m") => m(&mut cmd_str, &mut file),
                     Some("e") => e(&mut cmd_str, &air_facilities),
-                    Some(a) => Ok(Action::Err(format!("Unknown command `{a}`"))),
+                    Some("n") => n(&mut cmd_str),
+                    Some(a) => Err(anyhow!("Unknown command `{a}`")),
                     None => Ok(Action::Refresh),
-                }?;
+                };
                 match action {
-                    Action::Refresh => {}
-                    Action::Hold => {
+                    Ok(Action::Refresh) => {}
+                    Ok(Action::Hold) => {
                         let _ = rl.readline("Press enter to continue...");
                     }
-                    Action::Msg(str) => {
+                    Ok(Action::Msg(str)) => {
                         cprintln!(yellow "{str}");
                         let _ = rl.readline("Press enter to continue...");
                     }
-                    Action::Err(str) => {
-                        cprintln!(red "{str}");
-                        let _ = rl.readline("Press enter to continue...");
-                    }
-                    Action::Quit(str) => {
+                    Ok(Action::Quit(str)) => {
                         cprintln!(yellow "{str}");
                         return Ok(());
+                    }
+                    Err(err) => {
+                        cprintln!(red "{err}");
+                        let _ = rl.readline("Press enter to continue...");
                     }
                 }
 
