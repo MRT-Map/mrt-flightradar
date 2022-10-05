@@ -8,7 +8,10 @@ use itertools::Itertools;
 use native_dialog::FileDialog;
 use rustyline::{error::ReadlineError, Editor};
 
-use crate::cmds::{c::c, d::d, e::e, h::h, i::i, ie::ie, is::is, m::m, n::n, q::q, Action};
+use crate::cmds::{
+    c::c, d::d, e::e, h::h, i::i, ie::ie, is::is, m::m, n::n, q::q, sa::sa, sae::sae, sas::sas,
+    sd::sd, Action,
+};
 
 macro_rules! cprintln {
     (red $($f:tt)+) => {
@@ -85,6 +88,10 @@ fn main() -> Result<()> {
                     Some("m") => m(&mut cmd_str, &mut file),
                     Some("e") => e(&mut cmd_str, &air_facilities),
                     Some("n") => n(&mut cmd_str),
+                    Some("sa") => sa(&mut cmd_str, &mut file, &air_facilities),
+                    Some("sae") => sae(&mut cmd_str, &mut file, &air_facilities),
+                    Some("sas") => sas(&mut cmd_str, &mut file, &air_facilities),
+                    Some("sd") => sd(&mut cmd_str, &mut file),
                     Some(a) => Err(anyhow!("Unknown command `{a}`")),
                     None => Ok(Action::Refresh),
                 };
@@ -99,7 +106,7 @@ fn main() -> Result<()> {
                     }
                     Ok(Action::Quit(str)) => {
                         cprintln!(yellow "{str}");
-                        file.to_file(path.to_owned())?;
+                        file.to_file(path)?;
                         return Ok(());
                     }
                     Err(err) => {

@@ -27,7 +27,10 @@ pub mod is;
 pub mod m;
 pub mod n;
 pub mod q;
-mod sa;
+pub mod sa;
+pub mod sae;
+pub mod sas;
+pub mod sd;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Action {
@@ -115,8 +118,13 @@ fn get_flight_segment(
                     get_main_coord(&airport, air_facilities)?,
                 ))
         };
-        if cmd_str.peek() == Some(&"_") || cmd_str.peek().is_none() {
-            f()
+        if let Some(a) = cmd_str.peek() {
+            if a.trim() == "_" {
+                cmd_str.next();
+                f()
+            } else {
+                arg!(opt cmd_str "d" get_time, f)
+            }
         } else {
             arg!(opt cmd_str "d" get_time, f)
         }
@@ -174,6 +182,9 @@ macro_rules! arg {
     };
     ($cmd_str:ident $name:literal get_flight, $air_facilities:expr) => {
         $crate::cmds::get_flight($cmd_str, $air_facilities)
+    };
+    ($cmd_str:ident $name:literal get_flight_segment, $air_facilities:expr, $prev_seg:expr) => {
+        $crate::cmds::get_flight_segment($cmd_str, $air_facilities, $prev_seg)
     };
     ($cmd_str:ident $name:literal $ty:ident) => {
         $crate::cmds::$ty($cmd_str, $name)
@@ -285,6 +296,19 @@ mod tests {
 
         let mut cmd_str =
             to_cmd_str!(r#""Test Aircraft" REG AB1234 PRA 0000 AB123 KBN 0000 AB1234 MLH"#);
+        assert!(
+            matches!(get_flight(&mut cmd_str, &air_facilities), Ok(_)),
+            "Unsuccessful flight parsing"
+        );
+        Ok(())
+    }
+
+    #[test]
+    pub fn get_flight_normal_3seg_underscore_estimation() -> Result<()> {
+        let (air_facilities, _) = test_setup()?;
+
+        let mut cmd_str =
+            to_cmd_str!(r#""Test Aircraft" REG AB1234 PRA 0000 AB123 KBN _ AB1234 MLH _"#);
         assert!(
             matches!(get_flight(&mut cmd_str, &air_facilities), Ok(_)),
             "Unsuccessful flight parsing"
