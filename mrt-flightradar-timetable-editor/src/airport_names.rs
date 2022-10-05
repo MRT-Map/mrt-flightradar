@@ -28,3 +28,16 @@ pub fn get_airport_names() -> Result<HashMap<SmolStr, SmolStr>> {
         .filter_map_ok(|a| a)
         .collect::<Result<HashMap<_, _>, _>>()
 }
+
+#[cfg(test)]
+mod test {
+    use anyhow::Result;
+
+    use crate::airport_names::get_airport_names;
+
+    #[test]
+    fn airport_names_file_is_valid() -> Result<()> {
+        get_airport_names()?;
+        Ok(())
+    }
+}

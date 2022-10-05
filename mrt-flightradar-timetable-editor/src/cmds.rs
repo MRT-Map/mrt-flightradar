@@ -1,7 +1,16 @@
 use std::{iter::Peekable, str::Split};
 
 use anyhow::{anyhow, Result};
-use common::types::{airport::AirFacility, time::Time, timetable::Flight};
+#[cfg(test)]
+use common::types::airport::get_air_facilities;
+#[cfg(test)]
+use common::types::timetable::AirlineTimetable;
+use common::types::{
+    airport::AirFacility,
+    time::Time,
+    timetable::{Flight, FlightSegment},
+    vec::Pos,
+};
 use glam::Vec2;
 use itertools::Itertools;
 use smol_str::SmolStr;
@@ -18,8 +27,9 @@ pub mod is;
 pub mod m;
 pub mod n;
 pub mod q;
+mod sa;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Action {
     Refresh,
     Hold,
@@ -185,5 +195,127 @@ macro_rules! arg {
     };
 }
 
+#[cfg(test)]
+#[macro_export]
+macro_rules! to_cmd_str {
+    ($cmd:literal) => {
+        $cmd.split(' ').peekable()
+    };
+}
+
+#[cfg(test)]
+fn test_setup() -> Result<(Vec<AirFacility>, AirlineTimetable)> {
+    let air_facilities = get_air_facilities()?;
+    let file = AirlineTimetable::from_string(
+        include_str!("../../data/test-timetable.fpln").into(),
+        "Test".into(),
+    )?;
+    Ok((air_facilities, file))
+}
+
 use arg;
-use common::types::{timetable::FlightSegment, vec::Pos};
+
+#[cfg(test)]
+mod tests {
+    use anyhow::Result;
+
+    use crate::cmds::{get_aircraft, get_flight, test_setup};
+
+    #[test]
+    pub fn get_aircraft_normal() {
+        let mut cmd_str = to_cmd_str!(r#""Test Aircraft""#);
+        assert_eq!(
+            get_aircraft(&mut cmd_str, "").unwrap(),
+            "Test Aircraft",
+            "Faulty aircraft name parsing"
+        )
+    }
+
+    #[test]
+    pub fn get_aircraft_no_quote() {
+        let mut cmd_str = to_cmd_str!("Test Aircraft");
+        assert!(matches!(get_aircraft(&mut cmd_str, ""), Err(_)))
+    }
+
+    #[test]
+    pub fn get_aircraft_contains_quote() {
+        let mut cmd_str = to_cmd_str!("Test \"Aircraft");
+        assert!(matches!(get_aircraft(&mut cmd_str, ""), Err(_)))
+    }
+
+    #[test]
+    pub fn get_flight_normal_1seg() -> Result<()> {
+        let (air_facilities, _) = test_setup()?;
+
+        let mut cmd_str = to_cmd_str!(r#""Test Aircraft" REG AB1234 PRA 0000"#);
+        assert!(
+            matches!(get_flight(&mut cmd_str, &air_facilities), Ok(_)),
+            "Unsuccessful flight parsing"
+        );
+        Ok(())
+    }
+
+    #[test]
+    pub fn get_flight_normal_2seg_estimation() -> Result<()> {
+        let (air_facilities, _) = test_setup()?;
+
+        let mut cmd_str = to_cmd_str!(r#""Test Aircraft" REG AB1234 PRA 0000 AB123 KBN"#);
+        assert!(
+            matches!(get_flight(&mut cmd_str, &air_facilities), Ok(_)),
+            "Unsuccessful flight parsing"
+        );
+        Ok(())
+    }
+
+    #[test]
+    pub fn get_flight_normal_2seg() -> Result<()> {
+        let (air_facilities, _) = test_setup()?;
+
+        let mut cmd_str = to_cmd_str!(r#""Test Aircraft" REG AB1234 PRA 0000 AB123 KBN 0000"#);
+        assert!(
+            matches!(get_flight(&mut cmd_str, &air_facilities), Ok(_)),
+            "Unsuccessful flight parsing"
+        );
+        Ok(())
+    }
+
+    #[test]
+    pub fn get_flight_normal_3seg_estimation() -> Result<()> {
+        let (air_facilities, _) = test_setup()?;
+
+        let mut cmd_str =
+            to_cmd_str!(r#""Test Aircraft" REG AB1234 PRA 0000 AB123 KBN 0000 AB1234 MLH"#);
+        assert!(
+            matches!(get_flight(&mut cmd_str, &air_facilities), Ok(_)),
+            "Unsuccessful flight parsing"
+        );
+        Ok(())
+    }
+
+    #[test]
+    pub fn get_flight_normal_0seg() -> Result<()> {
+        let (air_facilities, _) = test_setup()?;
+
+        let mut cmd_str = to_cmd_str!(r#""Test Aircraft" REG"#);
+        assert!(matches!(get_flight(&mut cmd_str, &air_facilities), Ok(_)));
+        Ok(())
+    }
+
+    #[test]
+    pub fn get_flight_1seg_estimation() -> Result<()> {
+        let (air_facilities, _) = test_setup()?;
+
+        let mut cmd_str = to_cmd_str!(r#""Test Aircraft" REG AB1234 PRA"#);
+        assert!(matches!(get_flight(&mut cmd_str, &air_facilities), Err(_)));
+        Ok(())
+    }
+
+    #[test]
+    pub fn get_flight_no_airport() -> Result<()> {
+        let (air_facilities, _) = test_setup()?;
+
+        let mut cmd_str = to_cmd_str!(r#""Test Aircraft" REG AB1234"#);
+        assert!(matches!(get_flight(&mut cmd_str, &air_facilities), Err(_)));
+        Ok(())
+    }
+}

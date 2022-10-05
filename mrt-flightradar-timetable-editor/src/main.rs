@@ -44,6 +44,7 @@ fn main() -> Result<()> {
             file.parent().map(|a| a.to_path_buf()).unwrap_or(file),
         );
     };
+
     let air_facilities = get_air_facilities()?;
     loop {
         print!("\x1B[2J\x1B[1;1H");
@@ -74,7 +75,7 @@ fn main() -> Result<()> {
                 let mut cmd_str = cmd_str.split(' ').peekable();
 
                 let action = match cmd_str.next() {
-                    Some("q") => q(&mut file, &path),
+                    Some("q") => q(),
                     Some("h") => h(),
                     Some("i") => i(&mut cmd_str, &mut file, &air_facilities),
                     Some("is") => is(&mut cmd_str, &mut file, &air_facilities),
@@ -98,6 +99,7 @@ fn main() -> Result<()> {
                     }
                     Ok(Action::Quit(str)) => {
                         cprintln!(yellow "{str}");
+                        file.to_file(path.to_owned())?;
                         return Ok(());
                     }
                     Err(err) => {

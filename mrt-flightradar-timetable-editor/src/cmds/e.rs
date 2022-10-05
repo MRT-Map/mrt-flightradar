@@ -22,3 +22,43 @@ pub fn e(cmd_str: &mut Peekable<Split<char>>, air_facilities: &[AirFacility]) ->
 pub fn estimate_time(c1: &Pos<Vec2>, c2: &Pos<Vec2>) -> f32 {
     (((c2.x - c1.x) + (c2.y - c1.y)) / 5000.0).abs()
 }
+
+#[cfg(test)]
+mod tests {
+    use anyhow::Result;
+
+    use crate::{cmds::test_setup, e, to_cmd_str, Action};
+
+    #[test]
+    fn e_normal() -> Result<()> {
+        let (air_facilities, _) = test_setup()?;
+        let mut cmd_str = to_cmd_str!("PRA 0000 KBN");
+        assert!(
+            matches!(e(&mut cmd_str, &air_facilities).unwrap(), Action::Msg(_)),
+            "Unsuccessful estimation"
+        );
+        Ok(())
+    }
+
+    macro_rules! assert_err {
+        ($fn_name:ident, $cmd:literal) => {
+            #[test]
+            fn $fn_name() -> Result<()> {
+                let (air_facilities, _) = test_setup()?;
+                let mut cmd_str = to_cmd_str!($cmd);
+                assert!(
+                    matches!(e(&mut cmd_str, &air_facilities), Err(_)),
+                    "`{}` did not error",
+                    stringify!($fn_name)
+                );
+                Ok(())
+            }
+        };
+    }
+
+    assert_err!(e_no_a1, "");
+    assert_err!(e_no_d1, "PRA");
+    assert_err!(e_no_a2, "PRA 0000");
+    assert_err!(e_invalid_a1, "??? 0000 KBN");
+    assert_err!(e_invalid_a2, "PRA 0000 ???");
+}

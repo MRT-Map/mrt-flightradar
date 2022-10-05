@@ -14,3 +14,38 @@ pub fn n(cmd_str: &mut Peekable<Split<char>>) -> Result<Action> {
     };
     Ok(Action::Msg(format!("{airport} is {name}")))
 }
+
+#[cfg(test)]
+mod tests {
+    use anyhow::Result;
+
+    use crate::{n, to_cmd_str, Action};
+
+    #[test]
+    fn n_normal() -> Result<()> {
+        let mut cmd_str = to_cmd_str!("KBN");
+        assert!(
+            matches!(n(&mut cmd_str).unwrap(), Action::Msg(_)),
+            "Unsuccessful name lookup"
+        );
+        Ok(())
+    }
+
+    macro_rules! assert_err {
+        ($fn_name:ident, $cmd:literal) => {
+            #[test]
+            fn $fn_name() -> Result<()> {
+                let mut cmd_str = to_cmd_str!($cmd);
+                assert!(
+                    matches!(n(&mut cmd_str), Err(_)),
+                    "`{}` did not error",
+                    stringify!($fn_name)
+                );
+                Ok(())
+            }
+        };
+    }
+
+    assert_err!(n_no_airport, "");
+    assert_err!(n_unregisted_airport, "???");
+}

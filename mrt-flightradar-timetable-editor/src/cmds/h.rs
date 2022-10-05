@@ -45,3 +45,19 @@ pub fn h() -> Result<Action> {
     }
     Ok(Action::Hold)
 }
+
+#[cfg(test)]
+mod tests {
+    use anyhow::Result;
+
+    use crate::{h, Action};
+
+    #[test]
+    fn h_normal() -> Result<()> {
+        assert!(
+            matches!(h().unwrap(), Action::Hold),
+            "Unsuccessful help page"
+        );
+        Ok(())
+    }
+}

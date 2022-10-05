@@ -1,11 +1,20 @@
-use std::path::PathBuf;
-
 use anyhow::Result;
-use common::types::timetable::AirlineTimetable;
 
 use crate::cmds::Action;
 
-pub fn q(file: &mut AirlineTimetable, path: &PathBuf) -> Result<Action> {
-    file.to_file(path.to_owned())?;
+pub fn q() -> Result<Action> {
     Ok(Action::Quit("Quitting".into()))
+}
+
+#[cfg(test)]
+mod tests {
+    use anyhow::Result;
+
+    use crate::{q, Action};
+
+    #[test]
+    fn q_normal() -> Result<()> {
+        assert!(matches!(q().unwrap(), Action::Quit(_)), "Unsuccessful quit");
+        Ok(())
+    }
 }
