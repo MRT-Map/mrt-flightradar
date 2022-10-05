@@ -103,13 +103,21 @@ fn get_str(cmd_str: &mut Peekable<Split<char>>, name: &str) -> Result<SmolStr> {
     }
 }
 
+fn get_airport(cmd_str: &mut Peekable<Split<char>>, name: &str) -> Result<AirportCode> {
+    if let Some(next) = cmd_str.next() {
+        Ok(next.to_uppercase().into())
+    } else {
+        Err(anyhow!("Missing argument <{name}>"))
+    }
+}
+
 fn get_flight_segment(
     cmd_str: &mut Peekable<Split<char>>,
     air_facilities: &[AirFacility],
     prev_seg: Option<&FlightSegment>,
 ) -> Result<FlightSegment> {
     let flight_no = arg!(cmd_str "f" get_str)?;
-    let airport = arg!(cmd_str "a" get_str)?;
+    let airport = arg!(cmd_str "a" get_airport)?;
     let depart_time = if let Some(prev_seg) = prev_seg {
         let f = || {
             Ok(prev_seg.depart_time
@@ -225,12 +233,13 @@ fn test_setup() -> Result<(Vec<AirFacility>, AirlineTimetable)> {
 }
 
 use arg;
+use common::types::timetable::AirportCode;
 
 #[cfg(test)]
 mod tests {
     use anyhow::Result;
 
-    use crate::cmds::{get_aircraft, get_flight, test_setup};
+    use crate::cmds::{get_aircraft, get_airport, get_flight, test_setup};
 
     #[test]
     pub fn get_aircraft_normal() {
@@ -340,6 +349,17 @@ mod tests {
 
         let mut cmd_str = to_cmd_str!(r#""Test Aircraft" REG AB1234"#);
         assert!(matches!(get_flight(&mut cmd_str, &air_facilities), Err(_)));
+        Ok(())
+    }
+
+    #[test]
+    pub fn get_lowercase_airport_code() -> Result<()> {
+        let mut cmd_str = to_cmd_str!("abc");
+        assert_eq!(
+            get_airport(&mut cmd_str, "").unwrap(),
+            "ABC",
+            "Faulty airport code parsing"
+        );
         Ok(())
     }
 }

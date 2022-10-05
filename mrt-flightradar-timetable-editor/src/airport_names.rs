@@ -1,11 +1,12 @@
 use std::collections::HashMap;
 
 use anyhow::{anyhow, Result};
+use common::types::timetable::AirportCode;
 use itertools::Itertools;
 use regex::Regex;
 use smol_str::SmolStr;
 
-pub fn get_airport_names() -> Result<HashMap<SmolStr, SmolStr>> {
+pub fn get_airport_names() -> Result<HashMap<AirportCode, SmolStr>> {
     include_str!("../../data/airport_names.txt")
         .trim()
         .split('\n')
