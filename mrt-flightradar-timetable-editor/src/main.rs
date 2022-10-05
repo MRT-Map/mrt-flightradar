@@ -52,7 +52,7 @@ fn main() -> Result<()> {
     loop {
         print!("\x1B[2J\x1B[1;1H");
         println!("Editing {[yellow]}\nEnter {$cyan}h{/$} for help", file.name);
-        cprintln!(yellow "#\t(a) Aircraft\t(reg) Registry\t(f1) Flight 1\t(a1) Airport 1\t(d1) Dep. 1\t(f2) Flight 2\\t(a2) Airport 2\t(d2) Dep. 2\tetc...");
+        cprintln!(yellow "#\t(a) Aircraft\t(reg) Registry\t(f1) Flight 1\t(a1) Airport 1\t(d1) Dep. 1\t(f2) Flight 2\t\t(a2) Airport 2\t(d2) Dep. 2\tetc...");
         println!(
             "{}",
             file.flights
