@@ -48,21 +48,24 @@ fn main() -> Result<()> {
     loop {
         print!("\x1B[2J\x1B[1;1H");
         println!("Editing {[yellow]}\nEnter {$cyan}h{/$} for help", file.name);
-        cprintln!(yellow "#\t(a) Aircraft\t(reg) Registry\t(a1) Airport 1\t(d1) Dep. 1\t(a2) Airport 2\t(d2) Dep. 2");
+        cprintln!(yellow "#\t(a) Aircraft\t(reg) Registry\t(f1) Flight 1\t(a1) Airport 1\t(d1) Dep. 1\t(f2) Flight 2\\t(a2) Airport 2\t(d2) Dep. 2\tetc...");
         println!(
             "{}",
             file.flights
                 .iter()
                 .enumerate()
                 .map(|(i, f)| format!(
-                    "{}\t{}\t\t{}\t\t{}\t\t{}\t\t{}\t\t{}",
+                    "{}\t{}\t\t{}\t\t{}",
                     i,
                     f.aircraft,
                     f.registry,
-                    f.airport1,
-                    f.depart_time1,
-                    f.airport2,
-                    f.depart_time2
+                    f.segments
+                        .iter()
+                        .map(|seg| format!(
+                            "{}\t\t{}\t\t{}",
+                            seg.flight_no, seg.airport, seg.depart_time
+                        ))
+                        .join("\t\t")
                 ))
                 .join("\n")
         );

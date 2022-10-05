@@ -23,10 +23,14 @@ pub struct AirlineTimetable {
 pub struct Flight {
     pub aircraft: SmolStr,
     pub registry: SmolStr,
-    pub depart_time1: Time,
-    pub airport1: AirportCode,
-    pub depart_time2: Time,
-    pub airport2: AirportCode,
+    pub segments: Vec<FlightSegment>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FlightSegment {
+    pub flight_no: SmolStr,
+    pub depart_time: Time,
+    pub airport: AirportCode,
 }
 
 impl AirlineTimetable {
@@ -35,16 +39,32 @@ impl AirlineTimetable {
             .split('\n')
             .filter(|a| !a.is_empty())
             .map(|row| {
-                let row_re = Regex::new(r#""([^"]+)",(\w*);(\w+),(\d+),(\w+),(\d+)"#)?
+                let row_re = Regex::new(r#"^"([^"]+)",(\w*);(.*)$"#)?
                     .captures(row)
                     .ok_or_else(|| anyhow!("Invalid syntax"))?;
+                let aircraft = row_re.get(1).unwrap().as_str();
+                let registry = row_re.get(2).unwrap().as_str();
+                let segments = row_re
+                    .get(3)
+                    .unwrap()
+                    .as_str()
+                    .trim()
+                    .split(';')
+                    .map(|seg| {
+                        let seg_re = Regex::new(r"^(\w+),(\w+),(\d+)$")?
+                            .captures(seg)
+                            .ok_or_else(|| anyhow!("Invalid syntax"))?;
+                        Ok(FlightSegment {
+                            flight_no: seg_re.get(1).unwrap().as_str().into(),
+                            airport: seg_re.get(2).unwrap().as_str().into(),
+                            depart_time: seg_re.get(3).unwrap().as_str().parse()?,
+                        })
+                    })
+                    .collect::<Result<Vec<_>>>()?;
                 Ok(Flight {
-                    aircraft: row_re.get(1).unwrap().as_str().into(),
-                    registry: row_re.get(2).unwrap().as_str().into(),
-                    airport1: row_re.get(3).unwrap().as_str().into(),
-                    depart_time1: row_re.get(4).unwrap().as_str().parse()?,
-                    airport2: row_re.get(5).unwrap().as_str().into(),
-                    depart_time2: row_re.get(6).unwrap().as_str().parse()?,
+                    aircraft: aircraft.into(),
+                    registry: registry.into(),
+                    segments,
                 })
             })
             .collect::<Result<Vec<_>>>()?;
@@ -70,16 +90,22 @@ impl Display for AirlineTimetable {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let mut flights = self.flights.iter().map(|flight| {
             format!(
-                r#""{}",{};{},{},{},{}"#,
+                r#""{}",{};{}"#,
                 flight.aircraft,
                 flight.registry,
-                flight.airport1,
-                flight.depart_time1,
-                flight.airport2,
-                flight.depart_time2
+                flight.segments.iter().map(|a| a.to_string()).join(";")
             )
         });
         write!(f, "{}", flights.join("\n"))
+    }
+}
+impl Display for FlightSegment {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{},{},{}",
+            self.flight_no, self.airport, self.depart_time
+        )
     }
 }
 
@@ -92,8 +118,8 @@ pub mod tests {
     #[test]
     pub fn serde_airline_timetable() -> Result<()> {
         let raw = r#"
-"Plane 1",NG01A;0800,MPI,1600,PCE
-"Plane 2",NG02A;0815,SSI,1430,PCE
+"Test",REG;AB123,ABC,0000;CD456,DEF,0100
+"Test",REG;AB123,ABC,0000;CD456,DEF,0100
         "#
         .trim()
         .to_string();

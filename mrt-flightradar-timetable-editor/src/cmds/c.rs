@@ -3,6 +3,7 @@ use std::{iter::Peekable, str::Split};
 use anyhow::{anyhow, Result};
 use common::types::timetable::AirlineTimetable;
 use itertools::Itertools;
+use regex::Regex;
 
 use crate::{arg, Action};
 
@@ -22,23 +23,36 @@ pub fn c(cmd_str: &mut Peekable<Split<char>>, file: &mut AirlineTimetable) -> Re
     match field {
         "a" => file.flights[index].aircraft = value.into(),
         "reg" => file.flights[index].registry = value.into(),
-        "d1" => {
-            file.flights[index].depart_time1 = if let Ok(time) = value.parse() {
-                time
+        field => {
+            if let Some(re) = Regex::new(r"^a(\d+)$")?.captures(field) {
+                let idx = re.get(1).unwrap().as_str().parse::<usize>()? + 1;
+                if let Some(seg) = file.flights[index].segments.get_mut(idx) {
+                    seg.airport = value.into()
+                } else {
+                    return Err(anyhow!("No index {idx}"));
+                }
+            } else if let Some(re) = Regex::new(r"^f(\d+)$")?.captures(field) {
+                let idx = re.get(1).unwrap().as_str().parse::<usize>()? + 1;
+                if let Some(seg) = file.flights[index].segments.get_mut(idx) {
+                    seg.flight_no = value.into()
+                } else {
+                    return Err(anyhow!("No index {idx}"));
+                }
+            } else if let Some(re) = Regex::new(r"^d(\d+)$")?.captures(field) {
+                let idx = re.get(1).unwrap().as_str().parse::<usize>()? + 1;
+                if let Some(seg) = file.flights[index].segments.get_mut(idx) {
+                    seg.depart_time = if let Ok(value) = value.parse() {
+                        value
+                    } else {
+                        return Err(anyhow!("Invalid time `{value}`"));
+                    };
+                } else {
+                    return Err(anyhow!("No index {idx}"));
+                }
             } else {
-                return Err(anyhow!("Invalid time `{value}`"));
+                return Err(anyhow!("Invalid field name `{field}`"));
             }
         }
-        "a1" => file.flights[index].airport1 = value.into(),
-        "d2" => {
-            file.flights[index].depart_time2 = if let Ok(time) = value.parse() {
-                time
-            } else {
-                return Err(anyhow!("Invalid time `{value}`"));
-            }
-        }
-        "a2" => file.flights[index].airport2 = value.into(),
-        field => return Err(anyhow!("Invalid field name `{field}`")),
     }
-    return Ok(Action::Refresh);
+    Ok(Action::Refresh)
 }

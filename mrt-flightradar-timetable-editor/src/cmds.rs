@@ -90,25 +90,55 @@ fn get_str(cmd_str: &mut Peekable<Split<char>>, name: &str) -> Result<SmolStr> {
     }
 }
 
+fn get_flight_segment(
+    cmd_str: &mut Peekable<Split<char>>,
+    air_facilities: &[AirFacility],
+    prev_seg: Option<&FlightSegment>,
+) -> Result<FlightSegment> {
+    let flight_no = arg!(cmd_str "f" get_str)?;
+    let airport = arg!(cmd_str "a" get_str)?;
+    let depart_time = if let Some(prev_seg) = prev_seg {
+        let f = || {
+            Ok(prev_seg.depart_time
+                + estimate_time(
+                    get_main_coord(&prev_seg.airport, air_facilities)?,
+                    get_main_coord(&airport, air_facilities)?,
+                ))
+        };
+        if cmd_str.peek() == Some(&"_") || cmd_str.peek().is_none() {
+            f()
+        } else {
+            arg!(opt cmd_str "d" get_time, f)
+        }
+    } else {
+        arg!(cmd_str "d" get_time)
+    }?;
+
+    Ok(FlightSegment {
+        flight_no,
+        depart_time,
+        airport,
+    })
+}
+
 fn get_flight(
     cmd_str: &mut Peekable<Split<char>>,
     air_facilities: &[AirFacility],
 ) -> Result<Flight> {
     let aircraft = arg!(cmd_str "aircraft" get_aircraft)?;
     let reg = arg!(cmd_str "reg" get_str)?;
-    let a1 = arg!(cmd_str "a1" get_str)?;
-    let d1 = arg!(cmd_str "d1" get_time)?;
-    let a2 = arg!(cmd_str "a2" get_str)?;
-    let d2 = arg!(opt cmd_str "d2" get_time, || Ok(
-        d1 + estimate_time(get_main_coord(&a1, air_facilities)?, get_main_coord(&a2, air_facilities)?)
-    ))?;
+    let mut segments = vec![];
+    while cmd_str.peek().is_some() {
+        segments.push(get_flight_segment(
+            cmd_str,
+            air_facilities,
+            segments.last(),
+        )?);
+    }
     Ok(Flight {
         aircraft,
         registry: reg,
-        depart_time1: d1,
-        airport1: a1,
-        depart_time2: d2,
-        airport2: a2,
+        segments,
     })
 }
 
@@ -156,4 +186,4 @@ macro_rules! arg {
 }
 
 use arg;
-use common::types::vec::Pos;
+use common::types::{timetable::FlightSegment, vec::Pos};
