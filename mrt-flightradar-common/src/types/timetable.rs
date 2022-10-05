@@ -56,7 +56,7 @@ impl AirlineTimetable {
                             .ok_or_else(|| anyhow!("Invalid syntax"))?;
                         Ok(FlightSegment {
                             flight_no: seg_re.get(1).unwrap().as_str().into(),
-                            airport: seg_re.get(2).unwrap().as_str().into(),
+                            airport: seg_re.get(2).unwrap().as_str().to_uppercase().into(),
                             depart_time: seg_re.get(3).unwrap().as_str().parse()?,
                         })
                     })
