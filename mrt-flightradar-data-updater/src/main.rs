@@ -40,7 +40,7 @@ fn main() -> Result<()> {
                     .to_owned(),
                 waypoints
                     .iter()
-                    .find(|w| w.name == aw.waypoint1)?
+                    .find(|w| w.name == aw.waypoint2)?
                     .coords
                     .to_owned(),
             ))
