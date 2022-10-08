@@ -29,15 +29,38 @@ fn main() -> Result<()> {
     let air_facilities = get_air_facilities(&*air_facilities)?;
     let waypoints = get_waypoints(&*waypoints)?;
     let airways = generate_airways(&waypoints);
+    let airway_coords = airways
+        .iter()
+        .filter_map(|aw| {
+            Some((
+                waypoints
+                    .iter()
+                    .find(|w| w.name == aw.waypoint1)?
+                    .coords
+                    .to_owned(),
+                waypoints
+                    .iter()
+                    .find(|w| w.name == aw.waypoint1)?
+                    .coords
+                    .to_owned(),
+            ))
+        })
+        .collect::<Vec<_>>();
     let raw_data = RawData {
         air_facilities,
         waypoints,
         airways,
     };
+
     let path = std::env::args()
         .nth(1)
         .unwrap_or_else(|| "data/raw_data".into());
     std::fs::write(path, rmp_serde::to_vec(&raw_data)?)?;
+
+    let path2 = std::env::args()
+        .nth(1)
+        .unwrap_or_else(|| "data/airway_coords.json".into());
+    std::fs::write(path2, serde_json::to_string(&airway_coords)?)?;
 
     Ok(())
 }
