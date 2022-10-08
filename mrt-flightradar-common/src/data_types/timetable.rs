@@ -9,7 +9,7 @@ use itertools::Itertools;
 use regex::Regex;
 use smol_str::SmolStr;
 
-use crate::types::time::Time;
+use crate::data_types::time::Time;
 
 pub type AirportCode = SmolStr;
 
@@ -113,7 +113,7 @@ impl Display for FlightSegment {
 pub mod tests {
     use anyhow::Result;
 
-    use crate::types::timetable::AirlineTimetable;
+    use crate::data_types::timetable::AirlineTimetable;
 
     #[test]
     pub fn serde_airline_timetable() -> Result<()> {

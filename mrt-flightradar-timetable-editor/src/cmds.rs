@@ -2,15 +2,9 @@ use std::{iter::Peekable, str::Split};
 
 use anyhow::{anyhow, Result};
 #[cfg(test)]
-use common::types::airport::get_air_facilities;
+use common::data_types::airport::get_air_facilities;
 #[cfg(test)]
-use common::types::timetable::AirlineTimetable;
-use common::types::{
-    airport::AirFacility,
-    time::Time,
-    timetable::{Flight, FlightSegment},
-    vec::Pos,
-};
+use common::data_types::timetable::AirlineTimetable;
 use glam::Vec2;
 use itertools::Itertools;
 use smol_str::SmolStr;
@@ -233,7 +227,12 @@ fn test_setup() -> Result<(Vec<AirFacility>, AirlineTimetable)> {
 }
 
 use arg;
-use common::types::timetable::AirportCode;
+use common::data_types::{
+    airport::AirFacility,
+    time::Time,
+    timetable::{AirportCode, Flight, FlightSegment},
+    vec::Pos,
+};
 
 #[cfg(test)]
 mod tests {

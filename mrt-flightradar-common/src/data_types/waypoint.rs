@@ -3,7 +3,10 @@ use cached::proc_macro::cached;
 use glam::Vec2;
 use smol_str::SmolStr;
 
-use crate::types::{coords_to_vec, from_csv, vec::Pos};
+use crate::{
+    data_types::vec::Pos,
+    flight_route::types::{coords_to_vec, from_csv},
+};
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct Waypoint {
@@ -29,7 +32,7 @@ pub fn get_waypoints() -> Result<Vec<Waypoint>> {
 mod tests {
     use anyhow::Result;
 
-    use crate::types::waypoint::get_waypoints;
+    use crate::data_types::waypoint::get_waypoints;
 
     #[test]
     fn waypoints_file_is_valid() -> Result<()> {

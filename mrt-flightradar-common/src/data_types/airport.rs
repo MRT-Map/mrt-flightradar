@@ -5,7 +5,10 @@ use itertools::Itertools;
 use smallvec::{smallvec, SmallVec};
 use smol_str::SmolStr;
 
-use crate::types::{coords_to_vec, from_csv, vec::Pos};
+use crate::{
+    data_types::vec::Pos,
+    flight_route::types::{coords_to_vec, from_csv},
+};
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum RunwayLength {
@@ -141,7 +144,7 @@ pub fn get_air_facilities() -> Result<Vec<AirFacility>> {
 mod tests {
     use anyhow::Result;
 
-    use crate::types::airport::get_air_facilities;
+    use crate::data_types::airport::get_air_facilities;
 
     #[test]
     fn air_facilities_file_is_valid() -> Result<()> {

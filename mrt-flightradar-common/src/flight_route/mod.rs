@@ -1,12 +1,12 @@
 use glam::Vec2;
 use itertools::Itertools;
 
-use crate::types::{
-    iter::BefAftWindowIterator,
-    path::Path,
-    vec::{Direction, FromLoc, Pos},
-    Rotation,
+use crate::{
+    data_types::vec::{Direction, FromLoc, Pos},
+    flight_route::types::{iter::BefAftWindowIterator, path::Path, Rotation},
 };
+
+pub mod types;
 
 pub fn get_route_between_waypoints(
     start_vec: FromLoc<Vec2>,
@@ -157,8 +157,11 @@ mod tests {
     use glam::vec2;
 
     use crate::{
-        flight_route::get_route_between_waypoints,
-        types::{path::Path, vec::FromLoc, Rotation},
+        data_types::vec::FromLoc,
+        flight_route::{
+            get_route_between_waypoints,
+            types::{path::Path, Rotation},
+        },
     };
 
     #[test]

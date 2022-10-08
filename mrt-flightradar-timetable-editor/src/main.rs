@@ -3,7 +3,7 @@ mod cmds;
 
 use anyhow::{anyhow, Result};
 use bunt::println;
-use common::types::{airport::get_air_facilities, timetable::AirlineTimetable};
+use common::data_types::{airport::get_air_facilities, timetable::AirlineTimetable};
 use itertools::Itertools;
 use native_dialog::FileDialog;
 use rustyline::{error::ReadlineError, Editor};

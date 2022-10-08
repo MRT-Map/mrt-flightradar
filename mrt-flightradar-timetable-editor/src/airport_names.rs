@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use anyhow::{anyhow, Result};
-use common::types::timetable::AirportCode;
+use common::data_types::timetable::AirportCode;
 use itertools::Itertools;
 use regex::Regex;
 use smol_str::SmolStr;

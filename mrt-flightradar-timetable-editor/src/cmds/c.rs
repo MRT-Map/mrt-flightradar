@@ -1,7 +1,7 @@
 use std::{iter::Peekable, str::Split};
 
 use anyhow::{anyhow, Result};
-use common::types::timetable::AirlineTimetable;
+use common::data_types::timetable::AirlineTimetable;
 use itertools::Itertools;
 use regex::Regex;
 

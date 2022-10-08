@@ -1,7 +1,7 @@
 use std::{iter::Peekable, str::Split};
 
 use anyhow::Result;
-use common::types::{airport::AirFacility, timetable::AirlineTimetable};
+use common::data_types::{airport::AirFacility, timetable::AirlineTimetable};
 
 use crate::{arg, cmds::get_index, Action};
 

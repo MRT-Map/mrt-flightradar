@@ -1,8 +1,8 @@
 use glam::Vec2;
 
-use crate::types::{
-    vec::{FromLoc, Pos},
-    Angle,
+use crate::{
+    data_types::vec::{FromLoc, Pos},
+    flight_route::types::Angle,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq)]

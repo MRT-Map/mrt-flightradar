@@ -1,7 +1,7 @@
 use std::{iter::Peekable, str::Split};
 
 use anyhow::Result;
-use common::types::{airport::AirFacility, vec::Pos};
+use common::data_types::{airport::AirFacility, vec::Pos};
 use glam::Vec2;
 
 use crate::{arg, cmds::get_main_coord, Action};
