@@ -1,3 +1,4 @@
+mod generate_airways;
 mod get_air_facilities;
 mod get_waypoints;
 
@@ -6,7 +7,10 @@ use std::io::Read;
 use anyhow::Result;
 use common::data_types::RawData;
 
-use crate::{get_air_facilities::get_air_facilities, get_waypoints::get_waypoints};
+use crate::{
+    generate_airways::generate_airways, get_air_facilities::get_air_facilities,
+    get_waypoints::get_waypoints,
+};
 
 const AIR_FACILITY_LIST_URL: &str = "https://docs.google.com/spreadsheets/d/11E60uIBKs5cOSIRHLz0O0nLCefpj7HgndS1gIXY_1hw/export?format=csv";
 const WAYPOINT_LIST_URL: &str = "https://docs.google.com/spreadsheets/d/11E60uIBKs5cOSIRHLz0O0nLCefpj7HgndS1gIXY_1hw/export?format=csv&gid=707730663";
@@ -22,9 +26,13 @@ fn main() -> Result<()> {
         reqwest::blocking::get(WAYPOINT_LIST_URL)?.read_to_string(&mut str)?;
         str
     };
+    let air_facilities = get_air_facilities(&*air_facilities)?;
+    let waypoints = get_waypoints(&*waypoints)?;
+    let airways = generate_airways(&waypoints);
     let raw_data = RawData {
-        air_facilities: get_air_facilities(&*air_facilities)?,
-        waypoints: get_waypoints(&*waypoints)?,
+        air_facilities,
+        waypoints,
+        airways,
     };
     let path = std::env::args()
         .nth(1)
