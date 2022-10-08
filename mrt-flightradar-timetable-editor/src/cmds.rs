@@ -2,9 +2,9 @@ use std::{iter::Peekable, str::Split};
 
 use anyhow::{anyhow, Result};
 #[cfg(test)]
-use common::data_types::airport::get_air_facilities;
-#[cfg(test)]
 use common::data_types::timetable::AirlineTimetable;
+#[cfg(test)]
+use common::data_types::RAW_DATA;
 use glam::Vec2;
 use itertools::Itertools;
 use smol_str::SmolStr;
@@ -217,8 +217,8 @@ macro_rules! to_cmd_str {
 }
 
 #[cfg(test)]
-fn test_setup() -> Result<(Vec<AirFacility>, AirlineTimetable)> {
-    let air_facilities = get_air_facilities()?;
+fn test_setup() -> Result<(&'static Vec<AirFacility>, AirlineTimetable)> {
+    let air_facilities = &RAW_DATA.air_facilities;
     let file = AirlineTimetable::from_string(
         include_str!("../../data/test-timetable.fpln").into(),
         "Test".into(),
@@ -268,7 +268,7 @@ mod tests {
 
         let mut cmd_str = to_cmd_str!(r#""Test Aircraft" REG AB1234 PRA 0000"#);
         assert!(
-            matches!(get_flight(&mut cmd_str, &air_facilities), Ok(_)),
+            matches!(get_flight(&mut cmd_str, air_facilities), Ok(_)),
             "Unsuccessful flight parsing"
         );
         Ok(())
@@ -280,7 +280,7 @@ mod tests {
 
         let mut cmd_str = to_cmd_str!(r#""Test Aircraft" REG AB1234 PRA 0000 AB123 KBN"#);
         assert!(
-            matches!(get_flight(&mut cmd_str, &air_facilities), Ok(_)),
+            matches!(get_flight(&mut cmd_str, air_facilities), Ok(_)),
             "Unsuccessful flight parsing"
         );
         Ok(())
@@ -292,7 +292,7 @@ mod tests {
 
         let mut cmd_str = to_cmd_str!(r#""Test Aircraft" REG AB1234 PRA 0000 AB123 KBN 0000"#);
         assert!(
-            matches!(get_flight(&mut cmd_str, &air_facilities), Ok(_)),
+            matches!(get_flight(&mut cmd_str, air_facilities), Ok(_)),
             "Unsuccessful flight parsing"
         );
         Ok(())
@@ -305,7 +305,7 @@ mod tests {
         let mut cmd_str =
             to_cmd_str!(r#""Test Aircraft" REG AB1234 PRA 0000 AB123 KBN 0000 AB1234 MLH"#);
         assert!(
-            matches!(get_flight(&mut cmd_str, &air_facilities), Ok(_)),
+            matches!(get_flight(&mut cmd_str, air_facilities), Ok(_)),
             "Unsuccessful flight parsing"
         );
         Ok(())
@@ -318,7 +318,7 @@ mod tests {
         let mut cmd_str =
             to_cmd_str!(r#""Test Aircraft" REG AB1234 PRA 0000 AB123 KBN _ AB1234 MLH _"#);
         assert!(
-            matches!(get_flight(&mut cmd_str, &air_facilities), Ok(_)),
+            matches!(get_flight(&mut cmd_str, air_facilities), Ok(_)),
             "Unsuccessful flight parsing"
         );
         Ok(())
@@ -329,7 +329,7 @@ mod tests {
         let (air_facilities, _) = test_setup()?;
 
         let mut cmd_str = to_cmd_str!(r#""Test Aircraft" REG"#);
-        assert!(matches!(get_flight(&mut cmd_str, &air_facilities), Ok(_)));
+        assert!(matches!(get_flight(&mut cmd_str, air_facilities), Ok(_)));
         Ok(())
     }
 
@@ -338,7 +338,7 @@ mod tests {
         let (air_facilities, _) = test_setup()?;
 
         let mut cmd_str = to_cmd_str!(r#""Test Aircraft" REG AB1234 PRA"#);
-        assert!(matches!(get_flight(&mut cmd_str, &air_facilities), Err(_)));
+        assert!(matches!(get_flight(&mut cmd_str, air_facilities), Err(_)));
         Ok(())
     }
 
@@ -347,7 +347,7 @@ mod tests {
         let (air_facilities, _) = test_setup()?;
 
         let mut cmd_str = to_cmd_str!(r#""Test Aircraft" REG AB1234"#);
-        assert!(matches!(get_flight(&mut cmd_str, &air_facilities), Err(_)));
+        assert!(matches!(get_flight(&mut cmd_str, air_facilities), Err(_)));
         Ok(())
     }
 

@@ -155,6 +155,7 @@ mod tests {
     use std::f32::consts::PI;
 
     use glam::vec2;
+    use proptest::{prelude::*, proptest};
 
     use crate::{
         data_types::vec::FromLoc,
@@ -163,6 +164,27 @@ mod tests {
             types::{path::Path, Rotation},
         },
     };
+
+    proptest! {
+        #[test]
+        fn get_route_wont_crash(
+            (stx, sty) in any::<(f32, f32)>(),
+            (svx, svy) in any::<(f32, f32)>(),
+            (ex, ey) in any::<(f32, f32)>(),
+            max_r in any::<f32>()
+        ) {
+            get_route_between_waypoints(
+                FromLoc {
+                    tail: vec2(stx, sty),
+                    vec: vec2(svx, svy)
+                },
+                Rotation::Anticlockwise,
+                vec2(ex, ey),
+                Rotation::Anticlockwise,
+                max_r
+            );
+        }
+    }
 
     #[test]
     fn direct_common_tangent_anticlockwise() {
