@@ -8,9 +8,12 @@ edition = "2021"
 
 [dependencies]
 itertools = "^0.10.5"
-glam = "^0.21.3"
-smallvec = "^1.10.0"
+glam = { version = "^0.21.3", features = ['serde'] }
+smallvec = { version = "^1.10.0", features = ['serde'] }
 smol_str = "^0.1.23"
 anyhow = { version = "^1.0.65", features = ['backtrace'] }
 cached = "^0.39.0"
 regex = "^1.6.0"
+once_cell = "^1.15.0"
+serde = { version = "^1.0.145", features = ['derive'] }
+rmp-serde = "^1.1.1"

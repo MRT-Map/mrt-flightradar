@@ -3,7 +3,7 @@ mod cmds;
 
 use anyhow::{anyhow, Result};
 use bunt::println;
-use common::data_types::{airport::get_air_facilities, timetable::AirlineTimetable};
+use common::data_types::{timetable::AirlineTimetable, RAW_DATA};
 use itertools::Itertools;
 use native_dialog::FileDialog;
 use rustyline::{error::ReadlineError, Editor};
@@ -48,7 +48,7 @@ fn main() -> Result<()> {
         );
     };
 
-    let air_facilities = get_air_facilities()?;
+    let air_facilities = &RAW_DATA.air_facilities;
     loop {
         print!("\x1B[2J\x1B[1;1H");
         println!("Editing {[yellow]}\nEnter {$cyan}h{/$} for help", file.name);
@@ -80,17 +80,17 @@ fn main() -> Result<()> {
                 let action = match cmd_str.next() {
                     Some("q") => q(),
                     Some("h") => h(),
-                    Some("i") => i(&mut cmd_str, &mut file, &air_facilities),
-                    Some("is") => is(&mut cmd_str, &mut file, &air_facilities),
-                    Some("ie") => ie(&mut cmd_str, &mut file, &air_facilities),
+                    Some("i") => i(&mut cmd_str, &mut file, air_facilities),
+                    Some("is") => is(&mut cmd_str, &mut file, air_facilities),
+                    Some("ie") => ie(&mut cmd_str, &mut file, air_facilities),
                     Some("c") => c(&mut cmd_str, &mut file),
                     Some("d") => d(&mut cmd_str, &mut file),
                     Some("m") => m(&mut cmd_str, &mut file),
-                    Some("e") => e(&mut cmd_str, &air_facilities),
+                    Some("e") => e(&mut cmd_str, air_facilities),
                     Some("n") => n(&mut cmd_str),
-                    Some("sa") => sa(&mut cmd_str, &mut file, &air_facilities),
-                    Some("sae") => sae(&mut cmd_str, &mut file, &air_facilities),
-                    Some("sas") => sas(&mut cmd_str, &mut file, &air_facilities),
+                    Some("sa") => sa(&mut cmd_str, &mut file, air_facilities),
+                    Some("sae") => sae(&mut cmd_str, &mut file, air_facilities),
+                    Some("sas") => sas(&mut cmd_str, &mut file, air_facilities),
                     Some("sd") => sd(&mut cmd_str, &mut file),
                     Some(a) => Err(anyhow!("Unknown command `{a}`")),
                     None => Ok(Action::Refresh),
