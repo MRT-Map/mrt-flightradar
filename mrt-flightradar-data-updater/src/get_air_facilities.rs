@@ -1,6 +1,6 @@
 use anyhow::{anyhow, Result};
 use common::{
-    data_types::airport::{AirFacility, PlaneFacilityType, Runway, RunwayLength},
+    data_types::airport::{AirFacility, PlaneFacilityType, Runway, RunwayWidth},
     flight_route::types::{coords_to_vec, from_csv},
 };
 use itertools::Itertools;
@@ -52,8 +52,8 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
                             .ok_or_else(|| anyhow!("Invalid direction"))?;
                         i += 1;
                         let length = match row.get(i) {
-                            Some(&"Large") => RunwayLength::Large,
-                            Some(&"Small") => RunwayLength::Small,
+                            Some(&"Large") => RunwayWidth::Large,
+                            Some(&"Small") => RunwayWidth::Small,
                             Some(ty) => return Err(anyhow!("Invalid runway length `{ty}`")),
                             None => return Err(anyhow!("No runway length")),
                         };

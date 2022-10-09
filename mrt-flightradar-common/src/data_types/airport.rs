@@ -6,7 +6,7 @@ use smol_str::SmolStr;
 use crate::data_types::vec::Pos;
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
-pub enum RunwayLength {
+pub enum RunwayWidth {
     Large,
     Small,
 }
@@ -16,7 +16,7 @@ pub struct Runway {
     pub start: Pos<Vec2>,
     pub end: Pos<Vec2>,
     pub direction: (SmolStr, SmolStr),
-    pub length: RunwayLength,
+    pub length: RunwayWidth,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
