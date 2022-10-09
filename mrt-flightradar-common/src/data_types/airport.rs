@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use smallvec::SmallVec;
 use smol_str::SmolStr;
 
-use crate::data_types::vec::Pos;
+use crate::data_types::vec::{FromLoc, Pos};
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub enum RunwayWidth {
@@ -13,8 +13,7 @@ pub enum RunwayWidth {
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Runway {
-    pub start: Pos<Vec2>,
-    pub end: Pos<Vec2>,
+    pub vec: FromLoc<Vec2>,
     pub direction: (SmolStr, SmolStr),
     pub length: RunwayWidth,
 }
@@ -53,7 +52,7 @@ impl AirFacility {
         match &self {
             AirFacility::Heliport { pad_coord, .. } => Some(pad_coord),
             AirFacility::AirshipTerminal { pad_coord, .. } => Some(pad_coord),
-            AirFacility::Airport { runways, .. } => runways.get(1).map(|r| &r.start),
+            AirFacility::Airport { runways, .. } => runways.get(1).map(|r| &r.vec.tail),
         }
     }
 }

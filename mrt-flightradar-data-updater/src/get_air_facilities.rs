@@ -1,6 +1,9 @@
 use anyhow::{anyhow, Result};
 use common::{
-    data_types::airport::{AirFacility, PlaneFacilityType, Runway, RunwayWidth},
+    data_types::{
+        airport::{AirFacility, PlaneFacilityType, Runway, RunwayWidth},
+        vec::FromLoc,
+    },
     flight_route::types::{coords_to_vec, from_csv},
 };
 use itertools::Itertools;
@@ -59,14 +62,12 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
                         };
                         i += 1;
                         runways.push(Runway {
-                            start: coords_to_vec(*coord1)?,
-                            end: coords_to_vec(*coord2)?,
+                            vec: FromLoc::new(coords_to_vec(*coord1)?, coords_to_vec(*coord2)?),
                             direction: (dir1.into(), dir2.into()),
                             length,
                         });
                         runways.push(Runway {
-                            start: coords_to_vec(*coord2)?,
-                            end: coords_to_vec(*coord1)?,
+                            vec: FromLoc::new(coords_to_vec(*coord2)?, coords_to_vec(*coord1)?),
                             direction: (dir2.into(), dir1.into()),
                             length,
                         });

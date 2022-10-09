@@ -1,6 +1,7 @@
 use std::ops::{Add, Neg, Sub};
 
 use glam::Vec2;
+use serde::{Deserialize, Serialize};
 
 use crate::flight_route::types::{Rotation, FMB, LMR};
 
@@ -14,7 +15,7 @@ impl Vector for Vec2 {}
 /// Position vector
 pub type Pos<T> = T;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct FromLoc<T: Vector> {
     pub tail: Pos<T>,
     pub vec: T,
