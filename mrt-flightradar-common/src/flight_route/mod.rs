@@ -3,7 +3,9 @@ use anyhow::Result;
 use crate::{
     data_types::{airport::Runway, vec::FromLoc},
     flight_route::{
-        flight_path::get_flight_path, types::path::Path, waypoint_route::get_waypoint_route,
+        flight_path::get_flight_path,
+        types::path::{FlightPath, Path},
+        waypoint_route::get_waypoint_route,
     },
 };
 
@@ -12,7 +14,7 @@ mod flight_path;
 pub mod types;
 mod waypoint_route;
 
-pub fn get_flight_route(start_runway: &Runway, end_runway: &Runway) -> Result<Vec<Path>> {
+pub fn get_flight_route(start_runway: &Runway, end_runway: &Runway) -> Result<FlightPath> {
     let start_vec = FromLoc {
         tail: start_runway.vec.tail,
         vec: start_runway.vec.vec.normalize() * (500.0 + start_runway.vec.vec.length()),

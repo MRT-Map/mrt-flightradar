@@ -5,7 +5,11 @@ use crate::{
     data_types::vec::{Direction, FromLoc, Pos},
     flight_route::{
         between_waypoints::get_path_between_waypoints,
-        types::{iter::BefAftWindowIterator, path::Path, Rotation},
+        types::{
+            iter::BefAftWindowIterator,
+            path::{FlightPath, Path},
+            Rotation,
+        },
     },
 };
 
@@ -14,7 +18,7 @@ pub fn get_flight_path(
     end: FromLoc<Vec2>,
     waypoints: Vec<Pos<Vec2>>,
     max_turn_radius: f32,
-) -> Vec<Path> {
+) -> FlightPath {
     let start_head = start.head();
     let end_head = end.head();
     let wp_rots = [(
@@ -90,5 +94,5 @@ pub fn get_flight_path(
         }
     });
 
-    route
+    FlightPath(route)
 }
