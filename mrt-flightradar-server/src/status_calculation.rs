@@ -10,17 +10,8 @@ use crate::types_consts::{FlightStatus, FLIGHTS, FLIGHT_STATUSES};
 pub async fn calculate_statuses() {
     let mut flight_statuses = FLIGHT_STATUSES.lock().await;
     let flights = FLIGHTS.lock().await;
-    while if let Some(a) = flight_statuses.keys().max() {
-        if let Ok(dur) = a.duration_since(SystemTime::now()) {
-            dur > Duration::from_secs(45)
-        } else {
-            true
-        }
-    } else {
-        true
-    } {
-        let a = SystemTime::now() - Duration::from_secs(15);
-        let key = *flight_statuses.keys().max().unwrap_or(&a) + Duration::from_secs(15);
+    for i in [0, 5, 10, 15, 20, 25] {
+        let key = SystemTime::now() + Duration::from_secs(30 + i);
         info!(
             time = key.duration_since(UNIX_EPOCH).unwrap().as_secs(),
             "Calculating statuses"
@@ -44,7 +35,7 @@ pub async fn calculate_statuses() {
                             .pos_at_time((key.duration_since(f.depart_time).ok()?).as_secs_f32())?,
                         f.route
                             .pos_at_time(
-                                key.duration_since(f.depart_time).ok()?.as_secs_f32() + 15.0,
+                                key.duration_since(f.depart_time).ok()?.as_secs_f32() + 5.0,
                             )
                             .or_else(|| f.route.pos_at_time(f.route.time_taken()))?,
                     ),

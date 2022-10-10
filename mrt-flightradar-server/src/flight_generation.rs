@@ -55,7 +55,7 @@ pub async fn generate_flights() -> Result<()> {
                 .ok_or_else(|| anyhow!("No runways"))?,
         );
         let route = get_flight_route(runway1, runway2)?;
-        let depart_time = SystemTime::now() + Duration::from_secs(15);
+        let depart_time = SystemTime::now() + Duration::from_secs(30);
         let arrival_time = depart_time + Duration::from_secs(route.time_taken() as u64);
         new_flights.push(Arc::new(ActiveFlight {
             route,

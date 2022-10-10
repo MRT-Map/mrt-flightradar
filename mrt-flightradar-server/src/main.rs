@@ -5,7 +5,7 @@ mod types_consts;
 
 use std::{
     collections::HashMap,
-    time::{SystemTime, UNIX_EPOCH},
+    time::{UNIX_EPOCH},
 };
 
 use anyhow::Result;
@@ -51,9 +51,7 @@ async fn main() -> Result<()> {
             purge_outdated_data().await;
             let _ = generate_flights().await.map_err(|e| error!("{e}"));
             calculate_statuses().await;
-            tokio::time::sleep(Duration::from_secs(15)).await;
-            calculate_statuses().await;
-            tokio::time::sleep(Duration::from_secs(15)).await;
+            tokio::time::sleep(Duration::from_secs(30)).await;
         }
     });
     let _ = r.launch().await?;
