@@ -33,8 +33,7 @@ pub struct FlightStatus<'a> {
     pub vec: FromLoc,
 }
 
-pub static FLIGHTS: Lazy<Arc<Mutex<Vec<Arc<ActiveFlight>>>>> =
-    Lazy::new(|| Arc::new(Mutex::new(Vec::new())));
+pub static FLIGHTS: Lazy<Mutex<Vec<Arc<ActiveFlight>>>> = Lazy::new(|| Mutex::new(Vec::new()));
 #[allow(clippy::type_complexity)]
-pub static FLIGHT_STATUSES: Lazy<Arc<Mutex<HashMap<SystemTime, Vec<FlightStatus>>>>> =
-    Lazy::new(|| Arc::new(Mutex::new(HashMap::new())));
+pub static FLIGHT_STATUSES: Lazy<Mutex<HashMap<SystemTime, Vec<FlightStatus>>>> =
+    Lazy::new(|| Mutex::new(HashMap::new()));

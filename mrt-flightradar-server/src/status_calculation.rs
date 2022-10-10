@@ -2,9 +2,11 @@ use std::time::SystemTime;
 
 use common::data_types::vec::FromLoc;
 use tokio::time::Duration;
+use tracing::info;
 
 use crate::types_consts::{FlightStatus, FLIGHTS, FLIGHT_STATUSES};
 
+#[tracing::instrument]
 pub async fn calculate_statuses() {
     let mut flight_statuses = FLIGHT_STATUSES.lock().await;
     let flights = FLIGHTS.lock().await;
@@ -19,6 +21,7 @@ pub async fn calculate_statuses() {
     } {
         let a = SystemTime::now() - Duration::from_secs(15);
         let key = *flight_statuses.keys().max().unwrap_or(&a) + Duration::from_secs(15);
+        info!("Calculating for {key:?}");
 
         let new_flight_statuses = flights
             .iter()
@@ -41,6 +44,7 @@ pub async fn calculate_statuses() {
                 })
             })
             .collect();
+        info!(?new_flight_statuses);
         flight_statuses.insert(key, new_flight_statuses);
     }
 }

@@ -1,4 +1,5 @@
 use common::data_types::{airway::Airway, waypoint::Waypoint};
+use tracing::debug;
 
 fn nearest_waypoints<'a>(waypoints: &'a [Waypoint], wp: &Waypoint) -> Vec<&'a Waypoint> {
     let mut radius = 0.0;
@@ -14,6 +15,7 @@ fn nearest_waypoints<'a>(waypoints: &'a [Waypoint], wp: &Waypoint) -> Vec<&'a Wa
     nearest
 }
 
+#[tracing::instrument]
 pub fn generate_airways(waypoints: &[Waypoint]) -> Vec<Airway> {
     let mut airways = vec![];
     for wp in waypoints {
@@ -23,6 +25,7 @@ pub fn generate_airways(waypoints: &[Waypoint]) -> Vec<Airway> {
                 waypoint2: nw.name.to_owned(),
             };
             if !airways.contains(&airway) {
+                debug!(?airway, "New airway");
                 airways.push(airway);
             }
         }

@@ -7,6 +7,7 @@ use common::{
 };
 use rand::{prelude::SliceRandom, Rng};
 use tokio::time::Duration;
+use tracing::{debug, info};
 
 use crate::types_consts::{ActiveFlight, ActiveFlightInfo, FLIGHTS};
 
@@ -21,9 +22,11 @@ const AIRLINE_NAMES: [&str; 6] = [
 
 const AIRCRAFT_NAMES: [&str; 4] = ["Stratus SA-1", "IntraJet ExpiXS", "Fighter Jet", "Dragon"];
 
+#[tracing::instrument]
 pub async fn generate_flights() -> Result<()> {
     let mut new_flights = vec![];
     let num_new_flights = rand::thread_rng().gen_range(0..5);
+    info!("Generating {num_new_flights} new flights");
     for _ in 0..num_new_flights {
         let airports = RAW_DATA
             .air_facilities
@@ -42,6 +45,7 @@ pub async fn generate_flights() -> Result<()> {
                 .collect::<Vec<_>>();
             (chosen[0], chosen[1])
         };
+        debug!(?airport1, ?airport2);
         let (runway1, runway2) = (
             runways1
                 .choose(&mut rand::thread_rng())
@@ -66,6 +70,8 @@ pub async fn generate_flights() -> Result<()> {
             },
         }));
     }
+    debug!(?new_flights);
     FLIGHTS.lock().await.append(&mut new_flights);
+    info!("New flights inserted");
     Ok(())
 }

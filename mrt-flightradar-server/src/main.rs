@@ -8,6 +8,9 @@ use std::{collections::HashMap, time::SystemTime};
 use anyhow::Result;
 use rocket::{routes, serde::json::Json};
 use tokio::time::Duration;
+use tracing::error;
+use tracing_log::LogTracer;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter, FmtSubscriber};
 use types_consts::{FlightStatus, FLIGHT_STATUSES};
 
 use crate::{
@@ -22,9 +25,14 @@ async fn test() -> Json<HashMap<SystemTime, Vec<FlightStatus<'static>>>> {
 
 #[rocket::main]
 async fn main() -> Result<()> {
-    tokio::spawn(async {
+    tracing_subscriber::fmt()
+        .with_env_filter(EnvFilter::from_env("RUST_LOG"))
+        .init();
+    let r = rocket::build().mount("/", routes![test]).ignite().await?;
+
+    let h = tokio::spawn(async {
         loop {
-            generate_flights().await.unwrap();
+            let _ = generate_flights().await.map_err(|e| error!("{e}"));
             purge_outdated_data().await;
             calculate_statuses().await;
             tokio::time::sleep(Duration::from_secs(15)).await;
@@ -32,6 +40,7 @@ async fn main() -> Result<()> {
             tokio::time::sleep(Duration::from_secs(15)).await;
         }
     });
-    let _ = rocket::build().mount("/", routes![test]).launch().await?;
+    let _ = r.launch().await?;
+    h.await?;
     Ok(())
 }

@@ -8,7 +8,9 @@ use common::{
 };
 use itertools::Itertools;
 use smallvec::smallvec;
+use tracing::{debug, trace};
 
+#[tracing::instrument]
 pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
     from_csv(str)
         .into_iter()
@@ -17,6 +19,7 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
             let code = row.first().ok_or_else(|| anyhow!("No code"))?;
             match row.get(1) {
                 Some(&"Heliport") => {
+                    debug!(code, "Deserialising heliport");
                     let pad_coord = row.get(3).ok_or_else(|| anyhow!("No pad_coord"))?;
                     Ok(AirFacility::Heliport {
                         code: code.into(),
@@ -24,6 +27,7 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
                     })
                 }
                 Some(&"Airship Terminal") => {
+                    debug!(code, "Deserialising airship terminal");
                     let pad_coord = row.get(3).ok_or_else(|| anyhow!("No pad_coord"))?;
                     Ok(AirFacility::AirshipTerminal {
                         code: code.into(),
@@ -31,6 +35,7 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
                     })
                 }
                 Some(ty) => {
+                    debug!(code, "Deserialising airport or airfield");
                     let ty = match *ty {
                         "Airport" => PlaneFacilityType::Airport,
                         "Airfield" => PlaneFacilityType::Airfield,
@@ -61,6 +66,7 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
                             None => return Err(anyhow!("No runway length")),
                         };
                         i += 1;
+                        trace!(dir1, dir2, "Deserialising runway");
                         runways.push(Runway {
                             vec: FromLoc::new(coords_to_vec(*coord1)?, coords_to_vec(*coord2)?),
                             direction: (dir1.into(), dir2.into()),
