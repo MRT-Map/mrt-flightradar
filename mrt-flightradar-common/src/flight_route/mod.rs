@@ -13,7 +13,7 @@ mod flight_path;
 pub mod types;
 mod waypoint_route;
 
-#[tracing::instrument]
+#[tracing::instrument(skip_all)]
 pub fn get_flight_route(start_runway: &Runway, end_runway: &Runway) -> Result<FlightPath> {
     let start_vec = FromLoc {
         tail: start_runway.vec.tail,

@@ -6,14 +6,16 @@ use crate::types_consts::{FLIGHTS, FLIGHT_STATUSES};
 
 #[tracing::instrument]
 pub async fn purge_outdated_data() {
-    info!("Purging outdated flight statuses");
-    FLIGHT_STATUSES
-        .lock()
-        .await
-        .retain(|a, _| SystemTime::now() - Duration::from_secs(15) < *a);
-    info!("Purging outdated flights");
-    FLIGHTS
-        .lock()
-        .await
-        .retain(|a| SystemTime::now() - Duration::from_secs(15) < a.arrival_time);
+    let mut flight_statuses = FLIGHT_STATUSES.lock().await;
+    info!(
+        len = flight_statuses.len(),
+        "Purging outdated flight statuses"
+    );
+    flight_statuses.retain(|a, _| SystemTime::now() - Duration::from_secs(15) < *a);
+    let mut flights = FLIGHTS.lock().await;
+    info!(len = flight_statuses.len(), "Purged");
+
+    info!(len = flights.len(), "Purging outdated flights");
+    flights.retain(|a| SystemTime::now() - Duration::from_secs(15) < a.arrival_time);
+    info!(len = flights.len(), "Purged");
 }

@@ -1,11 +1,15 @@
-use std::{collections::HashMap, sync::Arc, time::SystemTime};
+use std::{
+    collections::HashMap,
+    sync::Arc,
+    time::{SystemTime, UNIX_EPOCH},
+};
 
 use common::{
     data_types::{timetable::AirportCode, vec::FromLoc},
     flight_route::types::path::FlightPath,
 };
 use once_cell::sync::Lazy;
-use serde::Serialize;
+use serde::{Serialize, Serializer};
 use smol_str::SmolStr;
 use tokio::sync::Mutex;
 
@@ -18,11 +22,17 @@ pub struct ActiveFlightInfo<'a> {
     pub to: &'a AirportCode,
 }
 
+fn serialise_as_timestamp<S: Serializer>(a: &SystemTime, ser: S) -> Result<S::Ok, S::Error> {
+    ser.serialize_u64(a.duration_since(UNIX_EPOCH).unwrap().as_secs())
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct ActiveFlight<'a> {
     #[serde(skip)]
     pub route: FlightPath,
+    #[serde(serialize_with = "serialise_as_timestamp")]
     pub depart_time: SystemTime,
+    #[serde(serialize_with = "serialise_as_timestamp")]
     pub arrival_time: SystemTime,
     pub info: ActiveFlightInfo<'a>,
 }

@@ -44,7 +44,7 @@ pub async fn calculate_statuses() {
                 })
             })
             .collect();
-        info!(?new_flight_statuses);
         flight_statuses.insert(key, new_flight_statuses);
+        info!("Flight statuses calculated");
     }
 }

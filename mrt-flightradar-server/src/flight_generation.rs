@@ -70,7 +70,6 @@ pub async fn generate_flights() -> Result<()> {
             },
         }));
     }
-    debug!(?new_flights);
     FLIGHTS.lock().await.append(&mut new_flights);
     info!("New flights inserted");
     Ok(())

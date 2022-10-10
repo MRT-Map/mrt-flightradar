@@ -7,6 +7,7 @@ use anyhow::{anyhow, Result};
 use glam::Vec2;
 use itertools::Itertools;
 use smol_str::SmolStr;
+use tracing::trace;
 
 use crate::data_types::{
     vec::{FromLoc, Pos},
@@ -38,10 +39,13 @@ fn a_star(start: &'static Waypoint, end: &'static Waypoint) -> Option<Vec<&'stat
     let mut g_score = HashMap::from([(&start.name, 0.0)]);
     let mut f_score = HashMap::from([(&start.name, h(&start.name))]);
 
-    while let Some(Reverse(current)) = open_set.pop() {
+    while let Some(Reverse(mut current)) = open_set.pop() {
         if **current == end.name {
+            trace!(?current, "Found end");
             let mut total_path = vec![to_wp(current)];
-            while let Some(current) = came_from.get(current) {
+            while let Some(new_current) = came_from.get(current) {
+                current = *new_current;
+                trace!(?current, "Tracing back");
                 total_path.push(to_wp(current));
             }
             total_path.reverse();
@@ -61,9 +65,11 @@ fn a_star(start: &'static Waypoint, end: &'static Waypoint) -> Option<Vec<&'stat
             }
         }
     }
+    trace!("Couldn't find path");
     None
 }
 
+#[tracing::instrument(skip_all)]
 pub fn get_waypoint_route(start: FromLoc, end: FromLoc) -> Result<Vec<Pos<Vec2>>> {
     let start_wp = RAW_DATA
         .waypoints
@@ -75,6 +81,7 @@ pub fn get_waypoint_route(start: FromLoc, end: FromLoc) -> Result<Vec<Pos<Vec2>>
         .iter()
         .min_by_key(|wp| end.tail.distance(wp.coords) as u32)
         .ok_or_else(|| anyhow!("No waypoints found"))?;
+    trace!(?start_wp, ?end_wp);
 
     a_star(start_wp, end_wp)
         .map(|wps| wps.iter().map(|wp| wp.coords).collect())
