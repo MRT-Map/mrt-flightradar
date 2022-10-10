@@ -3,10 +3,7 @@ mod purge;
 mod status_calculation;
 mod types_consts;
 
-use std::{
-    collections::HashMap,
-    time::{UNIX_EPOCH},
-};
+use std::{collections::HashMap, time::UNIX_EPOCH};
 
 use anyhow::Result;
 use rocket::{routes, serde::json::Json};
