@@ -1,6 +1,6 @@
 use std::{iter::Peekable, str::Split};
 
-use anyhow::Result;
+use color_eyre::eyre::Result;
 use common::data_types::{airport::AirFacility, timetable::AirlineTimetable};
 
 use crate::{arg, Action};
@@ -18,7 +18,7 @@ pub fn sae(
 
 #[cfg(test)]
 mod tests {
-    use anyhow::Result;
+    use color_eyre::eyre::Result;
     use smol_str::SmolStr;
 
     use crate::{cmds::test_setup, sae, to_cmd_str, Action};

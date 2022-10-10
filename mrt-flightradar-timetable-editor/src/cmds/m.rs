@@ -1,6 +1,6 @@
 use std::{iter::Peekable, str::Split};
 
-use anyhow::Result;
+use color_eyre::eyre::Result;
 use common::data_types::timetable::AirlineTimetable;
 
 use crate::{arg, Action};
@@ -18,7 +18,7 @@ pub fn m(cmd_str: &mut Peekable<Split<char>>, file: &mut AirlineTimetable) -> Re
 
 #[cfg(test)]
 mod tests {
-    use anyhow::Result;
+    use color_eyre::eyre::Result;
     use smol_str::SmolStr;
 
     use crate::{cmds::test_setup, i, m, to_cmd_str, Action};

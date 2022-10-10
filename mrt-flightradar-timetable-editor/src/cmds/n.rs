@@ -1,6 +1,6 @@
 use std::{iter::Peekable, str::Split};
 
-use anyhow::{anyhow, Result};
+use color_eyre::eyre::{eyre, Result};
 
 use crate::{airport_names::get_airport_names, arg, Action};
 
@@ -10,14 +10,14 @@ pub fn n(cmd_str: &mut Peekable<Split<char>>) -> Result<Action> {
     let name = if let Some(name) = airport_names.get(&airport) {
         name
     } else {
-        return Err(anyhow!("Airport {airport} is not recorded"));
+        return Err(eyre!("Airport {airport} is not recorded"));
     };
     Ok(Action::Msg(format!("{airport} is {name}")))
 }
 
 #[cfg(test)]
 mod tests {
-    use anyhow::Result;
+    use color_eyre::eyre::Result;
 
     use crate::{n, to_cmd_str, Action};
 

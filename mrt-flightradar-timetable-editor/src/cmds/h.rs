@@ -1,5 +1,5 @@
-use anyhow::Result;
 use bunt::println;
+use color_eyre::eyre::Result;
 
 use crate::Action;
 
@@ -74,7 +74,7 @@ pub fn h() -> Result<Action> {
 
 #[cfg(test)]
 mod tests {
-    use anyhow::Result;
+    use color_eyre::eyre::Result;
 
     use crate::{h, Action};
 

@@ -4,7 +4,7 @@ use std::{
     str::FromStr,
 };
 
-use anyhow::{anyhow, Error};
+use color_eyre::eyre::{eyre, Error};
 use regex::Regex;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -45,16 +45,16 @@ impl FromStr for Time {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let re = Regex::new(r"^([0-9]{2})([0-9]{2})$")?
             .captures(s)
-            .ok_or_else(|| anyhow!("Invalid format"))?;
+            .ok_or_else(|| eyre!("Invalid format"))?;
         Ok(Self {
             h: re
                 .get(1)
-                .ok_or_else(|| anyhow!("No group 1"))?
+                .ok_or_else(|| eyre!("No group 1"))?
                 .as_str()
                 .parse()?,
             m: re
                 .get(2)
-                .ok_or_else(|| anyhow!("No group 2"))?
+                .ok_or_else(|| eyre!("No group 2"))?
                 .as_str()
                 .parse()?,
         }

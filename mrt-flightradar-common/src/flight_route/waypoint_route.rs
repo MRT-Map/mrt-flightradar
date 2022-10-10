@@ -3,7 +3,7 @@ use std::{
     collections::{BinaryHeap, HashMap},
 };
 
-use anyhow::{anyhow, Result};
+use color_eyre::eyre::{eyre, Result};
 use glam::Vec2;
 use itertools::Itertools;
 use smol_str::SmolStr;
@@ -75,15 +75,15 @@ pub fn get_waypoint_route(start: FromLoc, end: FromLoc) -> Result<Vec<Pos<Vec2>>
         .waypoints
         .iter()
         .min_by_key(|wp| start.head().distance(wp.coords) as u32)
-        .ok_or_else(|| anyhow!("No waypoints found"))?;
+        .ok_or_else(|| eyre!("No waypoints found"))?;
     let end_wp = RAW_DATA
         .waypoints
         .iter()
         .min_by_key(|wp| end.tail.distance(wp.coords) as u32)
-        .ok_or_else(|| anyhow!("No waypoints found"))?;
+        .ok_or_else(|| eyre!("No waypoints found"))?;
     trace!(?start_wp, ?end_wp);
 
     a_star(start_wp, end_wp)
         .map(|wps| wps.iter().map(|wp| wp.coords).collect())
-        .ok_or_else(|| anyhow!("No route found"))
+        .ok_or_else(|| eyre!("No route found"))
 }

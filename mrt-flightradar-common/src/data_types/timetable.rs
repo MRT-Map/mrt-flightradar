@@ -4,7 +4,7 @@ use std::{
     path::PathBuf,
 };
 
-use anyhow::{anyhow, Result};
+use color_eyre::eyre::{eyre, Result};
 use itertools::Itertools;
 use regex::Regex;
 use smol_str::SmolStr;
@@ -41,7 +41,7 @@ impl AirlineTimetable {
             .map(|row| {
                 let row_re = Regex::new(r#"^"([^"]+)",(\w*);(.*)$"#)?
                     .captures(row)
-                    .ok_or_else(|| anyhow!("Invalid syntax"))?;
+                    .ok_or_else(|| eyre!("Invalid syntax"))?;
                 let aircraft = row_re.get(1).unwrap().as_str();
                 let registry = row_re.get(2).unwrap().as_str();
                 let segments = row_re
@@ -53,7 +53,7 @@ impl AirlineTimetable {
                     .map(|seg| {
                         let seg_re = Regex::new(r"^(\w+),(\w+),(\d+)$")?
                             .captures(seg)
-                            .ok_or_else(|| anyhow!("Invalid syntax"))?;
+                            .ok_or_else(|| eyre!("Invalid syntax"))?;
                         Ok(FlightSegment {
                             flight_no: seg_re.get(1).unwrap().as_str().into(),
                             airport: seg_re.get(2).unwrap().as_str().to_uppercase().into(),
@@ -111,7 +111,7 @@ impl Display for FlightSegment {
 
 #[cfg(test)]
 pub mod tests {
-    use anyhow::Result;
+    use color_eyre::eyre::Result;
 
     use crate::data_types::timetable::AirlineTimetable;
 

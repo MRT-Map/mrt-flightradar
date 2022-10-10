@@ -1,4 +1,4 @@
-use anyhow::Result;
+use color_eyre::eyre::Result;
 
 use crate::cmds::Action;
 
@@ -8,7 +8,7 @@ pub fn q() -> Result<Action> {
 
 #[cfg(test)]
 mod tests {
-    use anyhow::Result;
+    use color_eyre::eyre::Result;
 
     use crate::{q, Action};
 

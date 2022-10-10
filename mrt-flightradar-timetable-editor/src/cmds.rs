@@ -1,6 +1,6 @@
 use std::{iter::Peekable, str::Split};
 
-use anyhow::{anyhow, Result};
+use color_eyre::eyre::{eyre, Result};
 #[cfg(test)]
 use common::data_types::timetable::AirlineTimetable;
 #[cfg(test)]
@@ -44,13 +44,13 @@ fn get_index(
             if predicate(index) {
                 Ok(index)
             } else {
-                Err(anyhow!("Invalid index `{index}`"))
+                Err(eyre!("Invalid index `{index}`"))
             }
         } else {
-            Err(anyhow!("Invalid index `{index}`"))
+            Err(eyre!("Invalid index `{index}`"))
         }
     } else {
-        Err(anyhow!("Missing argument <{name}>"))
+        Err(eyre!("Missing argument <{name}>"))
     }
 }
 
@@ -59,20 +59,20 @@ fn get_time(cmd_str: &mut Peekable<Split<char>>, name: &str) -> Result<Time> {
         if let Ok(time) = index.parse::<Time>() {
             Ok(time)
         } else {
-            Err(anyhow!("Invalid time `{index}`"))
+            Err(eyre!("Invalid time `{index}`"))
         }
     } else {
-        Err(anyhow!("Missing argument <{name}>"))
+        Err(eyre!("Missing argument <{name}>"))
     }
 }
 
 fn get_aircraft(cmd_str: &mut Peekable<Split<char>>, _: &str) -> Result<SmolStr> {
     if let Some(next) = cmd_str.peek() {
         if !next.starts_with('"') {
-            return Err(anyhow!("Aircraft name does not start with `\"`"));
+            return Err(eyre!("Aircraft name does not start with `\"`"));
         }
     } else {
-        return Err(anyhow!("Missing argument \"<aircraft>\""));
+        return Err(eyre!("Missing argument \"<aircraft>\""));
     }
 
     let mut aircraft = cmd_str
@@ -83,7 +83,7 @@ fn get_aircraft(cmd_str: &mut Peekable<Split<char>>, _: &str) -> Result<SmolStr>
     aircraft += cmd_str.next().unwrap_or("");
     let aircraft = aircraft.trim().trim_matches('"').trim();
     if aircraft.contains('"') {
-        return Err(anyhow!("Aircraft cannot contain `\"`"));
+        return Err(eyre!("Aircraft cannot contain `\"`"));
     }
 
     Ok(aircraft.into())
@@ -93,7 +93,7 @@ fn get_str(cmd_str: &mut Peekable<Split<char>>, name: &str) -> Result<SmolStr> {
     if let Some(next) = cmd_str.next() {
         Ok(next.into())
     } else {
-        Err(anyhow!("Missing argument <{name}>"))
+        Err(eyre!("Missing argument <{name}>"))
     }
 }
 
@@ -101,7 +101,7 @@ fn get_airport(cmd_str: &mut Peekable<Split<char>>, name: &str) -> Result<Airpor
     if let Some(next) = cmd_str.next() {
         Ok(next.to_uppercase().into())
     } else {
-        Err(anyhow!("Missing argument <{name}>"))
+        Err(eyre!("Missing argument <{name}>"))
     }
 }
 
@@ -170,10 +170,10 @@ pub fn get_main_coord<'a>(
         if let Some(c) = o.main_coord() {
             Ok(c)
         } else {
-            Err(anyhow!("Airport `{airport}` has no main coords"))
+            Err(eyre!("Airport `{airport}` has no main coords"))
         }
     } else {
-        Err(anyhow!("Invalid airport code `{airport}`"))
+        Err(eyre!("Invalid airport code `{airport}`"))
     }
 }
 
@@ -236,7 +236,7 @@ use common::data_types::{
 
 #[cfg(test)]
 mod tests {
-    use anyhow::Result;
+    use color_eyre::eyre::Result;
 
     use crate::cmds::{get_aircraft, get_airport, get_flight, test_setup};
 

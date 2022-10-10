@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use anyhow::{anyhow, Result};
+use color_eyre::eyre::{eyre, Result};
 use common::data_types::timetable::AirportCode;
 use itertools::Itertools;
 use regex::Regex;
@@ -13,12 +13,12 @@ pub fn get_airport_names() -> Result<HashMap<AirportCode, SmolStr>> {
         .map(|row| {
             let re = Regex::new(r"^([^\t\n]*)(?:\t([^t\n]*?)|)$")?
                 .captures(row)
-                .ok_or_else(|| anyhow!("Invalid row"))?;
+                .ok_or_else(|| eyre!("Invalid row"))?;
             if let Some(code) = re.get(2) {
                 Ok(Some((
                     code.as_str().into(),
                     re.get(1)
-                        .ok_or_else(|| anyhow!("No airport name"))?
+                        .ok_or_else(|| eyre!("No airport name"))?
                         .as_str()
                         .into(),
                 )))
@@ -32,7 +32,7 @@ pub fn get_airport_names() -> Result<HashMap<AirportCode, SmolStr>> {
 
 #[cfg(test)]
 mod test {
-    use anyhow::Result;
+    use color_eyre::eyre::Result;
 
     use crate::airport_names::get_airport_names;
 

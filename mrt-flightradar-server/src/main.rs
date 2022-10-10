@@ -5,7 +5,7 @@ mod types_consts;
 
 use std::{collections::HashMap, time::UNIX_EPOCH};
 
-use anyhow::Result;
+use color_eyre::eyre::Result;
 use rocket::{routes, serde::json::Json};
 use tokio::time::Duration;
 use tracing::error;

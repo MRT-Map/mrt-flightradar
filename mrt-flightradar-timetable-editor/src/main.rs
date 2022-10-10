@@ -1,8 +1,8 @@
 mod airport_names;
 mod cmds;
 
-use anyhow::{anyhow, Result};
 use bunt::println;
+use color_eyre::eyre::{eyre, Result};
 use common::data_types::{timetable::AirlineTimetable, RAW_DATA};
 use itertools::Itertools;
 use native_dialog::FileDialog;
@@ -92,7 +92,7 @@ fn main() -> Result<()> {
                     Some("sae") => sae(&mut cmd_str, &mut file, air_facilities),
                     Some("sas") => sas(&mut cmd_str, &mut file, air_facilities),
                     Some("sd") => sd(&mut cmd_str, &mut file),
-                    Some(a) => Err(anyhow!("Unknown command `{a}`")),
+                    Some(a) => Err(eyre!("Unknown command `{a}`")),
                     None => Ok(Action::Refresh),
                 };
                 match action {

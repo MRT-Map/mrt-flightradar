@@ -4,7 +4,7 @@ mod get_waypoints;
 
 use std::io::Read;
 
-use anyhow::Result;
+use color_eyre::eyre::Result;
 use common::data_types::RawData;
 use tracing::info;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};

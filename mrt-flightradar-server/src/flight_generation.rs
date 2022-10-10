@@ -1,6 +1,6 @@
 use std::{sync::Arc, time::SystemTime};
 
-use anyhow::{anyhow, Result};
+use color_eyre::eyre::{eyre, Result};
 use common::{
     data_types::{airport::AirFacility, RAW_DATA},
     flight_route::get_flight_route,
@@ -49,10 +49,10 @@ pub async fn generate_flights() -> Result<()> {
         let (runway1, runway2) = (
             runways1
                 .choose(&mut rand::thread_rng())
-                .ok_or_else(|| anyhow!("No runways"))?,
+                .ok_or_else(|| eyre!("No runways"))?,
             runways2
                 .choose(&mut rand::thread_rng())
-                .ok_or_else(|| anyhow!("No runways"))?,
+                .ok_or_else(|| eyre!("No runways"))?,
         );
         let route = get_flight_route(runway1, runway2)?;
         let depart_time = SystemTime::now() + Duration::from_secs(30);

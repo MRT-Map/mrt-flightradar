@@ -1,6 +1,6 @@
 use std::{iter::Peekable, str::Split};
 
-use anyhow::Result;
+use color_eyre::eyre::Result;
 use common::data_types::{airport::AirFacility, vec::Pos};
 use glam::Vec2;
 
@@ -25,7 +25,7 @@ pub fn estimate_time(c1: &Pos<Vec2>, c2: &Pos<Vec2>) -> f32 {
 
 #[cfg(test)]
 mod tests {
-    use anyhow::Result;
+    use color_eyre::eyre::Result;
 
     use crate::{cmds::test_setup, e, to_cmd_str, Action};
 

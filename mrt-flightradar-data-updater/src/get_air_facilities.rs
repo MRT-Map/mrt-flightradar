@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use color_eyre::eyre::{eyre, Result};
 use common::{
     data_types::{
         airport::{AirFacility, PlaneFacilityType, Runway, RunwayWidth},
@@ -16,11 +16,11 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
         .into_iter()
         .skip(1)
         .map(|row| {
-            let code = row.first().ok_or_else(|| anyhow!("No code"))?;
+            let code = row.first().ok_or_else(|| eyre!("No code"))?;
             match row.get(1) {
                 Some(&"Heliport") => {
                     debug!(code, "Deserialising heliport");
-                    let pad_coord = row.get(3).ok_or_else(|| anyhow!("No pad_coord"))?;
+                    let pad_coord = row.get(3).ok_or_else(|| eyre!("No pad_coord"))?;
                     Ok(AirFacility::Heliport {
                         code: code.into(),
                         pad_coord: coords_to_vec(*pad_coord)?,
@@ -28,7 +28,7 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
                 }
                 Some(&"Airship Terminal") => {
                     debug!(code, "Deserialising airship terminal");
-                    let pad_coord = row.get(3).ok_or_else(|| anyhow!("No pad_coord"))?;
+                    let pad_coord = row.get(3).ok_or_else(|| eyre!("No pad_coord"))?;
                     Ok(AirFacility::AirshipTerminal {
                         code: code.into(),
                         pad_coord: coords_to_vec(*pad_coord)?,
@@ -39,7 +39,7 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
                     let ty = match *ty {
                         "Airport" => PlaneFacilityType::Airport,
                         "Airfield" => PlaneFacilityType::Airfield,
-                        _ => return Err(anyhow!("Invalid type `{ty}`")),
+                        _ => return Err(eyre!("Invalid type `{ty}`")),
                     };
                     let mut i = 3;
                     let mut runways = smallvec![];
@@ -48,22 +48,22 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
                     } else {
                         false
                     } {
-                        let coord1 = row.get(i).ok_or_else(|| anyhow!("No coord1"))?;
+                        let coord1 = row.get(i).ok_or_else(|| eyre!("No coord1"))?;
                         i += 1;
-                        let coord2 = row.get(i).ok_or_else(|| anyhow!("No coord2"))?;
+                        let coord2 = row.get(i).ok_or_else(|| eyre!("No coord2"))?;
                         i += 1;
                         let (dir1, dir2) = row
                             .get(i)
-                            .ok_or_else(|| anyhow!("No direction"))?
+                            .ok_or_else(|| eyre!("No direction"))?
                             .split(" - ")
                             .collect_tuple::<(_, _)>()
-                            .ok_or_else(|| anyhow!("Invalid direction"))?;
+                            .ok_or_else(|| eyre!("Invalid direction"))?;
                         i += 1;
                         let length = match row.get(i) {
                             Some(&"Large") => RunwayWidth::Large,
                             Some(&"Small") => RunwayWidth::Small,
-                            Some(ty) => return Err(anyhow!("Invalid runway length `{ty}`")),
-                            None => return Err(anyhow!("No runway length")),
+                            Some(ty) => return Err(eyre!("Invalid runway length `{ty}`")),
+                            None => return Err(eyre!("No runway length")),
                         };
                         i += 1;
                         trace!(dir1, dir2, "Deserialising runway");
@@ -84,7 +84,7 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
                         runways,
                     })
                 }
-                None => Err(anyhow!("No type")),
+                None => Err(eyre!("No type")),
             }
         })
         .collect::<Result<Vec<_>>>()

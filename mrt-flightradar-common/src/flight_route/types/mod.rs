@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use color_eyre::eyre::{eyre, Result};
 use glam::{vec2, Vec2};
 
 pub mod iter;
@@ -47,13 +47,13 @@ pub fn from_csv(str: &str) -> Vec<Vec<&str>> {
 pub fn coords_to_vec(str: &str) -> Result<Vec2> {
     let mut ls = str.split(' ');
     let (x, y) = (
-        ls.next().ok_or_else(|| anyhow!("No `x` value"))?,
-        ls.next().ok_or_else(|| anyhow!("No `y` value"))?,
+        ls.next().ok_or_else(|| eyre!("No `x` value"))?,
+        ls.next().ok_or_else(|| eyre!("No `y` value"))?,
     );
     Ok(vec2(
         x.parse()
-            .map_err(|err| anyhow!("Error parsing `{x}`: `{err}`"))?,
+            .map_err(|err| eyre!("Error parsing `{x}`: `{err}`"))?,
         -y.parse()
-            .map_err(|err| anyhow!("Error parsing `{y}`: `{err}`"))?,
+            .map_err(|err| eyre!("Error parsing `{y}`: `{err}`"))?,
     ))
 }
