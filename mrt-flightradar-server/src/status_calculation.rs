@@ -1,8 +1,8 @@
-use std::time::SystemTime;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use common::data_types::vec::FromLoc;
 use tokio::time::Duration;
-use tracing::info;
+use tracing::{debug, info};
 
 use crate::types_consts::{FlightStatus, FLIGHTS, FLIGHT_STATUSES};
 
@@ -21,7 +21,10 @@ pub async fn calculate_statuses() {
     } {
         let a = SystemTime::now() - Duration::from_secs(15);
         let key = *flight_statuses.keys().max().unwrap_or(&a) + Duration::from_secs(15);
-        info!("Calculating for {key:?}");
+        info!(
+            time = key.duration_since(UNIX_EPOCH).unwrap().as_secs(),
+            "Calculating statuses"
+        );
 
         let new_flight_statuses = flights
             .iter()
@@ -30,6 +33,10 @@ pub async fn calculate_statuses() {
                 if f.depart_time > key || key > f.arrival_time {
                     return None;
                 }
+                debug!(
+                    time = key.duration_since(UNIX_EPOCH).unwrap().as_secs(),
+                    "Calculating for flight from {} to {}", f.info.from, f.info.to
+                );
                 Some(FlightStatus {
                     flight: f.to_owned(),
                     vec: FromLoc::new(
