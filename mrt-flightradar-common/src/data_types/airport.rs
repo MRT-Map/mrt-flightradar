@@ -13,7 +13,7 @@ pub enum RunwayWidth {
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Runway {
-    pub vec: FromLoc<Vec2>,
+    pub vec: FromLoc,
     pub direction: (SmolStr, SmolStr),
     pub length: RunwayWidth,
 }

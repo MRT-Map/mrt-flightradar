@@ -6,7 +6,7 @@ use crate::{
 };
 
 pub fn get_path_between_waypoints(
-    start_vec: FromLoc<Vec2>,
+    start_vec: FromLoc,
     start_rot: Rotation,
     end_centre: Pos<Vec2>,
     end_rot: Rotation,

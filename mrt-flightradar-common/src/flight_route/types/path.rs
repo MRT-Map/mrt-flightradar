@@ -7,7 +7,7 @@ use crate::{
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Path {
-    Straight(FromLoc<Vec2>),
+    Straight(FromLoc),
     Curve {
         centre: Pos<Vec2>,
         from: Pos<Vec2>,
@@ -35,7 +35,7 @@ pub const MAX_SPEED: f32 = 15.0; // m/s
 pub struct FlightPath(pub Vec<Path>);
 
 impl FlightPath {
-    fn length(&self) -> f32 {
+    pub fn length(&self) -> f32 {
         self.0.iter().map(Path::length).sum()
     }
 
@@ -43,7 +43,7 @@ impl FlightPath {
         (ACCEL * t / 2.0) > MAX_SPEED
     }
 
-    fn time_taken(&self) -> f32 {
+    pub fn time_taken(&self) -> f32 {
         let mut t = (8.0 * self.length() / ACCEL).sqrt();
         if FlightPath::hits_max_speed(t) {
             t = (self.length() / MAX_SPEED) + (MAX_SPEED / ACCEL);
@@ -51,7 +51,7 @@ impl FlightPath {
         t
     }
 
-    fn pos_at_time(&self, z: f32) -> Option<Pos<Vec2>> {
+    pub fn pos_at_time(&self, z: f32) -> Option<Pos<Vec2>> {
         let t = self.time_taken();
         let mut s = if FlightPath::hits_max_speed((8.0 * self.length() / ACCEL).sqrt()) {
             match z {

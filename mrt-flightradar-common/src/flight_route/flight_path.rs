@@ -14,8 +14,8 @@ use crate::{
 };
 
 pub fn get_flight_path(
-    start: FromLoc<Vec2>,
-    end: FromLoc<Vec2>,
+    start: FromLoc,
+    end: FromLoc,
     waypoints: Vec<Pos<Vec2>>,
     max_turn_radius: f32,
 ) -> FlightPath {

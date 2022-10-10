@@ -16,7 +16,7 @@ impl Vector for Vec2 {}
 pub type Pos<T> = T;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub struct FromLoc<T: Vector> {
+pub struct FromLoc<T: Vector = Vec2> {
     pub tail: Pos<T>,
     pub vec: T,
 }
@@ -35,7 +35,7 @@ impl<T: Vector> FromLoc<T> {
     }
 }
 
-impl FromLoc<Vec2> {
+impl FromLoc {
     pub fn intersects(&self, other: Self) -> bool {
         // T1x + p*V1x = T2x + q*V2x
         // T1y + p*V1y = T2y + q*V2y
@@ -55,7 +55,7 @@ pub trait Direction<T> {
     fn turning_rot(&self, other: Pos<T>) -> Option<Rotation>;
 }
 
-impl Direction<Vec2> for FromLoc<Vec2> {
+impl Direction<Vec2> for FromLoc {
     #[inline]
     fn lmr(&self, other: Pos<Vec2>) -> LMR {
         match self.vec.perp_dot(other - self.tail) {

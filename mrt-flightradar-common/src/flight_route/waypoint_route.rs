@@ -64,7 +64,7 @@ fn a_star(start: &'static Waypoint, end: &'static Waypoint) -> Option<Vec<&'stat
     None
 }
 
-pub fn get_waypoint_route(start: FromLoc<Vec2>, end: FromLoc<Vec2>) -> Result<Vec<Pos<Vec2>>> {
+pub fn get_waypoint_route(start: FromLoc, end: FromLoc) -> Result<Vec<Pos<Vec2>>> {
     let start_wp = RAW_DATA
         .waypoints
         .iter()

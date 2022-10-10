@@ -3,9 +3,7 @@ use anyhow::Result;
 use crate::{
     data_types::{airport::Runway, vec::FromLoc},
     flight_route::{
-        flight_path::get_flight_path,
-        types::path::{FlightPath, Path},
-        waypoint_route::get_waypoint_route,
+        flight_path::get_flight_path, types::path::FlightPath, waypoint_route::get_waypoint_route,
     },
 };
 

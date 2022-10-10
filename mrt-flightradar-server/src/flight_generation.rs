@@ -1,12 +1,14 @@
+use std::{sync::Arc, time::SystemTime};
+
 use anyhow::{anyhow, Result};
 use common::{
     data_types::{airport::AirFacility, RAW_DATA},
     flight_route::get_flight_route,
 };
 use rand::{prelude::SliceRandom, Rng};
-use tokio::time::Instant;
+use tokio::time::Duration;
 
-use crate::{ActiveFlight, ActiveFlightInfo, FLIGHTS};
+use crate::types_consts::{ActiveFlight, ActiveFlightInfo, FLIGHTS};
 
 const AIRLINE_NAMES: [&str; 6] = [
     "Example Air",
@@ -19,7 +21,7 @@ const AIRLINE_NAMES: [&str; 6] = [
 
 const AIRCRAFT_NAMES: [&str; 4] = ["Stratus SA-1", "IntraJet ExpiXS", "Fighter Jet", "Dragon"];
 
-pub async fn flight_generation() -> Result<()> {
+pub async fn generate_flights() -> Result<()> {
     let mut new_flights = vec![];
     let num_new_flights = rand::thread_rng().gen_range(0..5);
     for _ in 0..num_new_flights {
@@ -48,9 +50,13 @@ pub async fn flight_generation() -> Result<()> {
                 .choose(&mut rand::thread_rng())
                 .ok_or_else(|| anyhow!("No runways"))?,
         );
-        new_flights.push(ActiveFlight {
-            route: get_flight_route(runway1, runway2)?,
-            depart_time: Instant::now(),
+        let route = get_flight_route(runway1, runway2)?;
+        let depart_time = SystemTime::now() + Duration::from_secs(15);
+        let arrival_time = depart_time + Duration::from_secs(route.time_taken() as u64);
+        new_flights.push(Arc::new(ActiveFlight {
+            route,
+            depart_time,
+            arrival_time,
             info: ActiveFlightInfo {
                 airline_name: AIRLINE_NAMES.choose(&mut rand::thread_rng()).unwrap(),
                 aircraft: AIRCRAFT_NAMES.choose(&mut rand::thread_rng()).unwrap(),
@@ -58,7 +64,7 @@ pub async fn flight_generation() -> Result<()> {
                 from: airport1,
                 to: airport2,
             },
-        })
+        }));
     }
     FLIGHTS.lock().await.append(&mut new_flights);
     Ok(())

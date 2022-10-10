@@ -1,46 +1,35 @@
 mod flight_generation;
+mod purge;
+mod status_calculation;
+mod types_consts;
 
-use std::{sync::Arc, time::Duration};
+use std::{collections::HashMap, time::SystemTime};
 
 use anyhow::Result;
-use common::{data_types::timetable::AirportCode, flight_route::types::path::FlightPath};
-use once_cell::sync::Lazy;
-use rocket::routes;
-use smol_str::SmolStr;
-use tokio::{sync::Mutex, time::Instant};
+use rocket::{routes, serde::json::Json};
+use tokio::time::Duration;
+use types_consts::{FlightStatus, FLIGHT_STATUSES};
 
-use crate::flight_generation::flight_generation;
-
-#[derive(Clone, Debug)]
-pub struct ActiveFlightInfo<'a> {
-    pub airline_name: &'a str,
-    pub aircraft: &'a str,
-    pub registry_code: SmolStr,
-    pub from: &'a AirportCode,
-    pub to: &'a AirportCode,
-}
-
-#[derive(Clone, Debug)]
-pub struct ActiveFlight<'a> {
-    pub route: FlightPath,
-    pub depart_time: Instant,
-    pub info: ActiveFlightInfo<'a>,
-}
-
-static FLIGHTS: Lazy<Arc<Mutex<Vec<ActiveFlight>>>> =
-    Lazy::new(|| Arc::new(Mutex::new(Vec::new())));
+use crate::{
+    flight_generation::generate_flights, purge::purge_outdated_data,
+    status_calculation::calculate_statuses,
+};
 
 #[rocket::get("/")]
-fn test() -> &'static str {
-    "abc"
+async fn test() -> Json<HashMap<SystemTime, Vec<FlightStatus<'static>>>> {
+    FLIGHT_STATUSES.lock().await.to_owned().into()
 }
 
 #[rocket::main]
 async fn main() -> Result<()> {
     tokio::spawn(async {
         loop {
-            flight_generation().await.unwrap();
-            tokio::time::sleep(Duration::from_secs(30)).await;
+            generate_flights().await.unwrap();
+            purge_outdated_data().await;
+            calculate_statuses().await;
+            tokio::time::sleep(Duration::from_secs(15)).await;
+            calculate_statuses().await;
+            tokio::time::sleep(Duration::from_secs(15)).await;
         }
     });
     let _ = rocket::build().mount("/", routes![test]).launch().await?;
