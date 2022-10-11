@@ -1,1 +1,1 @@
-import './map.ts'
+import './map.ts';
