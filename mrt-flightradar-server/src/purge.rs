@@ -2,11 +2,11 @@ use std::time::{Duration, SystemTime};
 
 use tracing::info;
 
-use crate::types_consts::{FLIGHTS, FLIGHT_STATUSES};
+use crate::types_consts::{FLIGHTS, FLIGHT_ACTIONS};
 
 #[tracing::instrument]
 pub async fn purge_outdated_data() {
-    let mut flight_statuses = FLIGHT_STATUSES.lock().await;
+    let mut flight_statuses = FLIGHT_ACTIONS.lock().await;
     info!(
         len = flight_statuses.len(),
         "Purging outdated flight statuses"

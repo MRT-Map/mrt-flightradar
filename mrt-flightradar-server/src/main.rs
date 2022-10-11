@@ -10,28 +10,39 @@ use rocket::{routes, serde::json::Json};
 use tokio::time::Duration;
 use tracing::error;
 use tracing_subscriber::EnvFilter;
-use types_consts::{FlightStatus, FLIGHT_STATUSES};
+use types_consts::FLIGHT_ACTIONS;
 
 use crate::{
-    flight_generation::generate_flights, purge::purge_outdated_data,
+    flight_generation::generate_flights,
+    purge::purge_outdated_data,
     status_calculation::calculate_statuses,
+    types_consts::{ActiveFlight, FlightAction, FLIGHTS},
 };
 
-#[rocket::get("/")]
-#[allow(clippy::unnecessary_to_owned)]
-async fn test() -> Json<HashMap<String, Vec<FlightStatus<'static>>>> {
-    FLIGHT_STATUSES
+#[rocket::get("/actions")]
+async fn actions() -> Json<HashMap<String, Vec<FlightAction<'static>>>> {
+    FLIGHT_ACTIONS
         .lock()
         .await
-        .to_owned()
-        .into_iter()
+        .iter()
         .map(|(k, v)| {
             (
                 k.duration_since(UNIX_EPOCH).unwrap().as_secs().to_string(),
-                v,
+                v.to_owned(),
             )
         })
         .collect::<HashMap<_, _>>()
+        .into()
+}
+
+#[rocket::get("/flights")]
+async fn flights() -> Json<Vec<ActiveFlight<'static>>> {
+    FLIGHTS
+        .lock()
+        .await
+        .iter()
+        .map(|a| (**a).to_owned())
+        .collect::<Vec<_>>()
         .into()
 }
 
@@ -41,13 +52,18 @@ async fn main() -> Result<()> {
         .event_format(tracing_subscriber::fmt::format().without_time().compact())
         .with_env_filter(EnvFilter::from_env("RUST_LOG"))
         .init();
-    let r = rocket::build().mount("/", routes![test]).ignite().await?;
+    let r = rocket::build()
+        .mount("/", routes![actions, flights])
+        .ignite()
+        .await?;
 
     let h = tokio::spawn(async {
         loop {
             purge_outdated_data().await;
-            let _ = generate_flights().await.map_err(|e| error!("{e}"));
-            calculate_statuses().await;
+            match generate_flights().await {
+                Ok(flights) => calculate_statuses(flights).await,
+                Err(e) => error!("{e}"),
+            };
             tokio::time::sleep(Duration::from_secs(30)).await;
         }
     });

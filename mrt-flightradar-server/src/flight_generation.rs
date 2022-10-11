@@ -9,7 +9,7 @@ use rand::{prelude::SliceRandom, Rng};
 use tokio::time::Duration;
 use tracing::{debug, info};
 
-use crate::types_consts::{ActiveFlight, ActiveFlightInfo, FLIGHTS};
+use crate::types_consts::{ActiveFlight, ActiveFlightInfo};
 
 const AIRLINE_NAMES: [&str; 6] = [
     "Example Air",
@@ -23,7 +23,7 @@ const AIRLINE_NAMES: [&str; 6] = [
 const AIRCRAFT_NAMES: [&str; 4] = ["Stratus SA-1", "IntraJet ExpiXS", "Fighter Jet", "Dragon"];
 
 #[tracing::instrument]
-pub async fn generate_flights() -> Result<()> {
+pub async fn generate_flights() -> Result<Vec<Arc<ActiveFlight<'static>>>> {
     let mut new_flights = vec![];
     let num_new_flights = rand::thread_rng().gen_range(0..5);
     info!("Generating {num_new_flights} new flights");
@@ -58,6 +58,7 @@ pub async fn generate_flights() -> Result<()> {
         let depart_time = SystemTime::now() + Duration::from_secs(30);
         let arrival_time = depart_time + Duration::from_secs(route.time_taken() as u64);
         new_flights.push(Arc::new(ActiveFlight {
+            id: uuid::Uuid::new_v4(),
             route,
             depart_time,
             arrival_time,
@@ -70,7 +71,5 @@ pub async fn generate_flights() -> Result<()> {
             },
         }));
     }
-    FLIGHTS.lock().await.append(&mut new_flights);
-    info!("New flights inserted");
-    Ok(())
+    Ok(new_flights)
 }

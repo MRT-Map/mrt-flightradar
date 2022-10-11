@@ -12,6 +12,7 @@ use once_cell::sync::Lazy;
 use serde::{Serialize, Serializer};
 use smol_str::SmolStr;
 use tokio::sync::Mutex;
+use uuid::Uuid;
 
 #[derive(Clone, Debug, Serialize)]
 pub struct ActiveFlightInfo<'a> {
@@ -28,6 +29,7 @@ fn serialise_as_timestamp<S: Serializer>(a: &SystemTime, ser: S) -> Result<S::Ok
 
 #[derive(Clone, Debug, Serialize)]
 pub struct ActiveFlight<'a> {
+    pub id: Uuid,
     #[serde(skip)]
     pub route: FlightPath,
     #[serde(serialize_with = "serialise_as_timestamp")]
@@ -38,12 +40,22 @@ pub struct ActiveFlight<'a> {
 }
 
 #[derive(Clone, Debug, Serialize)]
-pub struct FlightStatus<'a> {
-    pub flight: Arc<ActiveFlight<'a>>,
-    pub vec: FromLoc,
+#[serde(tag = "type")]
+pub enum FlightAction<'a> {
+    Add {
+        flight: Arc<ActiveFlight<'a>>,
+        vec: FromLoc,
+    },
+    Remove {
+        id: Uuid,
+    },
+    Move {
+        id: Uuid,
+        vec: FromLoc,
+    },
 }
 
 pub static FLIGHTS: Lazy<Mutex<Vec<Arc<ActiveFlight>>>> = Lazy::new(|| Mutex::new(Vec::new()));
 #[allow(clippy::type_complexity)]
-pub static FLIGHT_STATUSES: Lazy<Mutex<HashMap<SystemTime, Vec<FlightStatus>>>> =
+pub static FLIGHT_ACTIONS: Lazy<Mutex<HashMap<SystemTime, Vec<FlightAction>>>> =
     Lazy::new(|| Mutex::new(HashMap::new()));

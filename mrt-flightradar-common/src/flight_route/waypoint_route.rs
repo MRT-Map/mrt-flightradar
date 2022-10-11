@@ -41,14 +41,12 @@ fn a_star(start: &'static Waypoint, end: &'static Waypoint) -> Option<Vec<&'stat
 
     while let Some(Reverse(mut current)) = open_set.pop() {
         if **current == end.name {
-            trace!(?current, "Found end");
             let mut total_path = vec![to_wp(current)];
             while let Some(new_current) = came_from.get(current) {
                 current = *new_current;
-                trace!(?current, "Tracing back");
                 total_path.push(to_wp(current));
             }
-            total_path.reverse();
+            trace!(path = ?total_path.iter().map(|a| &a.name).collect::<Vec<_>>(), "Path found");
             return Some(total_path);
         }
 
