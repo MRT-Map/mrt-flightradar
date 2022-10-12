@@ -76,7 +76,9 @@ async fn flight_route(id: String) -> Option<Json<Vec<Pos<Vec2>>>> {
                 } => (0..=(*angle as u8 / 15u8))
                     .map(|i| {
                         *centre
-                            + (*from - *centre).rotate(Vec2::from_angle(i as f32 / 5.0 * *angle))
+                            + (*from - *centre).rotate(Vec2::from_angle(
+                                i as f32 / (*angle as u8 / 15u8) as f32 * *angle,
+                            ))
                     })
                     .collect(),
             })
