@@ -82,7 +82,7 @@ impl Direction<Vec2> for FromLoc {
             a if a > 0.0 => FMB::Front,
             a if a == 0.0 || a == -0.0 => FMB::Middle,
             a if a < 0.0 => FMB::Back,
-            a => {
+            _ => {
                 warn!(?self.vec, ?other, "NaN detected");
                 FMB::Middle
             }

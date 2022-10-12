@@ -28,7 +28,7 @@ impl Path {
     }
 }
 
-pub const ACCEL: f32 = 2.5; // m/s^2
+pub const ACCEL: f32 = 1.0; // m/s^2
 pub const MAX_SPEED: f32 = 15.0; // m/s
 
 #[derive(Debug, Clone)]

@@ -126,6 +126,8 @@ pub fn get_flight_path(
                     while *angle < 0.0 {
                         *angle += 2.0 * PI
                     }
+                } else {
+                    unreachable!()
                 }
             }
             Some(Rotation::Clockwise) => {
@@ -133,6 +135,8 @@ pub fn get_flight_path(
                     while *angle > 0.0 {
                         *angle -= 2.0 * PI
                     }
+                } else {
+                    unreachable!()
                 }
             }
             None => {}

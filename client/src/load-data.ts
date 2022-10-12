@@ -50,6 +50,8 @@ let response = await axios
 if (response === undefined) {
   console.log("Failed to get flights");
 } else {
+  for (let plane of planes) {
+  }
   planes = response.data;
 }
 

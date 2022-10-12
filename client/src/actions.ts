@@ -28,13 +28,19 @@ function popup(info: ActiveFlightInfo, uuid: string): string {
   return [airlineName, route, waypoints, aircraftReg, id].join("<br>");
 }
 
+function addMarker(flight: ActiveFlight, loc: [number, number]) {
+  flight.marker = L.circleMarker(mapcoord2(loc), {
+    radius: 5,
+  })
+    .bindPopup(popup(flight.info, flight.id), { autoPan: false })
+    .addTo(map);
+}
+
 function movePlane(time: number, vec: FromLoc, flight: ActiveFlight) {
   if (flight.marker === undefined) {
-    flight.marker = L.circleMarker(mapcoord2(vec.tail), {
-      radius: 5,
-    })
-      .bindPopup(popup(flight.info, flight.id), { autoPan: false })
-      .addTo(map);
+    addMarker(flight, vec.tail);
+    planes[planes.findIndex((p) => p.id === flight.id)] = flight;
+    setPlanes(planes);
   }
   for (let i = 0; i <= 4.75; i += 0.25) {
     schedule(() => {

@@ -80,10 +80,10 @@ var sidebar = L.control
 sidebar.addPanel({
   id: "panel-welcome",
   tab: DoorOpen,
-  pane: "aaa",
+  pane: "soon tm",
   title: "MRT FlightRadar",
 });
-sidebar.open("panel-welcome");
+//sidebar.open("panel-welcome");
 
 export function mapcoord([x, y]: [number, number]): [number, number] {
   let NewX = y / -64 - 0.5;
