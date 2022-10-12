@@ -4,8 +4,10 @@ specifiers:
   "@iconify-json/mdi": ^1.1.33
   "@types/leaflet": ^1.8.0
   "@types/node": ^18.8.4
+  autoprefixer: ^10.4.12
   leaflet: ^1.9.2
   leaflet-sidebar-v2: ^3.2.3
+  postcss: ^8.4.17
   sass: ^1.55.0
   typescript: ^4.8.4
   unplugin-icons: ^0.14.11
@@ -15,8 +17,10 @@ devDependencies:
   "@iconify-json/mdi": 1.1.33
   "@types/leaflet": 1.8.0
   "@types/node": 18.8.4
+  autoprefixer: 10.4.12_postcss@8.4.17
   leaflet: 1.9.2
   leaflet-sidebar-v2: 3.2.3
+  postcss: 8.4.17
   sass: 1.55.0
   typescript: 4.8.4
   unplugin-icons: 0.14.11
@@ -139,6 +143,25 @@ packages:
       picomatch: 2.3.1
     dev: true
 
+  /autoprefixer/10.4.12_postcss@8.4.17:
+    resolution:
+      {
+        integrity: sha512-WrCGV9/b97Pa+jtwf5UGaRjgQIg7OK3D06GnoYoZNcG1Xb8Gt3EfuKjlhh9i/VtT16g6PYjZ69jdJ2g8FxSC4Q==,
+      }
+    engines: { node: ^10 || ^12 || >=14 }
+    hasBin: true
+    peerDependencies:
+      postcss: ^8.1.0
+    dependencies:
+      browserslist: 4.21.4
+      caniuse-lite: 1.0.30001418
+      fraction.js: 4.2.0
+      normalize-range: 0.1.2
+      picocolors: 1.0.0
+      postcss: 8.4.17
+      postcss-value-parser: 4.2.0
+    dev: true
+
   /binary-extensions/2.2.0:
     resolution:
       {
@@ -155,6 +178,27 @@ packages:
     engines: { node: ">=8" }
     dependencies:
       fill-range: 7.0.1
+    dev: true
+
+  /browserslist/4.21.4:
+    resolution:
+      {
+        integrity: sha512-CBHJJdDmgjl3daYjN5Cp5kbTf1mUhZoS+beLklHIvkOWscs83YAhLlF3Wsh/lciQYAcbBJgTOD44VtG31ZM4Hw==,
+      }
+    engines: { node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7 }
+    hasBin: true
+    dependencies:
+      caniuse-lite: 1.0.30001418
+      electron-to-chromium: 1.4.279
+      node-releases: 2.0.6
+      update-browserslist-db: 1.0.10_browserslist@4.21.4
+    dev: true
+
+  /caniuse-lite/1.0.30001418:
+    resolution:
+      {
+        integrity: sha512-oIs7+JL3K9JRQ3jPZjlH6qyYDp+nBTCais7hjh0s+fuBwufc7uZ7hPYMXrDOJhV360KGMTcczMRObk0/iMqZRg==,
+      }
     dev: true
 
   /chokidar/3.5.3:
@@ -200,6 +244,13 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
+    dev: true
+
+  /electron-to-chromium/1.4.279:
+    resolution:
+      {
+        integrity: sha512-xs7vEuSZ84+JsHSTFqqG0TE3i8EAivHomRQZhhcRvsmnjsh5C2KdhwNKf4ZRYtzq75wojpFyqb62m32Oam57wA==,
+      }
     dev: true
 
   /esbuild-android-64/0.15.10:
@@ -475,6 +526,14 @@ packages:
       esbuild-windows-arm64: 0.15.10
     dev: true
 
+  /escalade/3.1.1:
+    resolution:
+      {
+        integrity: sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==,
+      }
+    engines: { node: ">=6" }
+    dev: true
+
   /execa/5.1.1:
     resolution:
       {
@@ -512,6 +571,13 @@ packages:
     dependencies:
       locate-path: 6.0.0
       path-exists: 4.0.0
+    dev: true
+
+  /fraction.js/4.2.0:
+    resolution:
+      {
+        integrity: sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==,
+      }
     dev: true
 
   /fsevents/2.3.2:
@@ -705,10 +771,25 @@ packages:
     hasBin: true
     dev: true
 
+  /node-releases/2.0.6:
+    resolution:
+      {
+        integrity: sha512-PiVXnNuFm5+iYkLBNeq5211hvO38y63T0i2KKh2KnUs3RpzJ+JtODFjkD8yjLwnDkTYF1eKXheUwdssR+NRZdg==,
+      }
+    dev: true
+
   /normalize-path/3.0.0:
     resolution:
       {
         integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==,
+      }
+    engines: { node: ">=0.10.0" }
+    dev: true
+
+  /normalize-range/0.1.2:
+    resolution:
+      {
+        integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==,
       }
     engines: { node: ">=0.10.0" }
     dev: true
@@ -789,6 +870,13 @@ packages:
         integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==,
       }
     engines: { node: ">=8.6" }
+    dev: true
+
+  /postcss-value-parser/4.2.0:
+    resolution:
+      {
+        integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==,
+      }
     dev: true
 
   /postcss/8.4.17:
@@ -958,6 +1046,20 @@ packages:
       chokidar: 3.5.3
       webpack-sources: 3.2.3
       webpack-virtual-modules: 0.4.5
+    dev: true
+
+  /update-browserslist-db/1.0.10_browserslist@4.21.4:
+    resolution:
+      {
+        integrity: sha512-OztqDenkfFkbSG+tRxBeAnCVPckDBcvibKd35yDONx6OU8N7sqgwc7rCbkJ/WcYtVRZ4ba68d6byhC21GFh7sQ==,
+      }
+    hasBin: true
+    peerDependencies:
+      browserslist: ">= 4.21.0"
+    dependencies:
+      browserslist: 4.21.4
+      escalade: 3.1.1
+      picocolors: 1.0.0
     dev: true
 
   /vite/3.1.7_sass@1.55.0:
