@@ -37,7 +37,7 @@ export type FlightAction =
   | { type: "Remove"; id: Id };
 
 export const URL = import.meta.env.PROD
-  ? "https://mrt-flightradar.iiiii7d.repl.co"
+  ? "https://mrt-flightradar.iiiii7d.repl.co/"
   : "http://localhost:8000/";
 
 export var planes: ActiveFlight[] = [];
