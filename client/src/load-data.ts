@@ -36,7 +36,10 @@ export type FlightAction =
   | { type: "Move"; id: Id; vec: FromLoc }
   | { type: "Remove"; id: Id };
 
-export const URL = "http://localhost:8000/";
+export const URL = import.meta.env.PROD
+  ? "https://mrt-flightradar.iiiii7d.repl.co"
+  : "http://localhost:8000/";
+
 export var planes: ActiveFlight[] = [];
 export var prevActions: Record<string, FlightAction[]> = {};
 
@@ -50,8 +53,6 @@ let response = await axios
 if (response === undefined) {
   console.log("Failed to get flights");
 } else {
-  for (let plane of planes) {
-  }
   planes = response.data;
 }
 

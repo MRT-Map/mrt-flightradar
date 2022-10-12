@@ -1,4 +1,4 @@
-import Icons from 'unplugin-icons/vite';
+import Icons from "unplugin-icons/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
@@ -8,6 +8,7 @@ export default defineConfig({
       webComponents: {
         autoDefine: true,
       },
-    })
+    }),
   ],
-})
+  base: "/mrt-flightradar/",
+});
