@@ -5,7 +5,7 @@ use std::{
 };
 
 use common::{
-    data_types::{timetable::AirportCode, vec::FromLoc},
+    data_types::{timetable::AirportCode, vec::FromLoc, waypoint::Waypoint},
     flight_route::types::path::FlightPath,
 };
 use once_cell::sync::Lazy;
@@ -21,6 +21,7 @@ pub struct ActiveFlightInfo<'a> {
     pub registry_code: SmolStr,
     pub from: &'a AirportCode,
     pub to: &'a AirportCode,
+    pub waypoints: Vec<&'static Waypoint>,
 }
 
 fn serialise_as_timestamp<S: Serializer>(a: &SystemTime, ser: S) -> Result<S::Ok, S::Error> {

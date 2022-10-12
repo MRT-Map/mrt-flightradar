@@ -9,12 +9,18 @@ export type FromLoc = {
 export type AirportCode = string;
 export type Id = string;
 
+export type Waypoint = {
+  name: string;
+  coords: [number, number];
+};
+
 export type ActiveFlightInfo = {
   airline_name: string;
   aircraft: string;
   registry_code: string;
   from: AirportCode;
   to: AirportCode;
+  waypoints: Waypoint[];
 };
 
 export type ActiveFlight = {
@@ -30,7 +36,7 @@ export type FlightAction =
   | { type: "Move"; id: Id; vec: FromLoc }
   | { type: "Remove"; id: Id };
 
-const URL = "http://localhost:8000/";
+export const URL = "http://localhost:8000/";
 export var planes: ActiveFlight[] = [];
 export var prevActions: Record<string, FlightAction[]> = {};
 

@@ -46,6 +46,7 @@ fn a_star(start: &'static Waypoint, end: &'static Waypoint) -> Option<Vec<&'stat
                 current = *new_current;
                 total_path.push(to_wp(current));
             }
+            total_path.reverse();
             trace!(path = ?total_path.iter().map(|a| &a.name).collect::<Vec<_>>(), "Path found");
             return Some(total_path);
         }
@@ -68,7 +69,10 @@ fn a_star(start: &'static Waypoint, end: &'static Waypoint) -> Option<Vec<&'stat
 }
 
 #[tracing::instrument(skip_all)]
-pub fn get_waypoint_route(start: FromLoc, end: FromLoc) -> Result<Vec<Pos<Vec2>>> {
+pub fn get_waypoint_route(
+    start: FromLoc,
+    end: FromLoc,
+) -> Result<(Vec<&'static Waypoint>, Vec<Pos<Vec2>>)> {
     let start_wp = RAW_DATA
         .waypoints
         .iter()
@@ -81,7 +85,10 @@ pub fn get_waypoint_route(start: FromLoc, end: FromLoc) -> Result<Vec<Pos<Vec2>>
         .ok_or_else(|| eyre!("No waypoints found"))?;
     trace!(?start_wp, ?end_wp);
 
-    a_star(start_wp, end_wp)
-        .map(|wps| wps.iter().map(|wp| wp.coords).collect())
-        .ok_or_else(|| eyre!("No route found"))
+    let waypoints = a_star(start_wp, end_wp).ok_or_else(|| eyre!("No route found"))?;
+
+    Ok((
+        waypoints.to_owned(),
+        waypoints.iter().map(|wp| wp.coords).collect(),
+    ))
 }

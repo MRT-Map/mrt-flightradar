@@ -7,7 +7,7 @@ import {
   planes,
   setPlanes,
 } from "./load-data";
-import { map, mapcoord } from "./map";
+import { map, mapcoord2 } from "./map";
 
 function schedule(fn: () => void, timestamp: number) {
   let delta = timestamp * 1000 - Date.now();
@@ -20,25 +20,29 @@ function schedule(fn: () => void, timestamp: number) {
 function popup(info: ActiveFlightInfo, uuid: string): string {
   let airlineName = `<b>${info.airline_name}</b>`;
   let route = `<b>${info.from}</b> → <b>${info.to}</b>`;
+  let waypoints = `<small>via ${info.waypoints
+    .map((w) => w.name)
+    .join(", ")}</small>`; // TODO temp
   let aircraftReg = `on a(n) ${info.aircraft}`;
   let id = `<i><small>ID: ${uuid}</small></i>`;
-  return [airlineName, route, aircraftReg, id].join("<br>");
+  return [airlineName, route, waypoints, aircraftReg, id].join("<br>");
 }
 
 function movePlane(time: number, vec: FromLoc, flight: ActiveFlight) {
   if (flight.marker === undefined) {
-    flight.marker = L.circleMarker(mapcoord([vec.tail[0], -vec.tail[1]]), {
+    flight.marker = L.circleMarker(mapcoord2(vec.tail), {
       radius: 5,
-    }).bindPopup(popup(flight.info, flight.id));
+    })
+      .bindPopup(popup(flight.info, flight.id), { autoPan: false })
+      .addTo(map);
   }
   for (let i = 0; i <= 4.75; i += 0.25) {
     schedule(() => {
       console.log(`Moving ${flight.id}`);
-      flight.marker?.addTo(map);
       flight.marker?.setLatLng(
-        mapcoord([
+        mapcoord2([
           vec.tail[0] + (vec.vec[0] * i) / 5,
-          -vec.tail[1] - (vec.vec[1] * i) / 5,
+          vec.tail[1] + (vec.vec[1] * i) / 5,
         ]),
       );
       //planes[planes.findIndex(p => p.id === flight.id)] = flight

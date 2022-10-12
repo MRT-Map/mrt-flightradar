@@ -54,7 +54,7 @@ L.tileLayer.customTileLayer = function (templateUrl, options) {
 };
 
 //@ts-ignore
-L.tileLayer
+L.tileLayer //@ts-ignore
   .customTileLayer("unused url; check custom function", {
     maxZoom: 8,
     zoomControl: false, //there's also css to do this bc this line doesn't work
@@ -87,6 +87,11 @@ sidebar.open("panel-welcome");
 
 export function mapcoord([x, y]: [number, number]): [number, number] {
   let NewX = y / -64 - 0.5;
+  let NewY = x / 64;
+  return [NewX, NewY];
+}
+export function mapcoord2([x, y]: [number, number]): [number, number] {
+  let NewX = y / 64 - 0.5;
   let NewY = x / 64;
   return [NewX, NewY];
 }

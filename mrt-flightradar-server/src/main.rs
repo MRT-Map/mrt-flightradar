@@ -6,6 +6,8 @@ mod types_consts;
 use std::{collections::HashMap, time::UNIX_EPOCH};
 
 use color_eyre::eyre::Result;
+use common::{data_types::vec::Pos, flight_route::types::path::Path};
+use glam::Vec2;
 use rocket::{
     fairing::{Fairing, Info, Kind},
     http::Header,
@@ -17,6 +19,7 @@ use tokio::time::Duration;
 use tracing::error;
 use tracing_subscriber::EnvFilter;
 use types_consts::FLIGHT_ACTIONS;
+use uuid::Uuid;
 
 use crate::{
     flight_generation::generate_flights,
@@ -52,6 +55,36 @@ async fn flights() -> Json<Vec<ActiveFlight<'static>>> {
         .into()
 }
 
+#[rocket::get("/route/<id>")]
+async fn flight_route(id: String) -> Option<Json<Vec<Pos<Vec2>>>> {
+    let id = id.parse::<Uuid>().ok()?;
+    let flights = FLIGHTS.lock().await;
+    let flight = flights.iter().find(|a| a.id == id)?;
+    Some(
+        flight
+            .route
+            .0
+            .iter()
+            .flat_map(|p| match p {
+                Path::Straight(fl) => {
+                    vec![fl.tail, fl.head()]
+                }
+                Path::Curve {
+                    centre,
+                    from,
+                    angle,
+                } => (0..=5)
+                    .map(|i| {
+                        *centre
+                            + (*from - *centre).rotate(Vec2::from_angle(i as f32 / 5.0 * *angle))
+                    })
+                    .collect(),
+            })
+            .collect::<Vec<_>>()
+            .into(),
+    )
+}
+
 // https://stackoverflow.com/questions/62412361/how-to-set-up-cors-or-options-for-rocket-rs
 pub struct CORS;
 
@@ -83,7 +116,7 @@ async fn main() -> Result<()> {
         .init();
 
     let r = rocket::build()
-        .mount("/", routes![actions, flights])
+        .mount("/", routes![actions, flights, flight_route])
         .attach(CORS)
         .ignite()
         .await?;
@@ -99,6 +132,6 @@ async fn main() -> Result<()> {
         }
     });
     let _ = r.launch().await?;
-    h.await?;
+    h.abort();
     Ok(())
 }

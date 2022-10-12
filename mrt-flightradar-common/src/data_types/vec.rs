@@ -2,6 +2,7 @@ use std::ops::{Add, Neg, Sub};
 
 use glam::Vec2;
 use serde::{Deserialize, Serialize};
+use tracing::warn;
 
 use crate::flight_route::types::{Rotation, FMB, LMR};
 
@@ -33,6 +34,13 @@ impl<T: Vector> FromLoc<T> {
     pub fn head(&self) -> Pos<T> {
         self.tail + self.vec
     }
+    #[inline]
+    pub fn rev(self) -> Self {
+        Self {
+            tail: self.head(),
+            vec: -self.vec,
+        }
+    }
 }
 
 impl FromLoc {
@@ -58,20 +66,26 @@ pub trait Direction<T> {
 impl Direction<Vec2> for FromLoc {
     #[inline]
     fn lmr(&self, other: Pos<Vec2>) -> LMR {
-        match self.vec.perp_dot(other - self.tail) {
+        match self.vec.perp_dot(other - self.head()) {
             a if a > 0.0 => LMR::Left,
             a if a == 0.0 || a == -0.0 => LMR::Middle,
             a if a < 0.0 => LMR::Right,
-            a => panic!("{}", a),
+            _ => {
+                warn!(?self.vec, ?other, "NaN detected");
+                LMR::Middle
+            }
         }
     }
     #[inline]
     fn fmb(&self, other: Pos<Vec2>) -> FMB {
-        match self.vec.dot(other - self.tail) {
+        match self.vec.dot(other - self.head()) {
             a if a > 0.0 => FMB::Front,
             a if a == 0.0 || a == -0.0 => FMB::Middle,
             a if a < 0.0 => FMB::Back,
-            a => panic!("{}", a),
+            a => {
+                warn!(?self.vec, ?other, "NaN detected");
+                FMB::Middle
+            }
         }
     }
     #[inline]

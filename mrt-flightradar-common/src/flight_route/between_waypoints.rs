@@ -1,3 +1,5 @@
+use std::f32::consts::PI;
+
 use glam::Vec2;
 
 use crate::{
@@ -94,7 +96,7 @@ mod tests {
                 Rotation::Anticlockwise,
                 vec2(ex, ey),
                 Rotation::Anticlockwise,
-                max_r
+                max_r,
             );
         }
     }
@@ -110,7 +112,7 @@ mod tests {
                 Rotation::Anticlockwise,
                 vec2(3.0, 0.0),
                 Rotation::Anticlockwise,
-                1.0
+                1.0,
             ),
             vec![
                 Path::Curve {
@@ -136,7 +138,7 @@ mod tests {
                 Rotation::Anticlockwise,
                 vec2(3.0, -2.0),
                 Rotation::Clockwise,
-                1.0
+                1.0,
             ),
             vec![
                 Path::Curve {
