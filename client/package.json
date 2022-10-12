@@ -13,6 +13,7 @@
     "@types/leaflet": "^1.8.0",
     "@types/node": "^18.8.4",
     "autoprefixer": "^10.4.12",
+    "axios": "^1.1.2",
     "leaflet": "^1.9.2",
     "leaflet-sidebar-v2": "^3.2.3",
     "postcss": "^8.4.17",

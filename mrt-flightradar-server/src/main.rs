@@ -6,7 +6,13 @@ mod types_consts;
 use std::{collections::HashMap, time::UNIX_EPOCH};
 
 use color_eyre::eyre::Result;
-use rocket::{routes, serde::json::Json};
+use rocket::{
+    fairing::{Fairing, Info, Kind},
+    http::Header,
+    routes,
+    serde::json::Json,
+    Request, Response,
+};
 use tokio::time::Duration;
 use tracing::error;
 use tracing_subscriber::EnvFilter;
@@ -46,14 +52,39 @@ async fn flights() -> Json<Vec<ActiveFlight<'static>>> {
         .into()
 }
 
+// https://stackoverflow.com/questions/62412361/how-to-set-up-cors-or-options-for-rocket-rs
+pub struct CORS;
+
+#[rocket::async_trait]
+impl Fairing for CORS {
+    fn info(&self) -> Info {
+        Info {
+            name: "Add CORS headers to responses",
+            kind: Kind::Response,
+        }
+    }
+
+    async fn on_response<'r>(&self, _request: &'r Request<'_>, response: &mut Response<'r>) {
+        response.set_header(Header::new("Access-Control-Allow-Origin", "*"));
+        response.set_header(Header::new(
+            "Access-Control-Allow-Methods",
+            "POST, GET, PATCH, OPTIONS",
+        ));
+        response.set_header(Header::new("Access-Control-Allow-Headers", "*"));
+        response.set_header(Header::new("Access-Control-Allow-Credentials", "true"));
+    }
+}
+
 #[rocket::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt()
         .event_format(tracing_subscriber::fmt::format().without_time().compact())
         .with_env_filter(EnvFilter::from_env("RUST_LOG"))
         .init();
+
     let r = rocket::build()
         .mount("/", routes![actions, flights])
+        .attach(CORS)
         .ignite()
         .await?;
 

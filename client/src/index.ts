@@ -1,2 +1,3 @@
 import "./css/index.scss";
-import "./map.ts";
+import "./map";
+import "./load-data";
