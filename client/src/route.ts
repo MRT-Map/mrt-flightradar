@@ -17,6 +17,7 @@ map.on("popupopen", async (e) => {
   if (response === undefined) return;
   console.error(response.data);
 
+  flightRoute?.remove();
   flightRoute = L.polyline(response.data.map(mapcoord2), {
     color: "#ff0000",
     weight: 5,
