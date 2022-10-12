@@ -12,7 +12,7 @@ map.on("popupopen", async (e) => {
   if (flight === undefined) return;
 
   let response = await axios
-    .get<[number, number][]>(URL + "/route/" + flight.id)
+    .get<[number, number][]>(URL + "route/" + flight.id)
     .catch(console.error);
   if (response === undefined) return;
   console.error(response.data);
