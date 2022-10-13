@@ -9,6 +9,7 @@ edition = "2021"
 [dependencies]
 itertools = "^0.10.5"
 glam = { version = "^0.21.3", features = ['serde'] }
+rand = "^0.8.1"
 smallvec = { version = "^1.10.0", features = ['serde'] }
 smol_str = "^0.1.23"
 color-eyre = "^0.6.2"

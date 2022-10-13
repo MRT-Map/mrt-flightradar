@@ -2,6 +2,7 @@ use std::f32::consts::PI;
 
 use glam::Vec2;
 use itertools::Itertools;
+use tracing::debug;
 
 use crate::{
     data_types::vec::{Direction, FromLoc, Pos},
@@ -15,6 +16,7 @@ use crate::{
     },
 };
 
+#[tracing::instrument(skip_all)]
 pub fn get_flight_path(
     start: FromLoc,
     end: FromLoc,
@@ -23,6 +25,7 @@ pub fn get_flight_path(
 ) -> FlightPath {
     let start_head = start.head();
     let end_head = end.head();
+    debug!("Calculating rotations");
     let wp_rots = [(
         &start_head,
         start.turning_rot(*waypoints.first().unwrap_or(&end.tail)),
@@ -40,6 +43,8 @@ pub fn get_flight_path(
 
     let mut start_vec = start;
     let mut route = vec![Path::Straight(start)];
+
+    debug!("Calculating flight route");
     route.append(
         &mut wp_rots
             .iter()
@@ -61,6 +66,7 @@ pub fn get_flight_path(
             })
             .collect(),
     );
+    debug!("Calculating last leg of flight route");
     route.append(&mut {
         match start_vec.turning_rot(end.tail) {
             None => {
@@ -91,6 +97,8 @@ pub fn get_flight_path(
         }
     });
     route.push(Path::Straight(end));
+
+    debug!("Fixing curve directions");
     for (i, (bef, _, after)) in BefAftWindowIterator::new(&route.to_owned()).enumerate() {
         let fl1 = if let Some(Path::Straight(fl)) = bef {
             fl

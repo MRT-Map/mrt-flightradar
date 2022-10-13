@@ -5,6 +5,7 @@ use crate::{
     flight_route::types::{path::Path, Rotation},
 };
 
+#[tracing::instrument]
 pub fn get_path_between_waypoints(
     start_vec: FromLoc,
     start_rot: Rotation,
@@ -21,7 +22,8 @@ pub fn get_path_between_waypoints(
                 -1.0
             };
     let main_path_vec = end_centre - start_centre;
-    let main_path_from_loc = if start_rot == end_rot {
+    let ratio = max_turn_radius * 2.0 / main_path_vec.length();
+    let main_path_from_loc = if start_rot == end_rot || ratio.acos().is_nan() {
         let radius_vec = main_path_vec.perp().normalize()
             * max_turn_radius
             * if start_rot == Rotation::Anticlockwise {
@@ -34,7 +36,7 @@ pub fn get_path_between_waypoints(
             vec: main_path_vec,
         }
     } else {
-        let angle = (max_turn_radius * 2.0 / main_path_vec.length()).acos()
+        let angle = ratio.acos()
             * if start_rot == Rotation::Anticlockwise {
                 -1.0
             } else {

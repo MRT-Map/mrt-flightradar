@@ -1,4 +1,6 @@
 use color_eyre::eyre::Result;
+use glam::vec2;
+use rand::Rng;
 use tracing::debug;
 
 use crate::{
@@ -29,7 +31,15 @@ pub fn get_flight_route(
     };
     debug!(?start_vec, ?end_vec);
 
-    let (waypoints, positions) = get_waypoint_route(start_vec, end_vec)?;
+    let (waypoints, mut positions) = get_waypoint_route(start_vec, end_vec)?;
+
+    for pos in &mut positions {
+        *pos += vec2(
+            rand::thread_rng().gen_range(0.0f32..=50.0f32),
+            rand::thread_rng().gen_range(0.0f32..=50.0f32),
+        )
+    }
+
     Ok((
         waypoints,
         get_flight_path(start_vec, end_vec, positions, 100.0),
