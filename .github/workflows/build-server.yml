@@ -1,8 +1,4 @@
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: workflow_dispatch
 
 env:
   CARGO_TERM_COLOR: always
@@ -15,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      run: cargo build
+      run: cargo build --verbose
       
     - uses: actions/upload-artifact@v3
       with:
