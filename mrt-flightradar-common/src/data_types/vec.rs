@@ -43,20 +43,6 @@ impl<T: Vector> FromLoc<T> {
     }
 }
 
-impl FromLoc {
-    pub fn intersects(&self, other: Self) -> bool {
-        // T1x + p*V1x = T2x + q*V2x
-        // T1y + p*V1y = T2y + q*V2y
-        let [a, w] = self.tail.to_array();
-        let [b, x] = self.vec.to_array();
-        let [c, y] = other.tail.to_array();
-        let [d, z] = other.vec.to_array();
-        let p = (w * d - y * d - z * a + z * c) / (z * b - x * d);
-        let q = (y * b - w * b - x * c + x * a) / (x * d - z * b);
-        (0.0..=1.0).contains(&p) && (0.0..=1.0).contains(&q)
-    }
-}
-
 pub trait Direction<T> {
     fn lmr(&self, other: Pos<T>) -> LMR;
     fn fmb(&self, other: Pos<T>) -> FMB;

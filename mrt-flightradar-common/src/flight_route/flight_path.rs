@@ -75,31 +75,13 @@ pub fn get_flight_path(
                         } else {
                             1.0
                         };
-                let end_rot = if start_vec.intersects(end) {
-                    rot
-                } else {
-                    rot.opp()
-                };
-                let mut next_paths = get_path_between_waypoints(
-                    start_vec,
-                    rot,
-                    end_centre,
-                    end_rot,
-                    max_turn_radius,
-                );
+                let mut next_paths =
+                    get_path_between_waypoints(start_vec, rot, end_centre, rot, max_turn_radius);
                 next_paths.push(if let Some(Path::Straight(fl)) = next_paths.last() {
                     Path::Curve {
                         centre: end_centre,
                         from: fl.head(),
-                        angle: {
-                            let mut angle = fl.vec.angle_between(end.vec);
-                            if angle > 0.0 && end_rot == Rotation::Clockwise {
-                                angle -= 2.0 * PI
-                            } else if angle < 0.0 && end_rot == Rotation::Anticlockwise {
-                                angle += 2.0 * PI
-                            }
-                            angle
-                        },
+                        angle: fl.vec.angle_between(end.vec),
                     }
                 } else {
                     unreachable!()
