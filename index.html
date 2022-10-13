@@ -12,10 +12,28 @@
     <title>MRT FlightRadar</title>
 
     
-    <script type="module" crossorigin src="/mrt-flightradar/assets/index.8e62654d.js"></script>
+    <script type="module" crossorigin src="/mrt-flightradar/assets/index.2847224f.js"></script>
     <link rel="stylesheet" href="/mrt-flightradar/assets/index.b76f3f50.css">
   </head>
   <body>
     <div id="map"></div>
+    <div hidden id="welcome">TODO welcome message</div>
+    <div hidden id="flight">
+      <br />
+      <div class="inner">Click on a blue circle...</div>
+    </div>
+    <div hidden id="flight-template">
+      <div class="inner">
+        <div style="text-align: center">
+          <b style="font-size: 3em">{from} → {to}</b><br />
+          operated by <b>{airlineName}</b><br />
+          on a(n) <b>{aircraft}</b><br />
+          <b>{departTime}</b> --(<i>{duration}</i>)→ <b>{arrivalTime}</b><br />
+          {distance} blocks<br /><br />
+        </div>
+        <small>Waypoints: {waypoints}</small><br />
+        <small>ID: {id}</small>
+      </div>
+    </div>
   </body>
 </html>
