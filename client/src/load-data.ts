@@ -26,7 +26,7 @@ export type ActiveFlightInfo = {
 export type ActiveFlight = {
   id: Id;
   depart_time: number;
-  arrive_time: number;
+  arrival_time: number;
   info: ActiveFlightInfo;
   marker?: L.CircleMarker;
 };

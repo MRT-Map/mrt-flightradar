@@ -1,0 +1,69 @@
+import L from "leaflet";
+import "leaflet-sidebar-v2";
+import { map } from "./map";
+import $ from "jquery";
+//@ts-ignore
+import DoorOpen from "~icons/mdi/door-open?raw";
+//@ts-ignore
+import Info from "~icons/mdi/flight?raw";
+import { ActiveFlight } from "./load-data";
+
+export var sidebar = L.control
+  .sidebar({
+    closeButton: true,
+    container: "sidebar",
+    position: "left",
+  })
+  .addTo(map);
+
+sidebar.addPanel({
+  id: "panel-welcome",
+  tab: DoorOpen,
+  pane: $("#welcome")[0].innerHTML,
+  title: "MRT FlightRadar",
+});
+
+sidebar.addPanel({
+  id: "panel-flight",
+  tab: Info,
+  pane: $("#flight")[0].innerHTML,
+  title: "MRT FlightRadar",
+});
+
+export function updateFlightPanel(flight: ActiveFlight) {
+  let departTime = new Date(flight.depart_time * 1000);
+  let arrivalTime = new Date(flight.arrival_time * 1000);
+  let delta_s = flight.arrival_time - flight.depart_time;
+  let delta_min = Math.floor(delta_s / 60);
+  delta_s -= 60 * delta_min;
+  let delta_h = Math.floor(delta_min / 60);
+  delta_min -= 60 * delta_h;
+  $("#panel-flight > .inner")[0].innerHTML = $("#flight-template")[0]
+    .innerHTML.replace("{from}", flight.info.from)
+    .replace("{to}", flight.info.to)
+    .replace("{airlineName}", flight.info.airline_name)
+    .replace("{aircraft}", flight.info.aircraft)
+    .replace("{departTime}", departTime.toLocaleTimeString())
+    .replace("{arrivalTime}", arrivalTime.toLocaleTimeString())
+    .replace("{duration}", `${delta_h}:${delta_min}:${delta_s}`)
+    .replace("{waypoints}", flight.info.waypoints.map((w) => w.name).join(", "))
+    .replace("{id}", flight.id);
+}
+export function updateFlightPanel2(route: [number, number][]) {
+  let length = 0;
+  for (let i = 0; i < route.length - 1; i++) {
+    length += Math.sqrt(
+      Math.pow(route[i][0] - route[i + 1][0], 2) +
+        Math.pow(route[i][1] - route[i + 1][1], 2),
+    );
+  }
+  $("#panel-flight > .inner")[0].innerHTML = $(
+    "#panel-flight > .inner",
+  )[0].innerHTML.replace("{distance}", Math.round(length).toString());
+}
+
+export function resetFlightPanel() {
+  $("#panel-flight > .inner")[0].innerHTML = $("#flight")[0].innerHTML;
+}
+
+sidebar.open("panel-welcome");

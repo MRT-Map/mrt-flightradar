@@ -17,22 +17,15 @@ function schedule(fn: () => void, timestamp: number) {
   setTimeout(fn, delta);
 }
 
-function popup(info: ActiveFlightInfo, uuid: string): string {
-  let airlineName = `<b>${info.airline_name}</b>`;
-  let route = `<b>${info.from}</b> → <b>${info.to}</b>`;
-  let waypoints = `<small>via ${info.waypoints
-    .map((w) => w.name)
-    .join(", ")}</small>`; // TODO temp
-  let aircraftReg = `on a(n) ${info.aircraft}`;
-  let id = `<i><small>ID: ${uuid}</small></i>`;
-  return [airlineName, route, waypoints, aircraftReg, id].join("<br>");
+function popup(info: ActiveFlightInfo): string {
+  return `<b>${info.from}</b> → <b>${info.to}</b>`;
 }
 
 function addMarker(flight: ActiveFlight, loc: [number, number]) {
   flight.marker = L.circleMarker(mapcoord2(loc), {
     radius: 5,
   })
-    .bindPopup(popup(flight.info, flight.id), { autoPan: false })
+    .bindPopup(popup(flight.info), { autoPan: false })
     .addTo(map);
 }
 

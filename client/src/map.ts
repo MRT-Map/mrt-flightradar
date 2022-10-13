@@ -1,6 +1,4 @@
 import L from "leaflet";
-import "leaflet-sidebar-v2";
-import DoorOpen from "~icons/mdi/door-open?raw";
 
 // copied from our other project, https://github.com/MRT-Map/map/blob/main/scripts/map.js
 export var map = L.map("map", {
@@ -69,21 +67,6 @@ L.tileLayer //@ts-ignore
     attribution: "Minecart Rapid Transit",
   })
   .addTo(map);
-
-var sidebar = L.control
-  .sidebar({
-    closeButton: true,
-    container: "sidebar",
-    position: "left",
-  })
-  .addTo(map);
-sidebar.addPanel({
-  id: "panel-welcome",
-  tab: DoorOpen,
-  pane: "soon tm",
-  title: "MRT FlightRadar",
-});
-//sidebar.open("panel-welcome");
 
 export function mapcoord([x, y]: [number, number]): [number, number] {
   let NewX = y / -64 - 0.5;

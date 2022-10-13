@@ -15,5 +15,23 @@
   </head>
   <body>
     <div id="map"></div>
+    <div hidden id="welcome">TODO welcome message</div>
+    <div hidden id="flight">
+      <br />
+      <div class="inner">Click on a blue circle...</div>
+    </div>
+    <div hidden id="flight-template">
+      <div class="inner">
+        <div style="text-align: center">
+          <b style="font-size: 3em">{from} → {to}</b><br />
+          operated by <b>{airlineName}</b><br />
+          on a(n) <b>{aircraft}</b><br />
+          <b>{departTime}</b> --(<i>{duration}</i>)→ <b>{arrivalTime}</b><br />
+          {distance} blocks<br /><br />
+        </div>
+        <small>Waypoints: {waypoints}</small><br />
+        <small>ID: {id}</small>
+      </div>
+    </div>
   </body>
 </html>

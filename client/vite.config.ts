@@ -5,7 +5,8 @@ import topLevelAwait from "vite-plugin-top-level-await";
 export default defineConfig({
   plugins: [
     Icons({
-      compiler: "web-components",
+      compiler: "none",
+      autoInstall: true,
       webComponents: {
         autoDefine: true,
       },

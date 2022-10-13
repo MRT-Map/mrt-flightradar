@@ -10,17 +10,19 @@
   },
   "devDependencies": {
     "@iconify-json/mdi": "^1.1.33",
+    "@types/jquery": "^3.5.14",
     "@types/leaflet": "^1.8.0",
-    "@types/node": "^18.8.4",
+    "@types/node": "^18.8.5",
     "autoprefixer": "^10.4.12",
     "axios": "^1.1.2",
+    "jquery": "^3.6.1",
     "leaflet": "^1.9.2",
     "leaflet-sidebar-v2": "^3.2.3",
-    "postcss": "^8.4.17",
+    "postcss": "^8.4.18",
     "sass": "^1.55.0",
     "typescript": "^4.8.4",
     "unplugin-icons": "^0.14.11",
-    "vite": "^3.1.7",
+    "vite": "^3.1.8",
     "vite-plugin-top-level-await": "^1.1.1"
   },
   "postcss": {
