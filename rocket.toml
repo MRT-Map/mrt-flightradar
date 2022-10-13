@@ -1,4 +1,4 @@
-[default]
+[default.release]
 address = "0.0.0.0"
 
 [default.shutdown]

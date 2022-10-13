@@ -77,9 +77,9 @@ pub fn get_flight_path(
                     + end.vec.perp().normalize()
                         * max_turn_radius
                         * if rot == Rotation::Anticlockwise {
-                            -1.0
-                        } else {
                             1.0
+                        } else {
+                            -1.0
                         };
                 let mut next_paths =
                     get_path_between_waypoints(start_vec, rot, end_centre, rot, max_turn_radius);
