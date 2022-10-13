@@ -6,7 +6,10 @@ mod types_consts;
 use std::{collections::HashMap, time::UNIX_EPOCH};
 
 use color_eyre::eyre::Result;
-use common::{data_types::vec::Pos, flight_route::types::path::Path};
+use common::{
+    data_types::{vec::Pos, RAW_DATA},
+    flight_route::types::path::Path,
+};
 use glam::Vec2;
 use rocket::{
     fairing::{Fairing, Info, Kind},
@@ -52,6 +55,22 @@ async fn flights() -> Json<Vec<ActiveFlight<'static>>> {
         .iter()
         .map(|a| (**a).to_owned())
         .collect::<Vec<_>>()
+        .into()
+}
+
+#[rocket::get("/airports")]
+async fn airports() -> Json<HashMap<&'static str, Pos<Vec2>>> {
+    RAW_DATA
+        .waypoints
+        .iter()
+        .filter_map(|w| {
+            if w.name.starts_with("AA") {
+                Some((&w.name[2..], w.coords))
+            } else {
+                None
+            }
+        })
+        .collect::<HashMap<_, _>>()
         .into()
 }
 
@@ -116,7 +135,7 @@ async fn main() -> Result<()> {
         .init();
 
     let r = rocket::build()
-        .mount("/", routes![actions, flights, flight_route])
+        .mount("/", routes![actions, flights, flight_route, airports])
         .attach(CORS)
         .ignite()
         .await?;

@@ -1,5 +1,7 @@
 import axios from "axios";
+import L from "leaflet";
 import { processActions } from "./actions";
+import { map, mapcoord2 } from "./map";
 
 export type FromLoc = {
   tail: [number, number];
@@ -42,6 +44,7 @@ export const URL = import.meta.env.PROD
 
 export var planes: ActiveFlight[] = [];
 export var prevActions: Record<string, FlightAction[]> = {};
+export var airports: [string, L.CircleMarker][] = [];
 
 export function setPlanes(n: ActiveFlight[]) {
   planes = n;
@@ -76,3 +79,23 @@ async function updateActions() {
 }
 updateActions();
 setInterval(updateActions, 30_000);
+
+let response2 = await axios
+  .get<Record<string, [number, number]>>(URL + "airports")
+  .catch(console.error);
+if (response2 === undefined) {
+  console.log("Failed to get airports");
+} else {
+  airports = Object.entries(response2.data).map(([airport, pos]) => {
+    return [
+      airport,
+      L.circleMarker(mapcoord2(pos), {
+        radius: 4,
+        color: "yellow",
+        fillColor: "yellow",
+      })
+        .bindPopup(airport)
+        .addTo(map),
+    ];
+  });
+}
