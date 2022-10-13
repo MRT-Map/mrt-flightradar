@@ -13,11 +13,12 @@ use common::{
 use glam::Vec2;
 use rocket::{
     fairing::{Fairing, Info, Kind},
-    http::Header,
-    routes,
-    serde::json::Json,
-    Request, Response,
+    http::{Header, Status},
+    response,
+    response::{content, Responder},
+    routes, Request, Response,
 };
+use serde::Serialize;
 use tokio::time::Duration;
 use tracing::error;
 use tracing_subscriber::EnvFilter;
@@ -31,55 +32,72 @@ use crate::{
     types_consts::{ActiveFlight, FlightAction, FLIGHTS},
 };
 
+#[derive(Debug)]
+struct CustomMsgPack<T>(pub T);
+
+impl<'r, T: Serialize> Responder<'r, 'static> for CustomMsgPack<T> {
+    fn respond_to(self, req: &'r Request<'_>) -> response::Result<'static> {
+        let buf = rmp_serde::to_vec_named(&self.0).map_err(|e| {
+            error!("MsgPack failed to serialize: {:?}", e);
+            Status::InternalServerError
+        })?;
+
+        content::RawMsgPack(buf).respond_to(req)
+    }
+}
+
 #[rocket::get("/actions")]
-async fn actions() -> Json<HashMap<String, Vec<FlightAction<'static>>>> {
-    FLIGHT_ACTIONS
-        .lock()
-        .await
-        .iter()
-        .map(|(k, v)| {
-            (
-                k.duration_since(UNIX_EPOCH).unwrap().as_secs().to_string(),
-                v.to_owned(),
-            )
-        })
-        .collect::<HashMap<_, _>>()
-        .into()
+async fn actions() -> CustomMsgPack<HashMap<String, Vec<FlightAction<'static>>>> {
+    CustomMsgPack(
+        FLIGHT_ACTIONS
+            .lock()
+            .await
+            .iter()
+            .map(|(k, v)| {
+                (
+                    k.duration_since(UNIX_EPOCH).unwrap().as_secs().to_string(),
+                    v.to_owned(),
+                )
+            })
+            .collect::<HashMap<_, _>>(),
+    )
 }
 
 #[rocket::get("/flights")]
-async fn flights() -> Json<Vec<ActiveFlight<'static>>> {
-    FLIGHTS
-        .lock()
-        .await
-        .iter()
-        .map(|a| (**a).to_owned())
-        .collect::<Vec<_>>()
-        .into()
+async fn flights() -> CustomMsgPack<Vec<ActiveFlight<'static>>> {
+    CustomMsgPack(
+        FLIGHTS
+            .lock()
+            .await
+            .iter()
+            .map(|a| (**a).to_owned())
+            .collect::<Vec<_>>(),
+    )
 }
 
 #[rocket::get("/airports")]
-async fn airports() -> Json<HashMap<&'static str, Pos<Vec2>>> {
-    RAW_DATA
-        .waypoints
-        .iter()
-        .filter_map(|w| {
-            if w.name.starts_with("AA") {
-                Some((&w.name[2..], w.coords))
-            } else {
-                None
-            }
-        })
-        .collect::<HashMap<_, _>>()
-        .into()
+async fn airports() -> CustomMsgPack<HashMap<&'static str, Pos<Vec2>>> {
+    CustomMsgPack(
+        RAW_DATA
+            .waypoints
+            .iter()
+            .filter_map(|w| {
+                if w.name.starts_with("AA") {
+                    Some((&w.name[2..], w.coords))
+                } else {
+                    None
+                }
+            })
+            .collect::<HashMap<_, _>>(),
+    )
 }
 
 #[rocket::get("/route/<id>")]
-async fn flight_route(id: String) -> Option<Json<Vec<Pos<Vec2>>>> {
+async fn flight_route(id: String) -> Option<CustomMsgPack<Vec<Pos<Vec2>>>> {
     let id = id.parse::<Uuid>().ok()?;
     let flights = FLIGHTS.lock().await;
     let flight = flights.iter().find(|a| a.id == id)?;
-    Some(
+    Some(CustomMsgPack(
         flight
             .route
             .0
@@ -99,9 +117,8 @@ async fn flight_route(id: String) -> Option<Json<Vec<Pos<Vec2>>>> {
                     })
                     .collect(),
             })
-            .collect::<Vec<_>>()
-            .into(),
-    )
+            .collect::<Vec<_>>(),
+    ))
 }
 
 // https://stackoverflow.com/questions/62412361/how-to-set-up-cors-or-options-for-rocket-rs

@@ -46,7 +46,7 @@ export function updateFlightPanel(flight: ActiveFlight) {
     .replace("{arrivalTime}", arrivalTime.toLocaleTimeString())
     .replace("{duration}", `${delta_h}:${delta_min}:${delta_s}`)
     .replace("{waypoints}", flight.info.waypoints.map((w) => w.name).join(", "))
-    .replace("{id}", flight.id);
+    .replace("{id}", flight.id.toString());
 }
 export function updateFlightPanel2(route: [number, number][]) {
   let length = 0;

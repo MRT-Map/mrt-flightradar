@@ -28,8 +28,13 @@ fn serialise_as_timestamp<S: Serializer>(a: &SystemTime, ser: S) -> Result<S::Ok
     ser.serialize_u64(a.duration_since(UNIX_EPOCH).unwrap().as_secs())
 }
 
+fn serialise_as_str<S: Serializer>(a: &Uuid, ser: S) -> Result<S::Ok, S::Error> {
+    ser.serialize_str(&*a.to_string())
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct ActiveFlight<'a> {
+    #[serde(serialize_with = "serialise_as_str")]
     pub id: Uuid,
     #[serde(skip)]
     pub route: FlightPath,
@@ -48,9 +53,11 @@ pub enum FlightAction<'a> {
         vec: FromLoc,
     },
     Remove {
+        #[serde(serialize_with = "serialise_as_str")]
         id: Uuid,
     },
     Move {
+        #[serde(serialize_with = "serialise_as_str")]
         id: Uuid,
         vec: FromLoc,
     },

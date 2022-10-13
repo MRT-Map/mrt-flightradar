@@ -1,6 +1,6 @@
-import axios from "axios";
 import L from "leaflet";
 import { processActions } from "./actions";
+import getMsgPack from "./get-msgpack";
 import { map, mapcoord2 } from "./map";
 
 export type FromLoc = {
@@ -50,24 +50,24 @@ export function setPlanes(n: ActiveFlight[]) {
   planes = n;
 }
 
-let response = await axios
-  .get<ActiveFlight[]>(URL + "flights")
-  .catch(console.error);
+let response = await getMsgPack<ActiveFlight[]>(URL + "flights").catch(
+  console.error,
+);
 if (response === undefined) {
   console.log("Failed to get flights");
 } else {
-  planes = response.data;
+  planes = response;
 }
 
 async function updateActions() {
-  let response = await axios
-    .get<Record<string, FlightAction[]>>(URL + "actions")
-    .catch(console.error);
+  let response = await getMsgPack<Record<string, FlightAction[]>>(
+    URL + "actions",
+  ).catch(console.error);
   if (response === undefined) {
     console.log("Failed to get new actions");
     return;
   }
-  let newActionsSet = Object.entries(response.data).filter(
+  let newActionsSet = Object.entries(response).filter(
     ([k, _]) => !Object.keys(prevActions).includes(k),
   );
   console.log(`Retrieved ${newActionsSet.length} new action sets`);
@@ -75,18 +75,18 @@ async function updateActions() {
     console.log(`Processing ${newActions.length} actions at ${time}`);
     processActions(parseInt(time), newActions);
   }
-  prevActions = response.data;
+  prevActions = response;
 }
 updateActions();
 setInterval(updateActions, 30_000);
 
-let response2 = await axios
-  .get<Record<string, [number, number]>>(URL + "airports")
-  .catch(console.error);
+let response2 = await getMsgPack<Record<string, [number, number]>>(
+  URL + "airports",
+).catch(console.error);
 if (response2 === undefined) {
   console.log("Failed to get airports");
 } else {
-  airports = Object.entries(response2.data).map(([airport, pos]) => {
+  airports = Object.entries(response2).map(([airport, pos]) => {
     return [
       airport,
       L.circleMarker(mapcoord2(pos), {

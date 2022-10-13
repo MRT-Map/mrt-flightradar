@@ -32,7 +32,7 @@ function addMarker(flight: ActiveFlight, loc: [number, number]) {
 function movePlane(time: number, vec: FromLoc, flight: ActiveFlight) {
   if (flight.marker === undefined) {
     addMarker(flight, vec.tail);
-    planes[planes.findIndex((p) => p.id === flight.id)] = flight;
+    planes[planes.findIndex((p) => p.id == flight.id)] = flight;
     setPlanes(planes);
   }
   for (let i = 0; i <= 4.75; i += 0.25) {
@@ -44,7 +44,7 @@ function movePlane(time: number, vec: FromLoc, flight: ActiveFlight) {
           vec.tail[1] + (vec.vec[1] * i) / 5,
         ]),
       );
-      //planes[planes.findIndex(p => p.id === flight.id)] = flight
+      //planes[planes.findIndex(p => p.id == flight.id)] = flight
       //setPlanes(planes)
     }, time + i);
   }
@@ -64,7 +64,7 @@ export function processActions(time: number, actions: FlightAction[]) {
         break;
       case "Move":
         let moveId = action.id;
-        let movedFlight = planes.find((p) => p.id === moveId);
+        let movedFlight = planes.find((p) => p.id == moveId);
         if (movedFlight !== undefined) {
           movePlane(time, action.vec, movedFlight);
         } else {
@@ -75,7 +75,7 @@ export function processActions(time: number, actions: FlightAction[]) {
       case "Remove":
         let removeId = action.id;
         schedule(() => {
-          planes.find((p) => p.id === removeId)?.marker?.remove();
+          planes.find((p) => p.id == removeId)?.marker?.remove();
           setPlanes(planes.filter((p) => p.id != removeId));
         }, time);
         console.log(`Scheduled remove for plane ${action.id} at ${time}`);
