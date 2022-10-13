@@ -1,11 +1,7 @@
-use std::{
-    cmp::Reverse,
-    collections::{BinaryHeap, HashMap},
-};
+use std::collections::HashMap;
 
 use color_eyre::eyre::{eyre, Result};
 use glam::Vec2;
-use itertools::Itertools;
 use smol_str::SmolStr;
 use tracing::trace;
 
@@ -34,22 +30,26 @@ fn a_star(start: &'static Waypoint, end: &'static Waypoint) -> Option<Vec<&'stat
             .collect::<Vec<_>>()
     };
 
-    let mut open_set = BinaryHeap::from([Reverse(&start.name)]);
-    let mut came_from = HashMap::<_, &_>::new();
+    let mut came_from = HashMap::<&SmolStr, &SmolStr>::new();
     let mut g_score = HashMap::from([(&start.name, 0.0)]);
     let mut f_score = HashMap::from([(&start.name, h(&start.name))]);
 
-    while let Some(Reverse(mut current)) = open_set.pop() {
+    while let Some((mut current, _)) = f_score
+        .iter()
+        .map(|(a, b)| (*a, *b))
+        .min_by(|(_, v1), (_, v2)| v1.partial_cmp(v2).unwrap())
+    {
         if **current == end.name {
             let mut total_path = vec![to_wp(current)];
             while let Some(new_current) = came_from.get(current) {
-                current = *new_current;
+                current = new_current;
                 total_path.push(to_wp(current));
             }
             total_path.reverse();
             trace!(path = ?total_path.iter().map(|a| &a.name).collect::<Vec<_>>(), "Path found");
             return Some(total_path);
         }
+        f_score.remove(current);
 
         for neighbour in neighbours(current) {
             let tent_g = *g_score.get(current).unwrap_or(&f32::INFINITY)
@@ -58,9 +58,6 @@ fn a_star(start: &'static Waypoint, end: &'static Waypoint) -> Option<Vec<&'stat
                 came_from.insert(neighbour, current);
                 g_score.insert(neighbour, tent_g);
                 f_score.insert(neighbour, tent_g + h(neighbour));
-                if !open_set.iter().contains(&Reverse(neighbour)) {
-                    open_set.push(Reverse(neighbour))
-                }
             }
         }
     }
