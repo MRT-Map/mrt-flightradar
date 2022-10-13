@@ -16,4 +16,4 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: server
-        path: target/debug/mrt-flightradar-server
+        path: target/release/mrt-flightradar-server
