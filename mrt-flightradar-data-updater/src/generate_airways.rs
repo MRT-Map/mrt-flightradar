@@ -30,6 +30,5 @@ pub fn generate_airways(waypoints: &[Waypoint]) -> Vec<Airway> {
             }
         }
     }
-    println!("{:#?}", airways);
     airways
 }

@@ -2,7 +2,7 @@ use std::ops::{Add, Neg, Sub};
 
 use glam::Vec2;
 use serde::{Deserialize, Serialize};
-use tracing::warn;
+use tracing::error;
 
 use crate::flight_route::types::{Rotation, FMB, LMR};
 
@@ -57,7 +57,7 @@ impl Direction<Vec2> for FromLoc {
             a if a == 0.0 || a == -0.0 => LMR::Middle,
             a if a < 0.0 => LMR::Right,
             _ => {
-                warn!(?self.vec, ?other, "NaN detected");
+                error!(?self.vec, ?other, "NaN detected");
                 LMR::Middle
             }
         }
@@ -69,7 +69,7 @@ impl Direction<Vec2> for FromLoc {
             a if a == 0.0 || a == -0.0 => FMB::Middle,
             a if a < 0.0 => FMB::Back,
             _ => {
-                warn!(?self.vec, ?other, "NaN detected");
+                error!(?self.vec, ?other, "NaN detected");
                 FMB::Middle
             }
         }

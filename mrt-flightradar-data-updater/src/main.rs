@@ -7,7 +7,7 @@ use std::io::Read;
 use color_eyre::eyre::Result;
 use common::data_types::RawData;
 use tracing::info;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
+use tracing_subscriber::EnvFilter;
 
 use crate::{
     generate_airways::generate_airways, get_air_facilities::get_air_facilities,
@@ -18,8 +18,9 @@ const AIR_FACILITY_LIST_URL: &str = "https://docs.google.com/spreadsheets/d/11E6
 const WAYPOINT_LIST_URL: &str = "https://docs.google.com/spreadsheets/d/11E60uIBKs5cOSIRHLz0O0nLCefpj7HgndS1gIXY_1hw/export?format=csv&gid=707730663";
 
 fn main() -> Result<()> {
-    tracing_subscriber::registry()
-        .with(EnvFilter::from_env("RUST_LOG"))
+    tracing_subscriber::fmt()
+        .event_format(tracing_subscriber::fmt::format().without_time().compact())
+        .with_env_filter(EnvFilter::from_env("RUST_LOG"))
         .init();
 
     let air_facilities = {

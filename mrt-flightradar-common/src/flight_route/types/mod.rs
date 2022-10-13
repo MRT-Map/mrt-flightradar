@@ -50,10 +50,17 @@ pub fn coords_to_vec(str: &str) -> Result<Vec2> {
         ls.next().ok_or_else(|| eyre!("No `x` value"))?,
         ls.next().ok_or_else(|| eyre!("No `y` value"))?,
     );
-    Ok(vec2(
-        x.parse()
-            .map_err(|err| eyre!("Error parsing `{x}`: `{err}`"))?,
-        -y.parse()
-            .map_err(|err| eyre!("Error parsing `{y}`: `{err}`"))?,
-    ))
+    let (x, y) = (
+        x.parse::<f32>()
+            .map_err(|err| eyre!("Error parsing `x` ({x}): `{err}`"))?,
+        -y.parse::<f32>()
+            .map_err(|err| eyre!("Error parsing `y` ({y}): `{err}`"))?,
+    );
+    if x.is_nan() {
+        return Err(eyre!("`x` is NaN"));
+    }
+    if y.is_nan() {
+        return Err(eyre!("`y` is NaN"));
+    }
+    Ok(vec2(x, y))
 }
