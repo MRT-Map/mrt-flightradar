@@ -12,8 +12,8 @@
     <title>MRT FlightRadar</title>
 
     
-    <script type="module" crossorigin src="/mrt-flightradar/assets/index.dcfb3f31.js"></script>
-    <link rel="stylesheet" href="/mrt-flightradar/assets/index.b76f3f50.css">
+    <script type="module" crossorigin src="/mrt-flightradar/assets/index.a0daa1db.js"></script>
+    <link rel="stylesheet" href="/mrt-flightradar/assets/index.e8e59bdc.css">
   </head>
   <body>
     <div id="map"></div>
@@ -42,20 +42,21 @@
     <div hidden id="airport-template">
       <div class="inner">
         <div style="text-align: center">
-          <b style="font-size: 3em">{code}</b><br />
+          <b style="font-size: 3em">{code}</b><br />{name}<br />
           <b>Departures:</b><br />
-          <ul>
-            {departures}
-          </ul>
+          {departures}
           <b>Arrivals:</b><br />
-          <ul>
-            {arrivals}
-          </ul>
+          {arrivals}
         </div>
       </div>
     </div>
     <div hidden id="airport-flight-template">
-      <li>{direction} <b>{otherAirport}</b> at {time}, by {airlineName}</li>
+      <span
+        >{direction} <b>{otherAirport}</b> at {time}, by {airlineName}
+        <i plane-id="{id}" onclick="airportOpenPlane(this)" class="plane-button"
+          >{icon}</i
+        > </span
+      ><br />
     </div>
   </body>
 </html>
