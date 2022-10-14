@@ -79,7 +79,7 @@ async fn airports() -> CustomMsgPack<HashMap<&'static str, Pos<Vec2>>> {
             .waypoints
             .iter()
             .filter_map(|w| {
-                if w.name.starts_with("AA") {
+                if w.name.starts_with("AA") && &*w.name != "RDV" {
                     Some((&w.name[2..], w.coords))
                 } else {
                     None
