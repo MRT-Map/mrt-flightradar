@@ -42,18 +42,19 @@
         <div style="text-align: center">
           <b style="font-size: 3em">{code}</b><br />
           <b>Departures:</b><br />
-          <ul>
-            {departures}
-          </ul>
+          {departures}
           <b>Arrivals:</b><br />
-          <ul>
-            {arrivals}
-          </ul>
+          {arrivals}
         </div>
       </div>
     </div>
     <div hidden id="airport-flight-template">
-      <li>{direction} <b>{otherAirport}</b> at {time}, by {airlineName}</li>
+      <span
+        >{direction} <b>{otherAirport}</b> at {time}, by {airlineName}
+        <i plane-id="{id}" onclick="airportOpenPlane(this)" class="plane-button"
+          >{icon}</i
+        > </span
+      ><br />
     </div>
   </body>
 </html>

@@ -5,6 +5,7 @@ import $ from "jquery";
 import DoorOpen from "~icons/mdi/door-open?raw";
 import Info from "~icons/mdi/flight?raw";
 import Airport from "~icons/mdi/airport?raw";
+import ArrowTopRightBoldBox from "~icons/mdi/arrow-top-right-bold-box?raw";
 import { ActiveFlight, planes } from "./load-data";
 
 export var sidebar = L.control
@@ -91,7 +92,9 @@ function toTemplate(flight: ActiveFlight, direction: "to" | "from"): string {
         (direction == "to" ? flight.depart_time : flight.arrival_time) * 1000,
       ).toLocaleTimeString(),
     )
-    .replace("{airlineName}", flight.info.airline_name);
+    .replace("{airlineName}", flight.info.airline_name)
+    .replace("{id}", flight.id)
+    .replace("{icon}", ArrowTopRightBoldBox);
 }
 export function updateAirportPanel(airport: string) {
   $("#panel-airport > .inner")[0].innerHTML = $("#airport-template > .inner")[0]

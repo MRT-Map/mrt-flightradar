@@ -37,10 +37,7 @@ struct CustomMsgPack<T>(pub T);
 
 impl<'r, T: Serialize> Responder<'r, 'static> for CustomMsgPack<T> {
     fn respond_to(self, req: &'r Request<'_>) -> response::Result<'static> {
-        let buf = rmp_serde::to_vec_named(&self.0).map_err(|e| {
-            error!("MsgPack failed to serialize: {:?}", e);
-            Status::InternalServerError
-        })?;
+        let buf = rmp_serde::to_vec_named(&self.0).map_err(|_| Status::InternalServerError)?;
 
         content::RawMsgPack(buf).respond_to(req)
     }

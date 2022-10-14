@@ -32,7 +32,11 @@ map.on("popupopen", async (e) => {
   }).addTo(map);
 });
 
-map.on("popupclose", (_) => {
+map.on("popupclose", (e) => {
+  //@ts-ignore
+  let marker = e.popup._source;
+  let flight = planes.find((p) => p.marker == marker);
+  if (flight === undefined) return;
   flightRoute?.remove();
   flightRoute = null;
   resetFlightPanel();
