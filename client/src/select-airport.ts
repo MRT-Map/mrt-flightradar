@@ -25,7 +25,7 @@ function airportOpenPlane(button: HTMLButtonElement) {
   if (plane === undefined) console.error(`No id ${id}`);
   else {
     map.closePopup();
-    setTimeout(() => plane?.marker?.fire("click"), 0);
+    setTimeout(() => plane?.marker?.fire("click"), 10);
   }
 }
 //@ts-ignore
