@@ -1,3 +1,4 @@
+import axios from "axios";
 import L from "leaflet";
 import { processActions } from "./actions";
 import getMsgPack from "./get-msgpack";
@@ -45,6 +46,7 @@ export const URL = import.meta.env.PROD
 export var planes: ActiveFlight[] = [];
 export var prevActions: Record<string, FlightAction[]> = {};
 export var airports: [string, L.CircleMarker][] = [];
+export var airportNames: Record<string, string> = {};
 
 export function setPlanes(n: ActiveFlight[]) {
   planes = n;
@@ -98,4 +100,18 @@ if (response2 === undefined) {
         .addTo(map),
     ];
   });
+}
+
+let response3 = await axios.get<string>(
+  "https://raw.githubusercontent.com/MRT-Map/mrt-flightradar/main/data/airport_names.txt",
+);
+if (response3.data === undefined) {
+  console.error("Unable to retrieve airport names");
+} else {
+  airportNames = Object.fromEntries(
+    response3.data
+      .trim()
+      .split("\n")
+      .map((r) => [r.split("\t")[1], r.split("\t")[0]]),
+  );
 }

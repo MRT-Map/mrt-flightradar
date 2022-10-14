@@ -6,7 +6,7 @@ import DoorOpen from "~icons/mdi/door-open?raw";
 import Info from "~icons/mdi/flight?raw";
 import Airport from "~icons/mdi/airport?raw";
 import ArrowTopRightBoldBox from "~icons/mdi/arrow-top-right-bold-box?raw";
-import { ActiveFlight, planes } from "./load-data";
+import { ActiveFlight, airportNames, planes } from "./load-data";
 
 export var sidebar = L.control
   .sidebar({
@@ -99,6 +99,7 @@ function toTemplate(flight: ActiveFlight, direction: "to" | "from"): string {
 export function updateAirportPanel(airport: string) {
   $("#panel-airport > .inner")[0].innerHTML = $("#airport-template > .inner")[0]
     .innerHTML.replace("{code}", airport)
+    .replace("{name}", airportNames[airport] ?? "Unknown airport")
     .replace(
       "{departures}",
       getDepartures(airport)
