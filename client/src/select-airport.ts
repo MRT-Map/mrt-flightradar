@@ -25,7 +25,7 @@ function airportOpenPlane(button: HTMLButtonElement) {
   if (plane === undefined) console.error(`No id ${id}`);
   else {
     map.closePopup();
-    sidebar.open("pane-flight");
+    sidebar.open("panel-flight");
     setTimeout(() => plane?.marker?.fire("click"), 10);
   }
 }
