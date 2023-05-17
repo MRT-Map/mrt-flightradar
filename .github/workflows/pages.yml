@@ -27,7 +27,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         #cache: 'pnpm'
-    - run: pnpm install
+    - run: pnpm install --no-frozen-lockfile
     - run: pnpm run build
     - run: cd dist; echo > .nojekyll; cd ..
     - name: Deploy
