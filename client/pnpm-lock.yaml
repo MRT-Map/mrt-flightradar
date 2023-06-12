@@ -11,8 +11,8 @@ devDependencies:
     specifier: ^3.5.14
     version: 3.5.14
   '@types/leaflet':
-    specifier: ^1.8.0
-    version: 1.8.0
+    specifier: ^1.9.3
+    version: 1.9.3
   '@types/node':
     specifier: ^20.1.7
     version: 20.3.0
@@ -26,8 +26,8 @@ devDependencies:
     specifier: ^3.6.1
     version: 3.6.1
   leaflet:
-    specifier: ^1.9.2
-    version: 1.9.2
+    specifier: ^1.9.4
+    version: 1.9.4
   leaflet-sidebar-v2:
     specifier: ^3.2.3
     version: 3.2.3
@@ -461,8 +461,8 @@ packages:
       '@types/sizzle': 2.3.3
     dev: true
 
-  /@types/leaflet@1.8.0:
-    resolution: {integrity: sha512-+sXFmiJTFdhaXXIGFlV5re9AdqtAODoXbGAvxx02e5SHXL3ir7ClP5J7pahO8VmzKY3dth4RUS1nf2BTT+DW1A==}
+  /@types/leaflet@1.9.3:
+    resolution: {integrity: sha512-Caa1lYOgKVqDkDZVWkto2Z5JtVo09spEaUt2S69LiugbBpoqQu92HYFMGUbYezZbnBkyOxMNPXHSgRrRY5UyIA==}
     dependencies:
       '@types/geojson': 7946.0.10
     dev: true
@@ -760,8 +760,8 @@ packages:
     resolution: {integrity: sha512-narzdn81Y/8YpgHR3jhs93LhrLq0AGSRo7CXHEICHfMeK6IHSbtFOF9CTSfueaumRK0TgvHkiiYJb9dTKta6ZQ==}
     dev: true
 
-  /leaflet@1.9.2:
-    resolution: {integrity: sha512-Kc77HQvWO+y9y2oIs3dn5h5sy2kr3j41ewdqCMEUA4N89lgfUUfOBy7wnnHEstDpefiGFObq12FdopGRMx4J7g==}
+  /leaflet@1.9.4:
+    resolution: {integrity: sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==}
     dev: true
 
   /local-pkg@0.4.3:
