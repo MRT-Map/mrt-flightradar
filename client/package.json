@@ -19,7 +19,7 @@
     "jquery": "^3.6.1",
     "leaflet": "^1.9.4",
     "leaflet-sidebar-v2": "^3.2.3",
-    "postcss": "^8.4.18",
+    "postcss": "^8.4.24",
     "sass": "^1.63.3",
     "typescript": "^5.0.4",
     "unplugin-icons": "^0.16.1",
