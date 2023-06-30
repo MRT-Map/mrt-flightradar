@@ -22,7 +22,7 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
                     debug!(code, "Deserialising heliport");
                     let pad_coord = row.get(3).ok_or_else(|| eyre!("No pad_coord"))?;
                     Ok(AirFacility::Heliport {
-                        code: code.into(),
+                        code: (*code).into(),
                         pad_coord: coords_to_vec(*pad_coord)?,
                     })
                 }
@@ -30,7 +30,7 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
                     debug!(code, "Deserialising airship terminal");
                     let pad_coord = row.get(3).ok_or_else(|| eyre!("No pad_coord"))?;
                     Ok(AirFacility::AirshipTerminal {
-                        code: code.into(),
+                        code: (*code).into(),
                         pad_coord: coords_to_vec(*pad_coord)?,
                     })
                 }
@@ -79,7 +79,7 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
                         });
                     }
                     Ok(AirFacility::Airport {
-                        code: code.into(),
+                        code: (*code).into(),
                         ty,
                         runways,
                     })

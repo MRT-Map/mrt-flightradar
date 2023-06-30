@@ -10,7 +10,7 @@ pub fn get_waypoints(str: &str) -> Result<Vec<Waypoint>> {
         .skip(1)
         .map(|row| {
             Ok(Waypoint {
-                name: row.first().ok_or_else(|| eyre!("No name"))?.into(),
+                name: (*row.first().ok_or_else(|| eyre!("No name"))?).into(),
                 coords: coords_to_vec(row.get(1).ok_or_else(|| eyre!("No coords"))?)?,
             })
         })
