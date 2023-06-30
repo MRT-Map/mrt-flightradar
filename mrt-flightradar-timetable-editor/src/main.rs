@@ -6,7 +6,7 @@ use color_eyre::eyre::{eyre, Result};
 use common::data_types::{timetable::AirlineTimetable, RAW_DATA};
 use itertools::Itertools;
 use native_dialog::FileDialog;
-use rustyline::{error::ReadlineError, Editor};
+use rustyline::{error::ReadlineError, history::FileHistory, Editor};
 
 use crate::cmds::{
     c::c, d::d, e::e, h::h, i::i, ie::ie, is::is, m::m, n::n, q::q, sa::sa, sae::sae, sas::sas,
@@ -23,7 +23,7 @@ macro_rules! cprintln {
 }
 
 fn main() -> Result<()> {
-    let mut rl = Editor::<()>::new()?;
+    let mut rl = Editor::<(), FileHistory>::new()?;
     cprintln!(yellow "MRT FlightRadar Timetable Editor");
     let (mut file, path) = loop {
         println!("Select file...");
