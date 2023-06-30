@@ -26,11 +26,10 @@ pub fn get_flight_path(
     let start_head = start.head();
     let end_head = end.head();
     debug!("Calculating rotations");
-    let wp_rots = [(
+    let wp_rots = std::iter::once((
         &start_head,
         start.turning_rot(*waypoints.first().unwrap_or(&end.tail)),
-    )]
-    .into_iter()
+    ))
     .chain(
         BefAftWindowIterator::new(&waypoints).map(|(bef, this, aft)| {
             let bef = bef.unwrap_or(&start_head);
@@ -100,21 +99,17 @@ pub fn get_flight_path(
 
     debug!("Fixing curve directions");
     for (i, (bef, _, after)) in BefAftWindowIterator::new(&route.to_owned()).enumerate() {
-        let fl1 = if let Some(Path::Straight(fl)) = bef {
-            fl
-        } else {
+        let Some(Path::Straight(fl1)) = bef else {
             continue;
         };
-        let fl2 = if let Some(Path::Straight(fl)) = after {
-            fl
-        } else {
+        let Some(Path::Straight(fl2)) = after else {
             continue;
         };
         match fl1.turning_rot(fl2.tail) {
             Some(Rotation::Anticlockwise) => {
                 if let Some(Path::Curve { angle, .. }) = route.get_mut(i) {
                     while *angle < 0.0 {
-                        *angle += 2.0 * PI
+                        *angle += 2.0 * PI;
                     }
                 } else {
                     unreachable!()
@@ -123,7 +118,7 @@ pub fn get_flight_path(
             Some(Rotation::Clockwise) => {
                 if let Some(Path::Curve { angle, .. }) = route.get_mut(i) {
                     while *angle > 0.0 {
-                        *angle -= 2.0 * PI
+                        *angle -= 2.0 * PI;
                     }
                 } else {
                     unreachable!()

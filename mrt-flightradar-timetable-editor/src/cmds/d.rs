@@ -37,7 +37,7 @@ mod tests {
                 let (_, mut file) = test_setup()?;
                 let mut cmd_str = to_cmd_str!($cmd);
                 assert!(
-                    matches!(d(&mut cmd_str, &mut file), Err(_)),
+                    d(&mut cmd_str, &mut file).is_err(),
                     "`{}` did not error",
                     stringify!($fn_name)
                 );

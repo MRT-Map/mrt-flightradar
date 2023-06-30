@@ -10,7 +10,7 @@ impl<'a, T> Iterator for BefAftWindowIterator<'a, T> {
         if self.started {
             self.cursor += 1;
         } else {
-            self.started = true
+            self.started = true;
         }
         Some((
             if self.cursor == 0 {
@@ -25,7 +25,8 @@ impl<'a, T> Iterator for BefAftWindowIterator<'a, T> {
 }
 
 impl<'a, T> BefAftWindowIterator<'a, T> {
-    pub fn new(list: &'a Vec<T>) -> Self {
+    #[must_use]
+    pub const fn new(list: &'a Vec<T>) -> Self {
         Self {
             cursor: 0,
             started: false,

@@ -33,9 +33,7 @@ pub async fn calculate_statuses(new_flights: Vec<Arc<ActiveFlight<'static>>>) {
 
         if i == 0 {
             for flight in &new_flights {
-                let vec = if let Some(vec) = calculate_vec(flight, key) {
-                    vec
-                } else {
+                let Some(vec) = calculate_vec(flight, key) else {
                     warn!(
                         "Could not find initial vec for flight from {} to {}",
                         flight.info.from, flight.info.to
@@ -50,7 +48,7 @@ pub async fn calculate_statuses(new_flights: Vec<Arc<ActiveFlight<'static>>>) {
                 actions.push(FlightAction::Add {
                     flight: flight.to_owned(),
                     vec,
-                })
+                });
             }
         }
 
@@ -65,9 +63,7 @@ pub async fn calculate_statuses(new_flights: Vec<Arc<ActiveFlight<'static>>>) {
                     continue;
                 }
             }
-            let vec = if let Some(vec) = calculate_vec(flight, key) {
-                vec
-            } else {
+            let Some(vec) = calculate_vec(flight, key) else {
                 warn!(
                     "Could not find vec for flight from {} to {}",
                     flight.info.from, flight.info.to

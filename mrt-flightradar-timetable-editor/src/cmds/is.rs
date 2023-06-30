@@ -27,7 +27,7 @@ mod tests {
         let (air_facilities, mut file) = test_setup()?;
         let mut cmd_str = to_cmd_str!(r#""Test Aircraft" REG AB1234 PRA 0000"#);
         assert_eq!(
-            is(&mut cmd_str, &mut file, &air_facilities).unwrap(),
+            is(&mut cmd_str, &mut file, air_facilities).unwrap(),
             Action::Refresh,
             "Unsuccessful insert"
         );
@@ -42,7 +42,7 @@ mod tests {
                 let (air_facilities, mut file) = test_setup()?;
                 let mut cmd_str = to_cmd_str!($cmd);
                 assert!(
-                    matches!(is(&mut cmd_str, &mut file, &air_facilities), Err(_)),
+                    is(&mut cmd_str, &mut file, &air_facilities).is_err(),
                     "`{}` did not error",
                     stringify!($fn_name)
                 );

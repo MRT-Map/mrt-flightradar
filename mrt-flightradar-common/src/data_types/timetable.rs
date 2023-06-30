@@ -34,7 +34,7 @@ pub struct FlightSegment {
 }
 
 impl AirlineTimetable {
-    pub fn from_string(file_cont: String, name: SmolStr) -> Result<Self> {
+    pub fn from_string(file_cont: &str, name: SmolStr) -> Result<Self> {
         let flights = file_cont
             .split('\n')
             .filter(|a| !a.is_empty())
@@ -69,15 +69,14 @@ impl AirlineTimetable {
             })
             .collect::<Result<Vec<_>>>()?;
 
-        Ok(AirlineTimetable { name, flights })
+        Ok(Self { name, flights })
     }
     pub fn from_file(file: PathBuf) -> Result<Self> {
         let name = file
             .file_stem()
-            .map(|a| a.to_string_lossy().into())
-            .unwrap_or_else(|| SmolStr::from("Unknown"));
+            .map_or_else(|| SmolStr::from("Unknown"), |a| a.to_string_lossy().into());
         let file_cont = fs::read_to_string(file)?;
-        AirlineTimetable::from_string(file_cont, name)
+        Self::from_string(&file_cont, name)
     }
     pub fn to_file(&self, mut directory: PathBuf) -> Result<()> {
         directory.push(format!("{}.fpln", self.name));
@@ -93,7 +92,11 @@ impl Display for AirlineTimetable {
                 r#""{}",{};{}"#,
                 flight.aircraft,
                 flight.registry,
-                flight.segments.iter().map(|a| a.to_string()).join(";")
+                flight
+                    .segments
+                    .iter()
+                    .map(std::string::ToString::to_string)
+                    .join(";")
             )
         });
         write!(f, "{}", flights.join("\n"))
@@ -122,8 +125,8 @@ pub mod tests {
 "Test",REG;AB123,ABC,0000;CD456,DEF,0100
         "#
         .trim()
-        .to_string();
-        let deserialised = AirlineTimetable::from_string(raw.to_owned(), "Test Airline".into())?;
+        .to_owned();
+        let deserialised = AirlineTimetable::from_string(&raw, "Test Airline".into())?;
         assert_eq!(deserialised.to_string(), raw);
         Ok(())
     }

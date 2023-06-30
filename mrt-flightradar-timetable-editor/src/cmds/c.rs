@@ -27,14 +27,14 @@ pub fn c(cmd_str: &mut Peekable<Split<char>>, file: &mut AirlineTimetable) -> Re
             if let Some(re) = Regex::new(r"^a(\d+)$")?.captures(field) {
                 let idx = re.get(1).unwrap().as_str().parse::<usize>()? - 1;
                 if let Some(seg) = file.flights[index].segments.get_mut(idx) {
-                    seg.airport = value.into()
+                    seg.airport = value.into();
                 } else {
                     return Err(eyre!("No index {idx}"));
                 }
             } else if let Some(re) = Regex::new(r"^f(\d+)$")?.captures(field) {
                 let idx = re.get(1).unwrap().as_str().parse::<usize>()? - 1;
                 if let Some(seg) = file.flights[index].segments.get_mut(idx) {
-                    seg.flight_no = value.into()
+                    seg.flight_no = value.into();
                 } else {
                     return Err(eyre!("No index {idx}"));
                 }
@@ -133,7 +133,7 @@ mod tests {
                 let (_, mut file) = test_setup()?;
                 let mut cmd_str = to_cmd_str!($cmd);
                 assert!(
-                    matches!(c(&mut cmd_str, &mut file), Err(_)),
+                    c(&mut cmd_str, &mut file).is_err(),
                     "`{}` did not error",
                     stringify!($fn_name)
                 );

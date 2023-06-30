@@ -27,19 +27,21 @@ pub enum Rotation {
 }
 
 impl Rotation {
-    pub fn opp(&self) -> Self {
+    #[must_use]
+    pub const fn opp(&self) -> Self {
         match self {
-            Rotation::Clockwise => Rotation::Anticlockwise,
-            Rotation::Anticlockwise => Rotation::Clockwise,
+            Self::Clockwise => Self::Anticlockwise,
+            Self::Anticlockwise => Self::Clockwise,
         }
     }
 }
 
 /// Note: Assumes no commas in value
 #[inline]
+#[must_use]
 pub fn from_csv(str: &str) -> Vec<Vec<&str>> {
     str.split('\n')
-        .map(|a| a.split(',').map(|a| a.trim()).collect())
+        .map(|a| a.split(',').map(str::trim).collect())
         .collect()
 }
 

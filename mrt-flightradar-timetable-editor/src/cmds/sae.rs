@@ -29,7 +29,7 @@ mod tests {
 
         let mut cmd_str = to_cmd_str!(r#"0 AB1234 PRA 0000"#);
         assert_eq!(
-            sae(&mut cmd_str, &mut file, &air_facilities).unwrap(),
+            sae(&mut cmd_str, &mut file, air_facilities).unwrap(),
             Action::Refresh,
             "Unsuccessful segment insert"
         );
@@ -41,7 +41,7 @@ mod tests {
 
         let mut cmd_str = to_cmd_str!(r#"0 AB1234 PRA"#);
         assert_eq!(
-            sae(&mut cmd_str, &mut file, &air_facilities).unwrap(),
+            sae(&mut cmd_str, &mut file, air_facilities).unwrap(),
             Action::Refresh,
             "Unsuccessful segment insert"
         );
@@ -56,7 +56,7 @@ mod tests {
                 let (air_facilities, mut file) = test_setup()?;
                 let mut cmd_str = to_cmd_str!($cmd);
                 assert!(
-                    matches!(sae(&mut cmd_str, &mut file, &air_facilities), Err(_)),
+                    sae(&mut cmd_str, &mut file, &air_facilities).is_err(),
                     "`{}` did not error",
                     stringify!($fn_name)
                 );

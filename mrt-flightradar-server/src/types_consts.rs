@@ -29,7 +29,7 @@ fn serialise_as_timestamp<S: Serializer>(a: &SystemTime, ser: S) -> Result<S::Ok
 }
 
 fn serialise_as_str<S: Serializer>(a: &Uuid, ser: S) -> Result<S::Ok, S::Error> {
-    ser.serialize_str(&*a.to_string())
+    ser.serialize_str(&a.to_string())
 }
 
 #[derive(Clone, Debug, Serialize)]

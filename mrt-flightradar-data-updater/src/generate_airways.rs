@@ -10,7 +10,7 @@ fn nearest_waypoints<'a>(waypoints: &'a [Waypoint], wp: &Waypoint) -> Vec<&'a Wa
             .iter()
             .filter(|w| *w != wp)
             .filter(|w| w.coords.distance(wp.coords) < radius)
-            .collect()
+            .collect();
     }
     nearest
 }

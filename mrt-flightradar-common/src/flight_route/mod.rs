@@ -37,7 +37,7 @@ pub fn get_flight_route(
         *pos += vec2(
             rand::thread_rng().gen_range(0.0f32..=50.0f32),
             rand::thread_rng().gen_range(0.0f32..=50.0f32),
-        )
+        );
     }
 
     Ok((

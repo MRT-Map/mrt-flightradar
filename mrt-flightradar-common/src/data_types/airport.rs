@@ -41,18 +41,20 @@ pub enum AirFacility {
     },
 }
 impl AirFacility {
-    pub fn code(&self) -> &SmolStr {
+    #[must_use]
+    pub const fn code(&self) -> &SmolStr {
         match &self {
-            AirFacility::Heliport { code, .. } => code,
-            AirFacility::AirshipTerminal { code, .. } => code,
-            AirFacility::Airport { code, .. } => code,
+            Self::Heliport { code, .. } => code,
+            Self::AirshipTerminal { code, .. } => code,
+            Self::Airport { code, .. } => code,
         }
     }
+    #[must_use]
     pub fn main_coord(&self) -> Option<&Pos<Vec2>> {
         match &self {
-            AirFacility::Heliport { pad_coord, .. } => Some(pad_coord),
-            AirFacility::AirshipTerminal { pad_coord, .. } => Some(pad_coord),
-            AirFacility::Airport { runways, .. } => runways.get(1).map(|r| &r.vec.tail),
+            Self::Heliport { pad_coord, .. } => Some(pad_coord),
+            Self::AirshipTerminal { pad_coord, .. } => Some(pad_coord),
+            Self::Airport { runways, .. } => runways.get(1).map(|r| &r.vec.tail),
         }
     }
 }

@@ -35,6 +35,7 @@ impl<T: Vector> FromLoc<T> {
         self.tail + self.vec
     }
     #[inline]
+    #[must_use]
     pub fn rev(self) -> Self {
         Self {
             tail: self.head(),

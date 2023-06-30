@@ -23,7 +23,7 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
                     let pad_coord = row.get(3).ok_or_else(|| eyre!("No pad_coord"))?;
                     Ok(AirFacility::Heliport {
                         code: (*code).into(),
-                        pad_coord: coords_to_vec(*pad_coord)?,
+                        pad_coord: coords_to_vec(pad_coord)?,
                     })
                 }
                 Some(&"Airship Terminal") => {
@@ -31,7 +31,7 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
                     let pad_coord = row.get(3).ok_or_else(|| eyre!("No pad_coord"))?;
                     Ok(AirFacility::AirshipTerminal {
                         code: (*code).into(),
-                        pad_coord: coords_to_vec(*pad_coord)?,
+                        pad_coord: coords_to_vec(pad_coord)?,
                     })
                 }
                 Some(ty) => {
@@ -68,12 +68,12 @@ pub fn get_air_facilities(str: &str) -> Result<Vec<AirFacility>> {
                         i += 1;
                         trace!(dir1, dir2, "Deserialising runway");
                         runways.push(Runway {
-                            vec: FromLoc::new(coords_to_vec(*coord1)?, coords_to_vec(*coord2)?),
+                            vec: FromLoc::new(coords_to_vec(coord1)?, coords_to_vec(coord2)?),
                             direction: (dir1.into(), dir2.into()),
                             length,
                         });
                         runways.push(Runway {
-                            vec: FromLoc::new(coords_to_vec(*coord2)?, coords_to_vec(*coord1)?),
+                            vec: FromLoc::new(coords_to_vec(coord2)?, coords_to_vec(coord1)?),
                             direction: (dir2.into(), dir1.into()),
                             length,
                         });

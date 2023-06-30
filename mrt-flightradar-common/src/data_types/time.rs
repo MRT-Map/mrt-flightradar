@@ -18,7 +18,7 @@ impl Display for Time {
     }
 }
 impl Add<f32> for Time {
-    type Output = Time;
+    type Output = Self;
     fn add(mut self, rhs: f32) -> Self::Output {
         let h = rhs.floor() as u8;
         let m = ((rhs - rhs.floor()) * 60.0).round() as u8;
@@ -28,7 +28,7 @@ impl Add<f32> for Time {
     }
 }
 impl Time {
-    fn simplified(mut self) -> Self {
+    const fn simplified(mut self) -> Self {
         while self.m >= 60 {
             self.m -= 60;
             self.h += 1;

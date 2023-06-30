@@ -47,7 +47,9 @@ pub fn get_path_between_waypoints(
         FromLoc {
             tail: start_centre + radius_vec,
             vec: radius_vec.perp().normalize()
-                * (main_path_vec.length_squared() - 4.0 * max_turn_radius.powi(2)).sqrt()
+                * 4.0f32
+                    .mul_add(-max_turn_radius.powi(2), main_path_vec.length_squared())
+                    .sqrt()
                 * if start_rot == Rotation::Anticlockwise {
                     1.0
                 } else {
@@ -118,14 +120,14 @@ mod tests {
                 Path::Curve {
                     centre: vec2(1.0, 0.0),
                     from: vec2(0.0, 0.0),
-                    angle: PI / 2.0 - 0.0000001
+                    angle: PI / 2.0 - 0.000_000_1
                 },
                 Path::Straight(FromLoc {
                     tail: vec2(1.0, -1.0),
                     vec: vec2(2.0, 0.0)
                 })
             ]
-        )
+        );
     }
     #[test]
     fn direct_transverse_tangent_anticlockwise() {
@@ -144,13 +146,13 @@ mod tests {
                 Path::Curve {
                     centre: vec2(1.0, 0.0),
                     from: vec2(0.0, 0.0),
-                    angle: PI / 2.0 - 0.0000001
+                    angle: PI / 2.0 - 0.000_000_1
                 },
                 Path::Straight(FromLoc {
-                    tail: vec2(1.0, -1.0 + 0.00000006),
+                    tail: vec2(1.0, -1.0 + 0.000_000_06),
                     vec: vec2(2.0, 0.0)
                 })
             ]
-        )
+        );
     }
 }
