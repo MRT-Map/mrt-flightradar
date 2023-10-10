@@ -13,6 +13,6 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build
       run: RUST_LOG=trace cargo run --package mrt-flightradar-data-updater
-    - uses: stefanzweifel/git-auto-commit-action@v4
+    - uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: Update raw data
