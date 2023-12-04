@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@iconify-json/mdi": "^1.1.55",
+    "@iconify-json/mdi": "^1.1.58",
     "@msgpack/msgpack": "^2.8.0",
     "@types/jquery": "^3.5.27",
     "@types/leaflet": "^1.9.8",
