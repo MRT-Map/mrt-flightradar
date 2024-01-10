@@ -25,7 +25,7 @@
     "unplugin-icons": "^0.17.3",
     "vite": "^4.5.0",
     "unplugin-icons": "^0.18.1",
-    "vite": "^5.0.10",
+    "vite": "^5.0.11",
     "vite-plugin-top-level-await": "^1.4.1"
   },
   "postcss": {
