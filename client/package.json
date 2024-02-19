@@ -13,7 +13,7 @@
     "@msgpack/msgpack": "^2.8.0",
     "@types/jquery": "^3.5.29",
     "@types/leaflet": "^1.9.8",
-    "@types/node": "^20.11.16",
+    "@types/node": "^20.11.19",
     "autoprefixer": "^10.4.17",
     "axios": "^1.6.7",
     "jquery": "^3.7.1",
