@@ -39,8 +39,8 @@ devDependencies:
     specifier: ^8.4.35
     version: 8.4.35
   sass:
-    specifier: ^1.70.0
-    version: 1.70.0
+    specifier: ^1.71.1
+    version: 1.71.1
   typescript:
     specifier: ^5.3.3
     version: 5.3.3
@@ -49,7 +49,7 @@ devDependencies:
     version: 0.18.5
   vite:
     specifier: ^5.1.4
-    version: 5.1.4(@types/node@20.11.20)(sass@1.70.0)
+    version: 5.1.4(@types/node@20.11.20)(sass@1.71.1)
   vite-plugin-top-level-await:
     specifier: ^1.4.1
     version: 1.4.1(vite@5.1.4)
@@ -1102,8 +1102,8 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /sass@1.70.0:
-    resolution: {integrity: sha512-uUxNQ3zAHeAx5nRFskBnrWzDUJrrvpCPD5FNAoRvTi0WwremlheES3tg+56PaVtCs5QDRX5CBLxxKMDJMEa1WQ==}
+  /sass@1.71.1:
+    resolution: {integrity: sha512-wovtnV2PxzteLlfNzbgm1tFXPLoZILYAMJtvoXXkD7/+1uP41eKkIt1ypWq5/q2uT94qHjXehEYfmjKOvjL9sg==}
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
@@ -1237,13 +1237,13 @@ packages:
       '@rollup/plugin-virtual': 3.0.2
       '@swc/core': 1.3.101
       uuid: 9.0.1
-      vite: 5.1.4(@types/node@20.11.20)(sass@1.70.0)
+      vite: 5.1.4(@types/node@20.11.20)(sass@1.71.1)
     transitivePeerDependencies:
       - '@swc/helpers'
       - rollup
     dev: true
 
-  /vite@5.1.4(@types/node@20.11.20)(sass@1.70.0):
+  /vite@5.1.4(@types/node@20.11.20)(sass@1.71.1):
     resolution: {integrity: sha512-n+MPqzq+d9nMVTKyewqw6kSt+R3CkvF9QAKY8obiQn8g1fwTscKxyfaYnC632HtBXAQGc1Yjomphwn1dtwGAHg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -1275,7 +1275,7 @@ packages:
       esbuild: 0.19.7
       postcss: 8.4.35
       rollup: 4.5.1
-      sass: 1.70.0
+      sass: 1.71.1
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
